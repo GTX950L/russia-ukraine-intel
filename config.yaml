@@ -39,41 +39,48 @@ sources:
     type: control_geojson
     format: geojson
     reliability: B
-    url: https://deepstatemap.org/api/territories.geojson   # 端点不稳定，待核验
+    url: https://api.github.com/repos/cyterat/deepstate-map-data/contents/data
     parser: deepstate
-    enabled: false         # 待适配器：领土控制快照，非离散事件，建议作为参考图层单独存
+    enabled: true
+    dynamic: github-latest          # fetch 用 GitHub API 取 data/ 下最新 deepstatemap_data_*.geojson
+    pattern: deepstatemap_data_*.geojson
+    note: "社区镜像每日更新(实测至当日)；单 feature 空属性，作战线快照图层；官方 live API 不稳定故用镜像"
   - name: Oryx
     side: third
     type: equipment_loss
-    format: html
+    format: xml
     reliability: A
-    url: https://www.oryxspioenkop.com/
+    url: https://www.oryxspioenkop.com/feeds/posts/default
     parser: oryx
-    enabled: false         # 待适配器：HTML 页面，需稳定选择器，脆弱
+    enabled: true
+    note: "Blogspot Atom feed；自动抽取最新发布标题/日期，明细需人工核对(主清单为长文难自动计数)"
   - name: Ukrainian-MoD
     side: ua
-    type: official_report
-    format: rss
+    type: official_losses
+    format: html
     reliability: C
     url: https://www.mil.gov.ua/
-    parser: rss
-    enabled: false         # 待适配器：RSS/页面结构待确认
+    parser: ua_mod
+    enabled: true
+    note: "首页含结构化单日损失数字(人员/坦克/火炮/无人机等)，可稳定抽取；与俄方宣称形成对照"
   - name: Russian-MoD
     side: ru
-    type: official_report
-    format: rss
+    type: official_briefing
+    format: html
     reliability: C
-    url: https://eng.mil.ru/
-    parser: rss
-    enabled: false         # 待适配器：RSS/页面结构待确认
+    url: https://eng.mil.ru/en/
+    parser: ru_mod
+    enabled: true
+    note: "每日作战简报；eng.mil.ru 可能从境外不可达，失败仅日志不阻断；正文抽取 best-effort"
   - name: ISW
     side: third
     type: daily_report
     format: html
     reliability: A
-    url: https://www.understandingwar.org/
+    url: https://www.understandingwar.org/russian-offensive-campaign-assessment
     parser: isw
-    enabled: false         # 待适配器：HTML 每日战报，需正文抽取
+    enabled: true
+    note: "每日战报；RSS 被 403 拦截，改抓产品页抽取最新战报标题/链接(仅摘要，正文分析需人工/AI 复核)"
 
 pipeline:
   fetch_timeout: 30          # 单源下载超时(秒)

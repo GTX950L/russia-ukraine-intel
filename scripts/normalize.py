@@ -1,22 +1,43 @@
-"""② 解析层：合并 data/raw（适配器） + data/seed（同 schema 手工补录） → events.csv。
+"""② 解析层：合并 data/raw（按 config 的 parser 分发）→ events.csv。
 
+设计要点：
+- 单一可信源：所有事件从 data/raw 的受控解析器产出，再合并 data/seed 手工补录。
+- 解析器由 config.yaml 的 `parser:` 字段驱动（config-driven dispatch），
+  新增信源只需在 config 加一项 + 在 PARSERS 注册函数。
 - 受控词表约束（theater / event_type 非法则回落到默认值）。
 - 按内容指纹去重，避免重复写入。
-- 缺 event_id 的行自动编号；缺字段填 config 默认值。
-- 适配器按文件名/扩展名分发：viina(.zip) / petro(.json) / 其他(.csv 通用)。
+- 每个解析器都防御式：异常仅 log，不抛出、不阻断流水线。
+
+新增源（本次）：deepstate(geojson 快照) / isw(战报摘要) / oryx(Atom feed) /
+ua_mod(乌防部损失数字) / ru_mod(俄防部简报)。全部 best-effort。
 """
 from __future__ import annotations
 
 import csv
 import io
 import json
+import re
 import zipfile
 from datetime import datetime, timezone
+from pathlib import Path
 
-from utils import (DATA, MASTER, RAW, SEED, SCHEMA_VERSION, load_vocab,
-                   read_events, write_events, new_event_id, row_hash, log)
+from utils import (DATA, MASTER, RAW, SEED, SCHEMA_VERSION, load_config,
+                   load_vocab, read_events, write_events, new_event_id,
+                   row_hash, log)
+
+try:
+    from bs4 import BeautifulSoup
+except ImportError:  # CI 缺包时降级，HTML 解析器会跳过
+    BeautifulSoup = None  # type: ignore[assignment]
 
 VALID_DEFAULTS = {"theater": "political", "event_type": "external"}
+
+# 乌语月份 -> 数字（用于解析乌防部损失日期）
+UA_MONTHS = {
+    "січня": "01", "лютого": "02", "березня": "03", "квітня": "04",
+    "травня": "05", "червня": "06", "липня": "07", "серпня": "08",
+    "вересня": "09", "жовтня": "10", "листопада": "11", "грудня": "12",
+}
 
 
 def _find_col(cols, *candidates) -> str | None:
@@ -28,7 +49,9 @@ def _find_col(cols, *candidates) -> str | None:
     return None
 
 
-# VIINA event_type（英文）→ 本项目受控 event_type
+# ──────────────────────────────────────────────────────────────────────────
+# 既有适配器：VIINA / PetroIvaniuk
+# ──────────────────────────────────────────────────────────────────────────
 VIINA_EVENT_MAP = {
     "battle": "frontline", "shell": "frontline", "assault": "frontline", "ground": "frontline",
     "strike": "frontline", "missile": "frontline", "drone": "frontline", "bomb": "frontline",
@@ -41,7 +64,6 @@ VIINA_EVENT_MAP = {
     "nuclear": "deterrence", "strategic": "deterrence",
     "mobil": "troops", "troop": "troops", "recruit": "troops",
 }
-# 地名关键词 → 本项目受控 theater
 VIINA_THEATER_MAP = {
     "avdiivka": "east-avdiivka", "bakhmut": "east-bakhmut", "donetsk": "east-donetsk",
     "luhansk": "east-luhansk", "kherson": "south-kherson", "zaporizhzhia": "south-zaporizhzhia",
@@ -52,13 +74,7 @@ VIINA_THEATER_MAP = {
 }
 
 
-def parse_viina_zip(path) -> list[dict]:
-    """VIINA 事件 zip（内含 CSV，Git LFS）→ 本项目 schema。
-
-    列名随上游变化，故采用灵活映射：先记录真实列名到日志，再按关键词映射
-    event_type / theater；原文 notes 原样保留。标题中英暂置英文（标 needs-zh），
-    待人工/AI 翻译。
-    """
+def parse_viina_zip(path: Path) -> list[dict]:
     out = []
     try:
         z = zipfile.ZipFile(path)
@@ -121,8 +137,7 @@ def parse_viina_zip(path) -> list[dict]:
     return out
 
 
-def parse_petro_json(path) -> list[dict]:
-    """PetroIvaniuk 俄方装备累计损失 JSON → 本项目 schema（取最新一日）。"""
+def parse_petro_json(path: Path) -> list[dict]:
     out = []
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -156,32 +171,260 @@ def parse_petro_json(path) -> list[dict]:
     return out
 
 
-def parse_raw_generic_csv(path, source_name) -> list[dict]:
+# ──────────────────────────────────────────────────────────────────────────
+# 新增适配器
+# ──────────────────────────────────────────────────────────────────────────
+def parse_deepstate_geojson(path: Path) -> list[dict]:
+    """DeepState 控制区/前线 GeoJSON → 快照事件（兼作地图图层资产）。
+
+    社区镜像每日更新；实测为单 feature / 空属性（前线或控制区多边形）。
+    仅记录『快照已更新』+ 几何概要，不直接声称控制变化（避免误导）。
+    """
     out = []
     try:
-        with path.open(encoding="utf-8-sig", newline="") as f:
-            for r in csv.DictReader(f):
-                out.append({
-                    "date": (r.get("date") or "")[:10],
-                    "theater": r.get("theater") or "political",
-                    "event_type": r.get("event_type") or "external",
-                    "title_en": r.get("title_en") or r.get("title") or "",
-                    "summary_en": r.get("summary_en") or r.get("summary") or "",
-                    "source_side": "third",
-                    "source_third": source_name,
-                    "reliability": "B",
-                    "confidence": "3",
-                    "disagreement_flag": "no",
-                    "forecast_related": "no",
-                    "tags": "auto",
-                    "editor": "pipeline",
-                })
+        data = json.loads(path.read_text(encoding="utf-8"))
+        feats = data.get("features", [])
+        m = re.search(r"(\d{8})", path.name)
+        date = f"{m.group(1)[:4]}-{m.group(1)[4:6]}-{m.group(1)[6:8]}" if m else ""
+        geom_types = sorted({f.get("geometry", {}).get("type") for f in feats if f.get("geometry")})
+        named = [f.get("properties", {}) for f in feats if f.get("properties")]
+        summary = (f"DeepState 控制区/前线快照（{date or '当日'}）：{len(feats)} 个要素，"
+                   f"几何类型 {', '.join(geom_types) or 'n/a'}。")
+        if named:
+            items = []
+            for p in named[:8]:
+                nm = p.get("name") or p.get("title")
+                st = p.get("status") or p.get("owner")
+                if nm:
+                    items.append(f"{nm}" + (f"({st})" if st else ""))
+            if items:
+                summary += " 区域：" + "; ".join(items)
+        out.append({
+            "date": date or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "theater": "political", "event_type": "external",
+            "title_zh": f"DeepState 战线控制快照（{date or '当日'}）",
+            "title_en": f"DeepState front-line control snapshot ({date or 'today'})",
+            "summary_zh": summary, "summary_en": summary,
+            "source_side": "third", "source_ua": "", "source_ru": "", "source_third": "DeepStateMap",
+            "url_ua": "", "url_ru": "", "url_third": "https://deepstatemap.org",
+            "reliability": "B", "confidence": "3",
+            "disagreement_flag": "no", "disagreement_note_zh": "",
+            "forecast_related": "no",
+            "tags": "deepstate;control-snapshot;frontline-map", "editor": "pipeline",
+        })
     except Exception as e:  # noqa: BLE001
-        log(f"generic_csv parse failed: {e}")
+        log(f"deepstate parse failed: {e}")
     return out
 
 
+def parse_isw_html(path: Path) -> list[dict]:
+    """ISW 每日战报：RSS 被 403，改抓产品页抽取最新战报标题/链接（仅摘要）。
+
+    诚实标注：自动抽取标题与链接，正文分析需人工/AI 复核（manual-verify）。
+    """
+    out = []
+    if BeautifulSoup is None:
+        log("isw: bs4 缺失，跳过"); return out
+    try:
+        soup = BeautifulSoup(path.read_text(encoding="utf-8", errors="replace"), "html.parser")
+        cand = None
+        for a in soup.find_all("a", href=True):
+            href = a["href"]
+            if "campaign-assessment" in href or "/backgrounder/" in href:
+                txt = a.get_text(strip=True)
+                if txt and len(txt) > 10:
+                    cand = (href, txt)
+                    break
+        if not cand:
+            log("isw: 未找到战报链接，跳过")
+            return out
+        href, txt = cand
+        if href.startswith("/"):
+            href = "https://www.understandingwar.org" + href
+        date = ""
+        mtag = soup.find("meta", {"property": "article:published_time"})
+        if mtag and mtag.get("content"):
+            date = mtag["content"][:10]
+        if not date:
+            dm = re.search(r"(\d{4}-\d{2}-\d{2})", txt)
+            if dm:
+                date = dm.group(1)
+        if not date:
+            date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        out.append({
+            "date": date, "theater": "political", "event_type": "external",
+            "title_zh": f"ISW 每日战报：{txt[:80]}",
+            "title_en": f"ISW daily assessment: {txt[:80]}",
+            "summary_zh": (f"ISW 发布《俄罗斯攻势战役评估》（{date}）。原文：{href}"
+                           f"（自动抽取标题，正文分析建议人工/AI 复核）"),
+            "summary_en": (f"ISW published Russian Offensive Campaign Assessment ({date}). "
+                           f"URL: {href} (title auto-extracted; full analysis needs review)."),
+            "source_side": "third", "source_ua": "", "source_ru": "", "source_third": "ISW",
+            "url_ua": "", "url_ru": "", "url_third": href,
+            "reliability": "A", "confidence": "3",
+            "disagreement_flag": "no", "disagreement_note_zh": "",
+            "forecast_related": "no",
+            "tags": "isw;daily-report;summary-only;manual-verify", "editor": "pipeline",
+        })
+    except Exception as e:  # noqa: BLE001
+        log(f"isw parse failed: {e}")
+    return out
+
+
+def parse_oryx_feed(path: Path) -> list[dict]:
+    """Oryx Blogspot Atom feed → 最新发布事件的标题/日期/链接。
+
+    Oryx 主清单为超长文、难自动计数；这里只抽取『最新发布』信号，明细需人工核对。
+    """
+    out = []
+    try:
+        import xml.etree.ElementTree as ET
+        root = ET.fromstring(path.read_text(encoding="utf-8", errors="replace"))
+        entries = [el for el in root.iter() if el.tag.endswith("entry") or el.tag.endswith("item")]
+        if not entries:
+            log("oryx: feed 无 entry，跳过")
+            return out
+        e = entries[0]
+        title = published = link = ""
+        for child in e.iter():
+            t = child.tag.split("}")[-1]
+            if t == "title" and not title:
+                title = (child.text or "").strip()
+            elif t in ("published", "updated") and not published:
+                published = (child.text or "").strip()
+            elif t == "link" and not link:
+                href = child.get("href")
+                if href:
+                    link = href
+        dm = re.search(r"(\d{4}-\d{2}-\d{2})", published)
+        date = dm.group(1) if dm else datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        if not title:
+            log("oryx: 无标题，跳过")
+            return out
+        out.append({
+            "date": date, "theater": "political", "event_type": "equipment",
+            "title_zh": f"Oryx 最新发布：{title[:80]}",
+            "title_en": f"Oryx latest: {title[:80]}",
+            "summary_zh": (f"Oryx 发布装备损失相关更新（{date}）：{title}。原文：{link}"
+                           f"（自动抽取标题，明细需人工核对）"),
+            "summary_en": (f"Oryx published equipment-loss update ({date}): {title}. "
+                           f"URL: {link} (title auto-extracted; details need manual verification)."),
+            "source_side": "third", "source_ua": "", "source_ru": "", "source_third": "Oryx",
+            "url_ua": "", "url_ru": "", "url_third": link,
+            "reliability": "A", "confidence": "2",
+            "disagreement_flag": "no", "disagreement_note_zh": "",
+            "forecast_related": "no",
+            "tags": "oryx;feed;manual-verify", "editor": "pipeline",
+        })
+    except Exception as e:  # noqa: BLE001
+        log(f"oryx parse failed: {e}")
+    return out
+
+
+def parse_ua_mod_html(path: Path) -> list[dict]:
+    """乌克兰国防部首页 → 结构化单日损失数字（人员/坦克/火炮/无人机等）。
+
+    与俄方宣称天然形成『双方对照』。官方自报，reliability C / confidence 2。
+    """
+    out = []
+    if BeautifulSoup is None:
+        log("ua_mod: bs4 缺失，跳过"); return out
+    try:
+        soup = BeautifulSoup(path.read_text(encoding="utf-8", errors="replace"), "html.parser")
+        text = soup.get_text("\n")
+        dm = re.search(r"Бойові втрати ворога на\s*(\d+)\s*([а-яіїєґ]+)\s*(\d{4})", text)
+        date = ""
+        if dm:
+            d = int(dm.group(1))
+            mon = UA_MONTHS.get(dm.group(2).lower())
+            y = int(dm.group(3))
+            if mon:
+                date = f"{y}-{mon}-{d:02d}"
+        if not date:
+            date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        pairs = [
+            ("Особовий склад", "personnel"), ("Танки", "tanks"),
+            ("Бойові машини", "afv"), ("Артилерійські системи", "artillery"),
+            ("БПЛА", "uav"), ("Літаки", "aircraft"), ("Гелікоптери", "helicopters"),
+            ("Кораблі", "ships"), ("Крилаті ракети", "cruise_missiles"),
+        ]
+        found = {}
+        for label, _ in pairs:
+            m = re.search(re.escape(label) + r"\s*[\n\r]+?\s*([\d\s\u00a0]+)", text)
+            if m:
+                val = re.sub(r"\D", "", m.group(1))  # 仅保留数字（去掉空格/换行/窄空格）
+                if val:
+                    found[label] = int(val)
+        if not found:
+            log("ua_mod: 未找到损失数字，跳过")
+            return out
+        zh = "乌方通报俄军单日损失（" + date + "）：" + "；".join(
+            f"{k}={v}" for k, v in found.items())
+        en = "UA MoD reports RU losses (" + date + "): " + "; ".join(
+            f"{k}={v}" for k, v in found.items())
+        out.append({
+            "date": date, "theater": "homeland-ru", "event_type": "equipment",
+            "title_zh": f"乌国防部通报俄军单日装备/人员损失（{date}）",
+            "title_en": f"UA MoD reports daily RU losses ({date})",
+            "summary_zh": zh, "summary_en": en,
+            "source_side": "ua", "source_ua": "乌克兰国防部", "source_ru": "", "source_third": "",
+            "url_ua": "https://www.mil.gov.ua/", "url_ru": "", "url_third": "",
+            "reliability": "C", "confidence": "2",
+            "disagreement_flag": "no", "disagreement_note_zh": "",
+            "forecast_related": "no",
+            "tags": "ua-mod;losses;official-claim", "editor": "pipeline",
+        })
+    except Exception as e:  # noqa: BLE001
+        log(f"ua_mod parse failed: {e}")
+    return out
+
+
+def parse_ru_mod_html(path: Path) -> list[dict]:
+    """俄罗斯国防部每日简报：best-effort（eng.mil.ru 可能从境外不可达）。
+
+    失败仅日志不阻断；成功也仅抽取标题+首段，标注 manual-verify。
+    """
+    out = []
+    if BeautifulSoup is None:
+        log("ru_mod: bs4 缺失，跳过"); return out
+    try:
+        soup = BeautifulSoup(path.read_text(encoding="utf-8", errors="replace"), "html.parser")
+        title = soup.title.get_text(strip=True) if soup.title else ""
+        paras = [p.get_text(" ", strip=True) for p in soup.find_all("p")]
+        body = next((p for p in paras if len(p) > 60), "")
+        date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        out.append({
+            "date": date, "theater": "political", "event_type": "external",
+            "title_zh": f"俄国防部每日简报（自动抽取，需人工核实）：{title[:60]}",
+            "title_en": f"RU MoD daily briefing (auto, verify): {title[:60]}",
+            "summary_zh": (body[:300] if body else "（未能抽取正文，建议人工核对俄防部官网 eng.mil.ru）"),
+            "summary_en": (body[:300] if body else "(body not extracted; verify RU MoD site manually)"),
+            "source_side": "ru", "source_ua": "", "source_ru": "俄罗斯国防部", "source_third": "",
+            "url_ua": "", "url_ru": "https://eng.mil.ru/", "url_third": "",
+            "reliability": "C", "confidence": "3",
+            "disagreement_flag": "no", "disagreement_note_zh": "",
+            "forecast_related": "no",
+            "tags": "ru-mod;briefing;manual-verify", "editor": "pipeline",
+        })
+    except Exception as e:  # noqa: BLE001
+        log(f"ru_mod parse failed: {e}")
+    return out
+
+
+# 解析器注册表（config.parser -> 函数）
+PARSERS = {
+    "viina": parse_viina_zip,
+    "petro_equipment": parse_petro_json,
+    "deepstate": parse_deepstate_geojson,
+    "isw": parse_isw_html,
+    "oryx": parse_oryx_feed,
+    "ua_mod": parse_ua_mod_html,
+    "ru_mod": parse_ru_mod_html,
+}
+
+
 def main() -> None:
+    cfg = load_config()
     vocab = load_vocab()
     valid_theaters = set(vocab["theaters"])
     valid_types = set(vocab["event_types"])
@@ -220,22 +463,25 @@ def main() -> None:
         merged.append(r)
         added += 1
 
-    # raw 适配器（按文件名/扩展名分发）
-    if RAW.exists():
-        for p in sorted(RAW.glob("*")):
-            name = p.name.lower()
-            try:
-                if "viina" in name and p.suffix == ".zip":
-                    for r in parse_viina_zip(p):
-                        ingest(r)
-                elif "petro" in name and p.suffix == ".json":
-                    for r in parse_petro_json(p):
-                        ingest(r)
-                elif p.suffix == ".csv":
-                    for r in parse_raw_generic_csv(p, p.name):
-                        ingest(r)
-            except Exception as e:  # noqa: BLE001
-                log(f"raw ingest failed {p.name}: {e}")
+    # raw 适配器（按 config.parser 分发）
+    raw_files = {p.name: p for p in (RAW.glob("*") if RAW.exists() else [])}
+    for src in cfg.get("sources", []):
+        if not src.get("enabled"):
+            continue
+        name = src.get("name", "")
+        parser = PARSERS.get(src.get("parser"))
+        if not parser:
+            log(f"no parser registered for {name}; skip")
+            continue
+        key = next((fn for fn in raw_files if fn.lower().startswith(name.lower())), None)
+        if not key:
+            log(f"no raw file for {name}; skip")
+            continue
+        try:
+            for r in parser(raw_files[key]):
+                ingest(r)
+        except Exception as e:  # noqa: BLE001
+            log(f"parse {name} failed: {e}")
 
     # seed（同 schema 手工补录）
     if SEED.exists():
