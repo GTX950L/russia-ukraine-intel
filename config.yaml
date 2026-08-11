@@ -14,23 +14,34 @@ pages:
   base_url: https://gtx950l.github.io/russia-ukraine-intel
 
 # 信源册：side ∈ {ua, ru, third}；reliability 为 NATO A-F 基线（详见 references/confidence_rubric.md）
+# 注意：URL 与分支可能随上游漂移；启用前请确认端点稳定。VIINA 数据为 Git LFS，
+# raw.githubusercontent.com 在 GitHub Actions(ubuntu) 上会自动解析 LFS，本地测试需用 gh api。
 sources:
   - name: VIINA
     side: third
     type: events_csv
-    format: csv
+    format: zip            # 实为 zip 内含 CSV（Git LFS 存储）
     reliability: B
-    url: https://raw.githubusercontent.com/zhukovyuri/VIINA/master/data/events.csv   # 需核验
+    url: https://raw.githubusercontent.com/zhukovyuri/VIINA/main/Data/event_1pd_latest_2026.zip
     parser: viina
-    enabled: false
+    enabled: true          # 已核验路径(分支 main + LFS zip)；列映射在 normalize 中灵活处理，首次运行后核对日志
+    note: "ACLED 式多源事件，乌+俄媒体双源；每年文件名变(_2026→_2027)，需年度更新 URL"
+  - name: PetroIvaniuk-equipment
+    side: third
+    type: equipment_loss_json
+    format: json
+    reliability: B         # 基于 Oryx + 官方通报的累计装备损失
+    url: https://raw.githubusercontent.com/PetroIvaniuk/2022-Ukraine-Russia-War-Dataset/main/data/russia_losses_equipment.json
+    parser: petro_equipment
+    enabled: true          # 已核验：1629 条每日累计记录，更新至当日
   - name: DeepStateMap
     side: third
     type: control_geojson
     format: geojson
     reliability: B
-    url: https://deepstatemap.org/api/territories.geojson                            # 需核验
+    url: https://deepstatemap.org/api/territories.geojson   # 端点不稳定，待核验
     parser: deepstate
-    enabled: false
+    enabled: false         # 待适配器：领土控制快照，非离散事件，建议作为参考图层单独存
   - name: Oryx
     side: third
     type: equipment_loss
@@ -38,15 +49,7 @@ sources:
     reliability: A
     url: https://www.oryxspioenkop.com/
     parser: oryx
-    enabled: false
-  - name: PetroIvaniuk-drones
-    side: third
-    type: drone_waves_csv
-    format: csv
-    reliability: B
-    url: https://raw.githubusercontent.com/petroivaniuk/rus-ukr-drone-waves/main/data/waves.csv  # 需核验
-    parser: generic_csv
-    enabled: false
+    enabled: false         # 待适配器：HTML 页面，需稳定选择器，脆弱
   - name: Ukrainian-MoD
     side: ua
     type: official_report
@@ -54,7 +57,7 @@ sources:
     reliability: C
     url: https://www.mil.gov.ua/
     parser: rss
-    enabled: false
+    enabled: false         # 待适配器：RSS/页面结构待确认
   - name: Russian-MoD
     side: ru
     type: official_report
@@ -62,7 +65,7 @@ sources:
     reliability: C
     url: https://eng.mil.ru/
     parser: rss
-    enabled: false
+    enabled: false         # 待适配器：RSS/页面结构待确认
   - name: ISW
     side: third
     type: daily_report
@@ -70,7 +73,7 @@ sources:
     reliability: A
     url: https://www.understandingwar.org/
     parser: isw
-    enabled: false
+    enabled: false         # 待适配器：HTML 每日战报，需正文抽取
 
 pipeline:
   fetch_timeout: 30          # 单源下载超时(秒)
