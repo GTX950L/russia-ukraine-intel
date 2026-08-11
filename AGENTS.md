@@ -21,8 +21,9 @@ data/raw/*.csv           ← 采集层落地（信源适配器输出，目前信
 config.yaml / data/vocab.yaml / SCHEMA_VERSION  ← 机器可读的规则与版本
 ```
 
-**铁律：永远不要手改 `briefings/` 和 `docs/`——它们是派生文件，下次流水线会覆盖你。**
-Rule: never hand-edit `briefings/` or `docs/` — they are generated and will be overwritten.
+**铁律（数据层）**：不要手改 `briefings/` 里 `## AI 深度解析` 标题**之前**的内容，也不要手改 `docs/`——这些是派生文件，下次流水线会覆盖。
+**例外（解析层）**：`briefings/weekly|monthly|yearly/*.md` 中 `## AI 深度解析` 标题**之后**的段落，由维护者或 AI 手写，流水线重生成时**保留不覆盖**。这就是"深度解析手动层"。
+Rule: never hand-edit the data layer (above the `## AI 深度解析` sentinel) of briefings, nor `docs/`. The analysis layer below that sentinel in period briefings is yours to edit and is preserved across regenerations.
 
 ---
 
@@ -126,6 +127,21 @@ python scripts/validate.py        # ← 必须 0 退出；否则不要提交
 3. 要加事件 → 用方法 A（seed CSV）或方法 B（直接改 events.csv，用代码写）。
 4. 跑第 4 节的四条命令，`validate.py` 必须 0 退出。
 5. 提交 PR；CI 校验通过即自动重新发布。
+
+---
+
+## 10. 深度解析手动层 / Manual deep-analysis layer
+
+项目分工：**采集 + 结构化聚合全自动（流水线），深度解析由维护者或 AI 手动补写。**
+
+- 流水线每晚 06:00 UTC 自动刷新 `events.csv` 与 `briefings/` 的**数据层**。
+- 周/月/年简报末尾有 `## AI 深度解析` 插槽：该标题之后的内容**不被流水线覆盖**。
+- 补写流程：
+  1. 打开 `briefings/{weekly|monthly|yearly}/{对应文件}.md`，滚到 `## AI 深度解析` 之下。
+  2. 读 `templates/{weekly|monthly|yearly}.md` 取结构提纲与**可直接粘贴的提示词**。
+  3. 把该简报全文贴进提示词，交给任意 AI（或自己写），产出解析正文，粘回插槽。
+  4. `git add` 该简报文件并提交即可（只需提交这一个文件，数据层由流水线管）。
+- 注意：不要改 `## AI 深度解析` **之前**的数据层；那部分下次流水线会重写。
 
 ---
 维护者：GTX950L ｜ 最后复核：2026-08-12 ｜ 本文件面向 AI 代理，随仓库长期维护。
