@@ -1,0 +1,136 @@
+"""⑤ 渲染层：读 events.csv → 生成 docs/index.html（仪表盘）+ docs/events.json + .nojekyll。
+
+采用 GitHub Pages "Deploy from branch: main / docs" 模式（仓库根 .nojekyll 关闭 Jekyll）。
+站点为纯静态：前端用内嵌 EVENTS 做客户端筛选，无需后端。
+"""
+from __future__ import annotations
+
+import json
+from collections import Counter
+from datetime import datetime, timezone
+
+from utils import DOCS, MASTER, THEATER_ZH, TYPE_LABELS, read_events, load_config, log
+
+HTML = """<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>%s</title>
+<style>
+  :root { --bg:#fff; --fg:#1a1a1a; --mut:#666; --bd:#e3e3e3; --acc:#185fa5; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin:0; color:var(--fg); background:var(--bg); }
+  header { padding:28px 20px 10px; border-bottom:1px solid var(--bd); }
+  h1 { margin:0 0 4px; font-size:22px; }
+  .sub { color:var(--mut); font-size:13px; }
+  .wrap { max-width:1080px; margin:0 auto; padding:18px 20px 60px; }
+  .stats { display:flex; gap:12px; flex-wrap:wrap; margin:16px 0; }
+  .card { flex:1 1 140px; border:1px solid var(--bd); border-radius:12px; padding:14px; text-align:center; }
+  .card .num { font-size:26px; font-weight:600; color:var(--acc); }
+  .card .lbl { font-size:12px; color:var(--mut); margin-top:4px; }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 16px; }
+  input,select { padding:8px 10px; border:1px solid var(--bd); border-radius:8px; font-size:13px; }
+  input { flex:1 1 240px; }
+  table { width:100%%; border-collapse:collapse; font-size:13px; }
+  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--bd); vertical-align:top; }
+  th { background:#fafafa; position:sticky; top:0; }
+  .tag { display:inline-block; background:#eef3fb; color:var(--acc); border-radius:6px; padding:1px 7px; font-size:11px; margin-right:4px; }
+  .disc { color:#b3401b; font-weight:600; }
+  footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:30px; padding-top:14px; }
+  a { color:var(--acc); }
+</style>
+</head>
+<body>
+<header><h1>%s</h1><div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：%s</div></header>
+<div class="wrap">
+  <div class="stats">%s</div>
+  <div class="filters">
+    <input id="q" placeholder="搜索关键词 / search...">
+    <select id="fType"><option value="">全部维度</option></select>
+    <select id="fTheater"><option value="">全部战区</option></select>
+  </div>
+  <table>
+    <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（中/EN）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <footer>
+    非官方、开源、中立汇编，数据可能滞后或有误，仅供参考。原始数据：<a href="events.json">events.json</a>
+    ｜ 简报：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/briefings">briefings/</a>
+    ｜ 方法论：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">references/</a>
+  </footer>
+</div>
+<script>
+const EVENTS = %s;
+const TYPE_ZH = %s;
+const THEATER_ZH = %s;
+const tbody = document.getElementById('tbody');
+const q = document.getElementById('q');
+const fType = document.getElementById('fType');
+const fTheater = document.getElementById('fTheater');
+function uniq(a){ return [...new Set(a)].filter(Boolean); }
+uniq(EVENTS.map(e=>e.event_type)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(TYPE_ZH[t]||t); fType.appendChild(o); });
+uniq(EVENTS.map(e=>e.theater)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(THEATER_ZH[t]||t); fTheater.appendChild(o); });
+function render(){
+  const kw=q.value.trim().toLowerCase(), ft=fType.value, fth=fTheater.value;
+  const rows=EVENTS.filter(e=>{
+    if(ft && e.event_type!==ft) return false;
+    if(fth && e.theater!==fth) return false;
+    if(kw){ const hay=(e.title_zh+' '+e.title_en+' '+e.summary_zh+' '+e.summary_en+' '+(e.tags||'')).toLowerCase(); if(!hay.includes(kw)) return false; }
+    return true;
+  });
+  tbody.innerHTML = rows.map(e=>{
+    const disc=(e.disagreement_flag||'').toLowerCase().startsWith('y');
+    const tags=(e.tags||'').split(';').filter(Boolean).map(t=>'<span class="tag">'+t+'</span>').join('');
+    return '<tr><td>'+(e.date||'')+'</td><td>'+(THEATER_ZH[e.theater]||e.theater||'')+'</td><td>'+(TYPE_ZH[e.event_type]||e.event_type||'')+'</td>'
+      +'<td><b>'+(e.title_zh||'')+'</b> / '+(e.title_en||'')+'<br><span style="color:#666">'+(e.summary_zh||'')+'</span> '+tags+'</td>'
+      +'<td>'+(e.reliability||'')+'</td><td>'+(e.confidence||'')+'</td>'
+      +'<td>'+(disc?'<span class="disc">分歧</span>':(e.source_side||''))+'</td></tr>';
+  }).join('') || '<tr><td colspan="7" style="color:#888">无匹配</td></tr>';
+}
+q.addEventListener('input', render);
+fType.addEventListener('change', render);
+fTheater.addEventListener('change', render);
+render();
+</script>
+</body>
+</html>
+"""
+
+
+def main() -> None:
+    rows = read_events()
+    cfg = load_config()
+    title_zh = cfg["project"]["title_zh"]
+    updated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    counter_type = Counter(r.get("event_type", "") for r in rows)
+    counter_theater = Counter(r.get("theater", "") for r in rows)
+    disagreements = sum(1 for r in rows if str(r.get("disagreement_flag", "")).lower().startswith("y"))
+
+    stats = (
+        f'<div class="card"><div class="num">{len(rows)}</div><div class="lbl">事件总数</div></div>'
+        f'<div class="card"><div class="num">{disagreements}</div><div class="lbl">分歧事件</div></div>'
+        f'<div class="card"><div class="num">{len(counter_type)}</div><div class="lbl">维度覆盖</div></div>'
+        f'<div class="card"><div class="num">{len(counter_theater)}</div><div class="lbl">战区覆盖</div></div>'
+    )
+
+    type_zh = {k: v[0] for k, v in TYPE_LABELS.items()}
+    rows_sorted = sorted(rows, key=lambda r: r.get("date", ""), reverse=True)
+
+    html = HTML % (
+        title_zh, title_zh, updated, stats,
+        json.dumps(rows_sorted, ensure_ascii=False),
+        json.dumps(type_zh, ensure_ascii=False),
+        json.dumps(THEATER_ZH, ensure_ascii=False),
+    )
+
+    DOCS.mkdir(parents=True, exist_ok=True)
+    (DOCS / "index.html").write_text(html, encoding="utf-8")
+    (DOCS / "events.json").write_text(json.dumps(rows_sorted, ensure_ascii=False), encoding="utf-8")
+    (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+    log(f"pages rendered: {len(rows)} events -> docs/index.html")
+
+
+if __name__ == "__main__":
+    main()

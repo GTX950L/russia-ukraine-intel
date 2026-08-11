@@ -1,0 +1,42 @@
+# 受控词表 / Controlled Vocabulary
+# normalize.py / validate.py 依赖此文件；新增取值须在此登记。
+# 与 references/theater_tags.md、references/confidence_rubric.md 保持一致。
+
+event_types:
+  - frontline      # 战线状况
+  - troops         # 兵力状况
+  - equipment      # 装备状况
+  - leadership     # 军政领导人言行
+  - civilian       # 平民状况
+  - external       # 外部势力言行
+  - diplomacy      # 外交谈判
+  - economy        # 经济与制裁
+  - cyber          # 网络/电子/认知战
+  - deterrence     # 战略威慑(核态势)
+  - forecast       # 未来推测(若单独成行)
+
+theaters:
+  - east-avdiivka
+  - east-bakhmut
+  - east-donetsk
+  - east-luhansk
+  - south-kherson
+  - south-zaporizhzhia
+  - south-crimea
+  - north-kharkiv
+  - border-kursk
+  - black-sea
+  - homeland-ru
+  - homeland-ua
+  - political
+  - economy
+  - cyber
+  - deterrence
+
+source_sides:
+  - ua
+  - ru
+  - third
+
+reliability_levels: [A, B, C, D, E, F]   # NATO 来源可靠性
+confidence_levels: [1, 2, 3, 4, 5, 6]   # 信息置信度（1=已确认, 6=无法评估）

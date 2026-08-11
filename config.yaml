@@ -1,0 +1,79 @@
+# 全局配置 / Global configuration
+# 注意：信源 URL 需维护者定期核验；启用(enabled:true)前请确认端点稳定可达。
+
+project:
+  name: russia-ukraine-intel
+  title_zh: 俄乌战争每日情报
+  title_en: Russia-Ukraine War Daily Intelligence
+  editor: GTX950L
+  lang: zh            # 默认叙述语言
+
+pages:
+  source_branch: main
+  source_path: /docs
+  base_url: https://gtx950l.github.io/russia-ukraine-intel
+
+# 信源册：side ∈ {ua, ru, third}；reliability 为 NATO A-F 基线（详见 references/confidence_rubric.md）
+sources:
+  - name: VIINA
+    side: third
+    type: events_csv
+    format: csv
+    reliability: B
+    url: https://raw.githubusercontent.com/zhukovyuri/VIINA/master/data/events.csv   # 需核验
+    parser: viina
+    enabled: false
+  - name: DeepStateMap
+    side: third
+    type: control_geojson
+    format: geojson
+    reliability: B
+    url: https://deepstatemap.org/api/territories.geojson                            # 需核验
+    parser: deepstate
+    enabled: false
+  - name: Oryx
+    side: third
+    type: equipment_loss
+    format: html
+    reliability: A
+    url: https://www.oryxspioenkop.com/
+    parser: oryx
+    enabled: false
+  - name: PetroIvaniuk-drones
+    side: third
+    type: drone_waves_csv
+    format: csv
+    reliability: B
+    url: https://raw.githubusercontent.com/petroivaniuk/rus-ukr-drone-waves/main/data/waves.csv  # 需核验
+    parser: generic_csv
+    enabled: false
+  - name: Ukrainian-MoD
+    side: ua
+    type: official_report
+    format: rss
+    reliability: C
+    url: https://www.mil.gov.ua/
+    parser: rss
+    enabled: false
+  - name: Russian-MoD
+    side: ru
+    type: official_report
+    format: rss
+    reliability: C
+    url: https://eng.mil.ru/
+    parser: rss
+    enabled: false
+  - name: ISW
+    side: third
+    type: daily_report
+    format: html
+    reliability: A
+    url: https://www.understandingwar.org/
+    parser: isw
+    enabled: false
+
+pipeline:
+  fetch_timeout: 30          # 单源下载超时(秒)
+  max_raw_age_days: 2        # raw 超过此天数视为过期
+  default_reliability: C     # 未指定时的默认可靠性
+  default_confidence: 3      # 未指定时的默认置信度

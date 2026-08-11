@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# 采集层原始外源（体积大、易变，不进版本库；如需追溯可另存 archive/）
+data/raw/
+
+# 本地临时
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# 生成产物（由脚本重建，不手改）
+briefings/**/*.html

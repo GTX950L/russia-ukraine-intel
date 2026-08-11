@@ -1,0 +1,66 @@
+name: Daily Intelligence Pipeline
+
+on:
+  schedule:
+    - cron: "0 6 * * *"      # 每日 06:00 UTC 触发
+  workflow_dispatch:         # 允许手动运行
+  push:
+    paths:
+      - "scripts/**"
+      - "config.yaml"
+      - "data/vocab.yaml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: ① Fetch sources
+        run: python scripts/fetch_sources.py
+
+      - name: ② Normalize → events.csv
+        run: python scripts/normalize.py
+
+      - name: ③ Build briefings (daily + week/month/year boundary)
+        run: |
+          python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)"
+          python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --week
+          if [ "$(date -u +%d)" = "01" ]; then
+            python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --month
+          fi
+          if [ "$(date -u +%m-%d)" = "01-01" ]; then
+            python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --year
+          fi
+
+      - name: ⑤ Render Pages
+        run: python scripts/render_pages.py
+
+      - name: ④ Validate (CI quality gate)
+        run: python scripts/validate.py
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "auto: $(date -u +%Y-%m-%d) pipeline run"
+            git push
+          fi
