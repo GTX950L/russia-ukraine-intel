@@ -1008,23 +1008,42 @@ if (MAP_DATA.cities && MAP_DATA.cities.length) {
     L.towns.setVisible(false);
   }
 }
-/* 重镇 / 枢纽：用 svgPath 形状（重镇=五角星、枢纽=菱形）避免显示成密集红点 */
-if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
+/* 重镇 / 枢纽：默认不创建（避免 svgPath 兼容性 + 密集红点），只在用户点图例时才动态创建 */
+const strongholdData = (MAP_DATA.strongholds || []).map(s => ({
+  data: s, key: s.type === 'stronghold' ? 'sh' : 'hu',
+}));
+function buildStrongholdMarkers() {
   const starPath = 'M9,1 L11.4,6.5 L17,7 L12.7,10.8 L14.2,16.5 L9,13.5 L3.8,16.5 L5.3,10.8 L1,7 L6.6,6.5 Z';
   const hubPath = 'M8,1 L15,8 L8,15 L1,8 Z';
   const sh = new TMap.MarkerStyle({ svgPath: starPath, color: '#a32d2d', strokeColor: '#fff', strokeWidth: 1, width: 16, height: 16, anchor: { x: 8, y: 8 } });
   const hu = new TMap.MarkerStyle({ svgPath: hubPath, color: '#d85a30', strokeColor: '#fff', strokeWidth: 1, width: 14, height: 14, anchor: { x: 7, y: 7 } });
-  const mk = (s, i) => ({ id: 's'+i, styleId: s.type === 'stronghold' ? 'sh' : 'hu',
+  const mk = s => ({ id: 's'+(s.n+s.lon), styleId: s.type === 'stronghold' ? 'sh' : 'hu',
     position: new TMap.LatLng(s.lat, s.lon),
     extra: '<b>'+s.n+'</b> <span style="color:#777">'+s.en+'</span><br>'+s.note });
-  const shs = MAP_DATA.strongholds.filter(s => s.type === 'stronghold').map((s, i) => mk(s, i));
-  const hubs = MAP_DATA.strongholds.filter(s => s.type !== 'stronghold').map((s, i) => mk(s, i));
+  const shs = strongholdData.filter(o => o.key === 'sh').map(o => mk(o.data));
+  const hubs = strongholdData.filter(o => o.key === 'hu').map(o => mk(o.data));
   L.strongholds = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: shs });
   L.strongholds.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
-  L.strongholds.setVisible(false);  // 默认关，避免密集红点
   L.hubs = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: hubs });
   L.hubs.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
-  L.hubs.setVisible(false);  // 默认关
+}
+/* 精确地点：默认不创建 */
+let eventPointData = null;
+function buildEventPoints() {
+  if (eventPointData) return;
+  if (!MAP_DATA.event_points || !MAP_DATA.event_points.length) return;
+  eventPointData = MAP_DATA.event_points;
+  const geoms = [], styles = {};
+  eventPointData.forEach((p, i) => {
+    styles['p'+i] = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff7043', borderWidth: 2, borderColor: '#fff' });
+    const names = p.names || [];
+    const evs = EVENTS.filter(e => names.some(n => n && (e.title_zh.indexOf(n) !== -1 || e.title_en.toLowerCase().indexOf(n.toLowerCase()) !== -1))).slice(0, 8);
+    geoms.push({ id: 'p'+i, styleId: 'p'+i, position: new TMap.LatLng(p.lat, p.lon),
+      extra: '<b>事件地点：'+names.join(' / ')+'</b>（关联 '+p.count+' 条）<br><br>'+eventsList(evs, names.join(' / ')) });
+  });
+  L.points = new TMap.MultiMarker({ map, styles, geometries: geoms });
+  L.points.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+}
 /* 事件图层拆分：战区热区（默认开）+ 精确地点（默认关，减少红点噪音） */
 {
   const geoms = [];
@@ -1043,24 +1062,7 @@ if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
     L.events.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
   }
 }
-{
-  const geoms = [];
-  const styles = {};
-  if (MAP_DATA.event_points && MAP_DATA.event_points.length) {
-    MAP_DATA.event_points.forEach((p, i) => {
-      styles['p'+i] = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff7043', borderWidth: 2, borderColor: '#fff' });
-      const names = p.names || [];
-      const evs = EVENTS.filter(e => names.some(n => n && (e.title_zh.indexOf(n) !== -1 || e.title_en.toLowerCase().indexOf(n.toLowerCase()) !== -1))).slice(0, 8);
-      geoms.push({ id: 'p'+i, styleId: 'p'+i, position: new TMap.LatLng(p.lat, p.lon),
-        extra: '<b>事件地点：'+names.join(' / ')+'</b>（关联 '+p.count+' 条）<br><br>'+eventsList(evs, names.join(' / ')) });
-    });
-  }
-  if (geoms.length) {
-    L.points = new TMap.MultiMarker({ map, styles, geometries: geoms });
-    L.points.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
-    L.points.setVisible(false);  // 默认关闭
-  }
-}
+/* 事件精确地点：默认不创建（buildEventPoints 函数按需调用），避免密集红点 */
 /* 道路 + 铁路（zoom>=7 按需加载一次） */
 let roadsLoaded = false;
 function loadRoads() {
@@ -1112,6 +1114,11 @@ function toggleLayer(name) {
   el.classList.toggle('off', !willBeOn);
   STATE[name] = willBeOn;
   if (name === 'roads' && willBeOn && !roadsLoaded) { loadRoads(); return; }
+  // 按需懒加载图层：strongholds/hubs/points 默认不创建（避免 svgPath 兼容性 + 密集红点）
+  if (willBeOn) {
+    if ((name === 'strongholds' || name === 'hubs') && !L.strongholds) buildStrongholdMarkers();
+    if (name === 'points' && !L.points) buildEventPoints();
+  }
   applyState();
 }
 function applyState() {
