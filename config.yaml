@@ -1,21 +1,37 @@
+# =============================================================
 # 全局配置 / Global configuration
-# 注意：信源 URL 需维护者定期核验；启用(enabled:true)前请确认端点稳定可达。
+# -------------------------------------------------------------
+# 本文件由维护者与流水线共同消费 / Consumed by both maintainer and pipeline.
+# 相关文档 / Related:
+#   - 信源取舍与分类   → references/source_catalog.md
+#   - 评级定义         → references/confidence_rubric.md
+#   - 受控词表(权威)   → data/vocab.yaml
+#   - 字段总表与约束   → AGENTS.md §3
+#   - 主事件表版本     → SCHEMA_VERSION (当前 v1)
+#
+# 注意 / Note:
+#   信源 URL 需维护者定期核验；启用(enabled:true)前请确认端点稳定可达。
+#   VIINA 数据为 Git LFS，raw.githubusercontent.com 在 GitHub Actions(ubuntu)
+#   上会自动解析 LFS，本地测试需用 `gh api`。
+# =============================================================
 
+# ---------- 项目元信息 / Project ----------
 project:
   name: russia-ukraine-intel
   title_zh: 俄乌战争每日情报
   title_en: Russia-Ukraine War Daily Intelligence
   editor: GTX950L
-  lang: zh            # 默认叙述语言
+  lang: zh            # 默认叙述语言 / default narrative language
 
+# ---------- 站点发布 / Pages ----------
 pages:
   source_branch: main
   source_path: /docs
   base_url: https://gtx950l.github.io/russia-ukraine-intel
 
-# 信源册：side ∈ {ua, ru, third}；reliability 为 NATO A-F 基线（详见 references/confidence_rubric.md）
-# 注意：URL 与分支可能随上游漂移；启用前请确认端点稳定。VIINA 数据为 Git LFS，
-# raw.githubusercontent.com 在 GitHub Actions(ubuntu) 上会自动解析 LFS，本地测试需用 gh api。
+# ---------- 信源册 / Sources ----------
+# side ∈ {ua, ru, third}；reliability 为 NATO A–F 基线（详见 references/confidence_rubric.md）
+# 注意：URL 与分支可能随上游漂移；启用前请确认端点稳定。
 sources:
   - name: VIINA
     side: third
@@ -82,8 +98,9 @@ sources:
     enabled: true
     note: "每日战报；RSS 被 403 拦截，改抓产品页抽取最新战报标题/链接(仅摘要，正文分析需人工/AI 复核)"
 
+# ---------- 流水线参数 / Pipeline ----------
 pipeline:
-  fetch_timeout: 30          # 单源下载超时(秒)
-  max_raw_age_days: 2        # raw 超过此天数视为过期
-  default_reliability: C     # 未指定时的默认可靠性
-  default_confidence: 3      # 未指定时的默认置信度
+  fetch_timeout: 30          # 单源下载超时(秒) / per-source download timeout (s)
+  max_raw_age_days: 2        # raw 超过此天数视为过期 / raw older than this is stale
+  default_reliability: C     # 未指定时的默认可靠性 / fallback reliability
+  default_confidence: 3      # 未指定时的默认置信度 / fallback confidence
