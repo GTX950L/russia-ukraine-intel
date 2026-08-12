@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from collections import Counter
 from datetime import datetime, timedelta, timezone
@@ -390,10 +391,15 @@ THEATER_CENTER = {
     "homeland-ru": (51.50, 37.00), "homeland-ua": (49.50, 33.50),
 }
 
-# 海外地图渲染属于"非默认场景"：不内置任何 key，只放申请占位符
+# 海外地图渲染属于"非默认场景"：不内置任何 key，只放申请占位符。
+# 真实 key 通过 CI 环境变量 TENCENT_MAP_KEY（GitHub Secrets）注入，仓库代码不含明文 key。
 TENCENT_MAP_KEY_PLACEHOLDER = (
     "Please apply for your own key at the Tencent Location Service "
     "Open Platform (lbs.qq.com) and replace this placeholder")
+
+
+def _map_key() -> str:
+    return os.environ.get("TENCENT_MAP_KEY", "") or TENCENT_MAP_KEY_PLACEHOLDER
 
 
 def _thin(points: list, step: int = 3) -> list:
@@ -728,7 +734,7 @@ def render_map_html(rows: list[dict]) -> None:
             snap_info += "（对比 " + md["control_prev"]["date"] + "）"
     html = (MAP_HTML
             .replace("__MAP_DATA__", json.dumps(md, ensure_ascii=False))
-            .replace("__MAP_KEY__", TENCENT_MAP_KEY_PLACEHOLDER)
+            .replace("__MAP_KEY__", _map_key())
             .replace("__SNAP_INFO__", snap_info)
             .replace("__GEN_AT__", md["generated_at"]))
     (DOCS / "map.html").write_text(html, encoding="utf-8")

@@ -54,6 +54,9 @@ jobs:
           fi
 
       - name: ⑤ Render Pages
+        # 地图 key 从 GitHub Secret 注入（仓库不存明文 key），未配置时页面用占位符降级提示
+        env:
+          TENCENT_MAP_KEY: ${{ secrets.TENCENT_MAP_KEY }}
         run: python scripts/render_pages.py
 
       - name: ④ Validate (CI quality gate)
