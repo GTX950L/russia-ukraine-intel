@@ -89,17 +89,19 @@ python scripts/validate.py        # ← 必须 0 退出；否则不要提交
 
 ## 5. 流水线如何运行 / How the pipeline runs
 
-- 由 `.github/workflows/daily.yml` 每日 **06:00 UTC** 定时触发，也可在 Actions 页手动 `workflow_dispatch`。
+- 由 `.github/workflows/daily.yml` 每日 **22:00 UTC**（= 北京时间 **06:00**，保证用户 7 点起床前出稿）定时触发，也可在 Actions 页手动 `workflow_dispatch`。
+- **所有日期统一按北京时间（UTC+8）命名**：简报文件名/编号、raw 文件名、commit 消息均为北京日期；信源数据自带日期（如 DeepState 文件日期）保持原样。
 - 顺序：fetch_sources → normalize → build_briefing → validate(CI 闸) → render_pages → 提交并发布 Pages。
 - **单信源失败不阻断**：`fetch_sources.py` 对单个源超时/报错会跳过并继续，不会让整条流水线挂掉。
+- **流水线失败会自动建 GitHub Issue 告警**（详见 workflow 末尾 Notify 步骤）。
 - 发布站点：`https://gtx950l.github.io/russia-ukraine-intel/`（GitHub Pages，源 = main 分支 /docs）。
 
 ---
 
 ## 6. 信源开启义务 / Source-enable obligation
 
-- `config.yaml` 里所有 `sources` 默认 `enabled: false`（因为 URL 需人工核验）。
-- **在把某个源设为 `enabled: true` 之前，必须先确认其端点稳定可达、格式与 `parser` 匹配。**
+- `config.yaml` 里所有 `sources` 默认 `enabled: false`（因为 URL 需人工核验）。**当前 7 个源已全部核验并启用**（VIINA / PetroIvaniuk / DeepState / Oryx / 乌防部 / 俄防部 / ISW）。
+- **新增源在设为 `enabled: true` 之前，必须先确认其端点稳定可达、格式与 `parser` 匹配。**
 - 不要凭直觉开启未核验的源；开启后第一次跑若报错，先回退 `enabled: false` 再排查。
 
 ---
@@ -134,7 +136,7 @@ python scripts/validate.py        # ← 必须 0 退出；否则不要提交
 
 项目分工：**采集 + 结构化聚合全自动（流水线），深度解析由维护者或 AI 手动补写。**
 
-- 流水线每晚 06:00 UTC 自动刷新 `events.csv` 与 `briefings/` 的**数据层**。
+- 流水线每日北京时间 06:00 自动刷新 `events.csv` 与 `briefings/` 的**数据层**。
 - 周/月/年简报末尾有 `## AI 深度解析` 插槽：该标题之后的内容**不被流水线覆盖**。
 - 补写流程：
   1. 打开 `briefings/{weekly|monthly|yearly}/{对应文件}.md`，滚到 `## AI 深度解析` 之下。

@@ -12,6 +12,11 @@ on:
 
 permissions:
   contents: write
+  issues: write             # 失败时自动建 Issue 告警
+
+concurrency:
+  group: daily-pipeline
+  cancel-in-progress: false # 不取消正在跑的实例，排队执行，避免 raw 竞争
 
 jobs:
   build:
@@ -37,14 +42,15 @@ jobs:
         run: python scripts/normalize.py
 
       - name: ③ Build briefings (daily + week/month/year boundary)
+        # 统一按北京时间（UTC+8）命名日期，避免用户早上看到"昨天"的简报
         run: |
-          python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)"
-          python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --week
-          if [ "$(date -u +%d)" = "01" ]; then
-            python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --month
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)"
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --week
+          if [ "$(TZ=Asia/Shanghai date +%d)" = "01" ]; then
+            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
           fi
-          if [ "$(date -u +%m-%d)" = "01-01" ]; then
-            python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --year
+          if [ "$(TZ=Asia/Shanghai date +%m-%d)" = "01-01" ]; then
+            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
           fi
 
       - name: ⑤ Render Pages
@@ -61,6 +67,24 @@ jobs:
           if git diff --cached --quiet; then
             echo "no changes"
           else
-            git commit -m "auto: $(date -u +%Y-%m-%d) pipeline run"
+            git commit -m "auto: $(TZ=Asia/Shanghai date +%Y-%m-%d) pipeline run"
             git push
+          fi
+
+      - name: 🚨 Notify on failure
+        if: failure()
+        run: |
+          # 失败自动建 Issue 告警（已存在未关闭的告警则不重复建）
+          TITLE="⚠️ 流水线失败（自动告警）"
+          EXISTS=$(gh issue list --repo "${{ github.repository }}" --state open \
+            --search "in:title $TITLE" --json number --jq 'length' 2>/dev/null || echo 0)
+          if [ "$EXISTS" = "0" ]; then
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" \
+              --body "**触发时间**：$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M %Z')
+
+**失败的运行**：${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+请点开上方链接查看失败步骤日志。排查修复后，此 Issue 需手动关闭。"
+          else
+            echo "已有未关闭的告警 Issue，跳过创建"
           fi

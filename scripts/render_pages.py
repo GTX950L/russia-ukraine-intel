@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import re
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from utils import DOCS, MASTER, THEATER_ZH, TYPE_LABELS, read_events, load_config, log, BRIEF
@@ -334,7 +334,7 @@ def main() -> None:
     rows = read_events()
     cfg = load_config()
     title_zh = cfg["project"]["title_zh"]
-    updated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    updated = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M +08:00")
 
     counter_type = Counter(r.get("event_type", "") for r in rows)
     counter_theater = Counter(r.get("theater", "") for r in rows)

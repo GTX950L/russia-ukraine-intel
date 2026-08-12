@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -54,7 +54,7 @@ def _github_latest(listing_url: str, pattern: str) -> tuple[str, str] | None:
 def main() -> None:
     cfg = load_config()
     RAW.mkdir(parents=True, exist_ok=True)
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")  # 北京时间
     any_ok = False
     for src in cfg.get("sources", []):
         name = src.get("name", "?")

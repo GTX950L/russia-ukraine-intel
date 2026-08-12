@@ -2,19 +2,26 @@
 
 校验规则（与 references/confidence_rubric.md 一致）：
 - 必填字段非空：event_id/date/theater/event_type/title_zh/title_en/reliability/confidence
+- event_id 全局唯一，格式 YYYY-MM-DD-NNN
+- date 格式 YYYY-MM-DD
 - theater / event_type 必须在受控词表内
 - reliability ∈ A–F；confidence ∈ 1–6
+- URL 字段非空时必须为 http(s)://
 - disagreement_flag=yes 必须有 disagreement_note_zh
 - 高置信(confidence≤2) 必须至少带一个可核实来源(URL 或第三方源名)
 """
 from __future__ import annotations
 
+import re
 import sys
 
 from utils import MASTER, read_events, load_vocab, log
 
 REQUIRED = ["event_id", "date", "theater", "event_type",
             "title_zh", "title_en", "reliability", "confidence"]
+URL_FIELDS = ["url_ua", "url_ru", "url_third"]
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+EID_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-\d{3,}$")
 
 
 def main() -> int:
@@ -29,11 +36,24 @@ def main() -> int:
         return 0
 
     errors: list[str] = []
+    seen_ids: set[str] = set()
     for i, r in enumerate(rows, 1):
         rid = r.get("event_id") or f"row{i}"
         for fld in REQUIRED:
             if not str(r.get(fld, "")).strip():
                 errors.append(f"{rid}: 缺必填字段 {fld}")
+        if not EID_RE.match(str(r.get("event_id", ""))):
+            errors.append(f"{rid}: event_id 格式非法（应为 YYYY-MM-DD-NNN）")
+        elif r.get("event_id") in seen_ids:
+            errors.append(f"{rid}: event_id 重复 '{r.get('event_id')}'")
+        else:
+            seen_ids.add(r.get("event_id"))
+        if not DATE_RE.match(str(r.get("date", ""))):
+            errors.append(f"{rid}: date 格式非法 '{r.get('date')}'（应为 YYYY-MM-DD）")
+        for fld in URL_FIELDS:
+            u = str(r.get(fld, "")).strip()
+            if u and not (u.startswith("http://") or u.startswith("https://")):
+                errors.append(f"{rid}: {fld} 非 http(s) URL '{u[:40]}'")
         if r.get("theater") not in valid_theaters:
             errors.append(f"{rid}: theater 非法 '{r.get('theater')}'")
         if r.get("event_type") not in valid_types:

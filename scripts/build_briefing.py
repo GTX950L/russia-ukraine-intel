@@ -72,7 +72,8 @@ def build_range(rows_all, start: str, end: str, out_path, header_lines: list[str
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--date", default=datetime.now(timezone.utc).strftime("%Y-%m-%d"))
+    ap.add_argument("--date", default=datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
+                    help="目标日期（默认北京时间今天）")
     ap.add_argument("--week", action="store_true")
     ap.add_argument("--month", action="store_true")
     ap.add_argument("--year", action="store_true")
@@ -119,15 +120,17 @@ def main() -> None:
                     analysis_slot=True, period="yearly")
         return
 
-    # 默认：每日快讯
+    # 默认：每日快讯。信源数据通常滞后一天（昨晚发布），故覆盖 [昨天, 今天] 两天，
+    # 保证早上 7 点看到的"今日简报"里有内容（昨天的数据 + 今天的新增）。
     target = args.date
+    prev = (datetime.strptime(target, "%Y-%m-%d").date() - timedelta(days=1)).strftime("%Y-%m-%d")
     out = BRIEF / "daily" / f"{target}.md"
     header = [
         f"# 俄乌战争每日快讯 · {target}\n",
         f"> **编号** D-{target.replace('-', '')} ｜ **编辑** {editor} ｜ **数据基线** `data/master/events.csv`\n",
         "> **免责声明**：非官方、开源、中立汇编；数据可能滞后或有误，仅供参考。\n",
     ]
-    build_range(rows, target, target, out, header)
+    build_range(rows, prev, target, out, header)
 
 
 if __name__ == "__main__":
