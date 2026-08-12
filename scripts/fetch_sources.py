@@ -28,6 +28,55 @@ UA = {
 }
 
 
+def _is_lfs_pointer(path: Path) -> bool:
+    """raw.githubusercontent.com 对 Git LFS 文件返回的是指针文本而非真文件。"""
+    try:
+        with open(path, "rb") as f:
+            head = f.read(120)
+        return head.lstrip().startswith(b"version https://git-lfs.github.com/spec/v1")
+    except Exception:
+        return False
+
+
+def _lfs_endpoint_from_url(url: str) -> str | None:
+    m = re.search(r"raw\.githubusercontent\.com/([^/]+)/([^/]+)/", url)
+    if m:
+        return f"https://github.com/{m.group(1)}/{m.group(2)}.git/info/lfs/objects/batch"
+    return None
+
+
+def _resolve_lfs(url: str, dest: Path) -> bool:
+    """若下载到的是 LFS 指针，匿名调用 LFS batch API 拿到真文件并覆盖。"""
+    if not _is_lfs_pointer(dest):
+        return False
+    ep = _lfs_endpoint_from_url(url)
+    if not ep:
+        log(f"  LFS 指针但无法推导 endpoint，跳过: {dest.name}")
+        return False
+    text = dest.read_text(encoding="utf-8", errors="replace")
+    oid = re.search(r"oid sha256:(\S+)", text)
+    sz = re.search(r"size (\d+)", text)
+    if not oid:
+        return False
+    body = {"operation": "download", "transfers": ["basic"],
+            "objects": [{"oid": oid.group(1), "size": int(sz.group(1)) if sz else 0}]}
+    try:
+        r = requests.post(ep, json=body,
+                          headers={"Accept": "application/vnd.git-lfs+json",
+                                    "Content-Type": "application/vnd.lfs+json"},
+                          timeout=TIMEOUT)
+        r.raise_for_status()
+        href = r.json()["objects"][0]["actions"]["download"]["href"]
+        rd = requests.get(href, timeout=TIMEOUT, headers=UA)
+        rd.raise_for_status()
+        dest.write_bytes(rd.content)
+        log(f"  LFS 已解析 -> {len(rd.content)} bytes")
+        return True
+    except Exception as e:  # noqa: BLE001
+        log(f"  LFS 解析失败: {e}")
+        return False
+
+
 def _github_latest(listing_url: str, pattern: str) -> tuple[str, str] | None:
     """查询 GitHub 目录 API，返回 (最新匹配文件的 download_url, 源文件名)。
 
@@ -83,6 +132,11 @@ def main() -> None:
             r = requests.get(base_url, timeout=TIMEOUT, headers=UA)
             r.raise_for_status()
             dest.write_bytes(r.content)
+            # Git LFS 指针修正：raw.githubusercontent.com 对 LFS 文件返回指针文本，
+            # 需匿名走 LFS batch API 取真文件（公开仓库无需 token）。
+            if _resolve_lfs(base_url, dest):
+                any_ok = True
+                continue
             any_ok = True
             log(f"  ok ({len(r.content)} bytes)")
         except Exception as e:  # noqa: BLE001 - 采集失败不得阻断流水线

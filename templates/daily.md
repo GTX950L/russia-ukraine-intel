@@ -54,12 +54,28 @@
 **中文 / ZH**：
 **English / EN**：
 
-## 十一、信源对照 / Source Cross-check
+## 十一、军事援助与武器交付 / Military Aid & Arms Deliveries
+**中文 / ZH**：
+**English / EN**：
+
+## 十二、能源与关键基础设施 / Energy & Critical Infrastructure
+**中文 / ZH**：
+**English / EN**：
+
+## 十三、法律与战争罪 / Law of Armed Conflict / War Crimes
+**中文 / ZH**：
+**English / EN**：
+
+## 十四、人道与难民 / Humanitarian & Refugees
+**中文 / ZH**：
+**English / EN**：
+
+## 十五、信源对照 / Source Cross-check
 | 维度 / Dimension | 乌方说法 UA | 俄方说法 RU | 第三方/独立 THIRD | 分歧点 / Disagreement |
 |------|--------------|--------------|--------------------|--------|
 | {…} | {…} | {…} | {…} | {…} |
 
-## 十二、未来推测 / Forecast
+## 十六、未来推测 / Forecast
 > 每条须标注 / Each line must carry: 依据信号 + 时间窗口(周/月) + 可信度(高/中/低)
 - **推测 1 / Forecast 1**：{…} ｜ 依据 / Basis：{…} ｜ 窗口 / Window：{…} ｜ 可信度 / Confidence：{…}
 - **推测 2 / Forecast 2**：{…}

@@ -52,29 +52,45 @@ def _find_col(cols, *candidates) -> str | None:
 # ──────────────────────────────────────────────────────────────────────────
 # 既有适配器：VIINA / PetroIvaniuk
 # ──────────────────────────────────────────────────────────────────────────
-VIINA_EVENT_MAP = {
-    "battle": "frontline", "shell": "frontline", "assault": "frontline", "ground": "frontline",
-    "strike": "frontline", "missile": "frontline", "drone": "frontline", "bomb": "frontline",
-    "air": "frontline", "artiller": "frontline",
-    "protest": "civilian", "demonstrat": "civilian", "arrest": "civilian",
-    "detain": "civilian", "civilian": "civilian",
-    "diplom": "diplomacy", "negoti": "diplomacy", "mediat": "diplomacy", "talk": "diplomacy",
-    "sanction": "economy", "econom": "economy",
-    "cyber": "cyber",
-    "nuclear": "deterrence", "strategic": "deterrence",
-    "mobil": "troops", "troop": "troops", "recruit": "troops",
-}
+# VIINA 实际 schema（event_1pd_latest_YYYY.zip）：
+#   - 事件类型以 t_* 布尔列表示（'1'/'0'），无 event_type 列；
+#   - 地点在 ADM1_NAME（如 "Donets'k"、'Kharkiv'、'Crimea'）；
+#   - 行动方以 a_rus_b / a_ukr_b / a_civ_b 表示；
+#   - date 为 YYYYMMDD。
+# 旧适配器按子串匹配不存在的 event_type/location 列，导致 2.6 万行全被标成
+# external+political。下面按真实 schema 重映射。
+# 优先级从高到低：取首个为真的 t_* 标志作为主 event_type。
+VIINA_TYPE_FLAGS = [
+    ("t_cyber_b", "cyber"),
+    ("t_civcas_b", "civilian"), ("t_hospital_b", "civilian"),
+    ("t_arrest_b", "civilian"), ("t_property_b", "civilian"),
+    ("t_milcas_b", "troops"),
+    ("t_san_b", "economy"),
+    ("t_airstrike_b", "frontline"), ("t_artillery_b", "frontline"),
+    ("t_armor_b", "frontline"), ("t_firefight_b", "frontline"),
+    ("t_control_b", "frontline"), ("t_retreat_b", "frontline"),
+    ("t_occupy_b", "frontline"), ("t_raid_b", "frontline"),
+    ("t_loc_b", "frontline"), ("t_aad_b", "frontline"),
+    ("t_ied_b", "frontline"), ("t_mil_b", "frontline"),
+]
+# ADM1_NAME（去标点后）子串 -> 受控战区
 VIINA_THEATER_MAP = {
-    "avdiivka": "east-avdiivka", "bakhmut": "east-bakhmut", "donetsk": "east-donetsk",
-    "luhansk": "east-luhansk", "kherson": "south-kherson", "zaporizhzhia": "south-zaporizhzhia",
-    "crimea": "south-crimea", "kharkiv": "north-kharkiv", "kursk": "border-kursk",
-    "black sea": "black-sea", "odesa": "black-sea", "odessa": "black-sea",
+    "donetsk": "east-donetsk", "luhansk": "east-luhansk",
+    "kharkiv": "north-kharkiv", "kherson": "south-kherson",
+    "zaporizhzhia": "south-zaporizhzhia", "crimea": "south-crimea",
+    "krym": "south-crimea", "odesa": "black-sea", "odessa": "black-sea",
     "kyiv": "homeland-ua", "kiev": "homeland-ua",
-    "moscow": "homeland-ru",
+    "moscow": "homeland-ru", "kursk": "border-kursk",
+    "bakhmut": "east-bakhmut", "avdiivka": "east-avdiivka",
 }
+VIINA_RECENT_DAYS = 30  # 仅纳入近 N 天，避免历史全量回填撑爆 master
 
 
-def parse_viina_zip(path: Path) -> list[dict]:
+def _is_true(v: str) -> bool:
+    return str(v).strip().lower() in ("1", "true", "t", "y", "yes")
+
+
+def parse_viina_zip(path: Path, recent_days: int = VIINA_RECENT_DAYS) -> list[dict]:
     out = []
     try:
         z = zipfile.ZipFile(path)
@@ -87,51 +103,68 @@ def parse_viina_zip(path: Path) -> list[dict]:
         reader = csv.DictReader(io.StringIO(text))
         cols = reader.fieldnames or []
         log("VIINA columns: " + ",".join(cols))
-        c_date = _find_col(cols, "event_date", "date")
-        c_et = _find_col(cols, "event_type")
-        c_sub = _find_col(cols, "sub_event_type")
-        c_notes = _find_col(cols, "notes", "description", "summary")
-        c_src = _find_col(cols, "source")
-        c_loc = _find_col(cols, "location", "admin1", "admin2", "admin3", "admin")
+        c_date = _find_col(cols, "date")
+        c_adm1 = _find_col(cols, "adm1_name", "geonameid")
+        c_asc = _find_col(cols, "asciiname")
+        c_src = _find_col(cols, "sources")
+        if not c_date:
+            log("viina: 无 date 列，跳过")
+            return out
+        cutoff = (datetime.now(timezone(timedelta(hours=8))) - timedelta(days=recent_days)).strftime("%Y-%m-%d")
+        added = 0
         for r in reader:
-            date = (r.get(c_date) or "")[:10] if c_date else ""
-            if not date:
+            raw_date = (r.get(c_date) or "").strip()
+            if len(raw_date) == 8 and raw_date.isdigit():
+                date = f"{raw_date[:4]}-{raw_date[4:6]}-{raw_date[6:8]}"
+            else:
+                date = ""
+            if not date or date < cutoff:
                 continue
-            et_raw = (r.get(c_et) or "").strip()
-            sub = (r.get(c_sub) or "").strip()
-            notes = (r.get(c_notes) or "").strip()
-            src = (r.get(c_src) or "").strip()
-            loc = (r.get(c_loc) or "").strip()
+            # 主事件类型：取首个为真的 t_* 标志
             et_mapped = "external"
-            low = et_raw.lower()
-            for k, v in VIINA_EVENT_MAP.items():
-                if k in low:
-                    et_mapped = v
+            for flag, et in VIINA_TYPE_FLAGS:
+                if _is_true(r.get(flag, "")):
+                    et_mapped = et
                     break
+            loc = (r.get(c_adm1) or "").strip()
             theater = "political"
-            lowloc = (loc + " " + et_raw).lower()
+            lowloc = re.sub(r"[^a-z]", "", loc.lower())  # 去掉撇号/空格便于匹配
             for k, v in VIINA_THEATER_MAP.items():
                 if k in lowloc:
                     theater = v
                     break
-            title_en = (et_raw + " " + loc).strip() or (notes[:60] if notes else "VIINA event")
-            tags = ["viina", "needs-zh"]
+            # 行动方标签（VIINA 为第三方聚合，source_side 仍是 third）
+            actors = []
+            if _is_true(r.get("a_rus_b", "")):
+                actors.append("actor:ru")
+            if _is_true(r.get("a_ukr_b", "")):
+                actors.append("actor:ua")
+            if _is_true(r.get("a_civ_b", "")):
+                actors.append("actor:civ")
+            tags = ["viina"] + actors
+            src = (r.get(c_src) or "").strip()
             if src:
-                tags.append("media:" + src[:20])
-            if et_raw:
-                tags.append("viina_type:" + et_raw[:20])
-            if sub:
-                tags.append("sub:" + sub[:20])
+                tags.append("media:" + src[:30])
+            for flag, et in VIINA_TYPE_FLAGS:  # 记录所有为真的类型，便于检索
+                if _is_true(r.get(flag, "")):
+                    tags.append("viina_t:" + et)
+            place = (r.get(c_asc) or loc or "n/a").strip()  # 用定居点名提高去重粒度
+            title_en = f"{place}: {et_mapped} event"
+            notes = (f"VIINA 事件（{date}）：地点 {place}，主类型 {et_mapped}"
+                      + (f"，信源 {src}" if src else ""))
             out.append({
                 "date": date, "theater": theater, "event_type": et_mapped,
                 "title_zh": title_en, "title_en": title_en,
                 "summary_zh": notes, "summary_en": notes,
                 "source_side": "third", "source_ua": "", "source_ru": "", "source_third": "VIINA",
-                "url_ua": "", "url_ru": "", "url_third": "",
+                "url_ua": "", "url_ru": "",
+                "url_third": "https://github.com/zhukovyuri/VIINA",
                 "reliability": "B", "confidence": "3",
                 "disagreement_flag": "no", "disagreement_note_zh": "",
                 "forecast_related": "no", "tags": ";".join(tags), "editor": "pipeline",
             })
+            added += 1
+        log(f"viina: 解析 {added} 条（近 {recent_days} 天）")
     except Exception as e:  # noqa: BLE001
         log(f"viina zip parse failed: {e}")
     return out
@@ -201,7 +234,7 @@ def parse_deepstate_geojson(path: Path) -> list[dict]:
                 summary += " 区域：" + "; ".join(items)
         out.append({
             "date": date or datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
-            "theater": "political", "event_type": "external",
+            "theater": "political", "event_type": "frontline",
             "title_zh": f"DeepState 战线控制快照（{date or '当日'}）",
             "title_en": f"DeepState front-line control snapshot ({date or 'today'})",
             "summary_zh": summary, "summary_en": summary,
@@ -425,7 +458,91 @@ def parse_ru_mod_html(path: Path) -> list[dict]:
     return out
 
 
-# 解析器注册表（config.parser -> 函数）
+# ──────────────────────────────────────────────────────────────────────────
+# 通用新闻首页抽取（UA/RU 可达信源；best-effort，失败仅日志不阻断）
+# ──────────────────────────────────────────────────────────────────────────
+NEWS_UA_RU_KEYWORDS = (
+    "ukraine", "ukrainian", "russia", "russian", "donbas", "donetsk", "luhansk",
+    "kherson", "zaporizhzhia", "kharkiv", "crimea", "kursk", "odessa", "odesa",
+    "kyiv", "kiev", "putin", "zelensky", "zelenskyy", "moscow", "росс", "украин",
+    "киев", "крым", "пути", "зеленск", "всу", "вооруженн", "спецопер",
+)
+
+
+def _extract_news_headlines(path: Path, base_url: str, max_n: int = 10,
+                            require_ukraine: bool = False) -> list[tuple[str, str]]:
+    """从新闻首页抽取头条（锚文本+链接），去重取前 max_n 条。"""
+    if BeautifulSoup is None:
+        log(f"news: bs4 缺失，跳过 {path.name}")
+        return []
+    out = []
+    try:
+        soup = BeautifulSoup(path.read_text(encoding="utf-8", errors="replace"), "html.parser")
+        seen: set[str] = set()
+        for a in soup.find_all("a", href=True):
+            href = a["href"]
+            txt = a.get_text(" ", strip=True)
+            if not txt or len(txt) < 25 or len(txt) > 140:
+                continue
+            if not re.search(r"/\d{6,}", href):  # 需像文章（含数字 id）
+                continue
+            if href in seen:
+                continue
+            seen.add(href)
+            if href.startswith("/"):
+                href = base_url + href
+            if require_ukraine and not any(k in txt.lower() for k in NEWS_UA_RU_KEYWORDS):
+                continue
+            out.append((txt, href))
+            if len(out) >= max_n:
+                break
+    except Exception as e:  # noqa: BLE001
+        log(f"news extract failed ({path.name}): {e}")
+    return out
+
+
+def _news_row(txt: str, href: str, side: str, src_name: str, url_field: str) -> dict:
+    date = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+    row = {
+        "date": date, "theater": "political", "event_type": "external",
+        "title_zh": txt, "title_en": txt,
+        "summary_zh": f"{src_name} 头条：{txt}", "summary_en": f"{src_name} headline: {txt}",
+        "source_side": side, "source_ua": "", "source_ru": "", "source_third": "",
+        "url_ua": "", "url_ru": "", "url_third": "",
+        "reliability": "C", "confidence": "3",
+        "disagreement_flag": "no", "disagreement_note_zh": "",
+        "forecast_related": "no", "editor": "pipeline",
+    }
+    row[url_field] = href
+    if side == "ua":
+        row["source_ua"] = src_name
+        row["tags"] = "ukrinform;ua-news;manual-verify"
+    else:
+        row["source_ru"] = src_name
+        row["tags"] = "ria;ru-news;manual-verify"
+    return row
+
+
+def parse_ua_ukrinform_html(path: Path) -> list[dict]:
+    """Ukrinform（乌方国家通讯社，可达）：抽取当期乌战头条，作 UA 侧信源。"""
+    out = []
+    for txt, href in _extract_news_headlines(path, "https://www.ukrinform.net", max_n=10):
+        out.append(_news_row(txt, href, "ua", "Ukrinform", "url_ua"))
+    log(f"ukrinform: {len(out)} 条")
+    return out
+
+
+def parse_ru_ria_html(path: Path) -> list[dict]:
+    """RIA Novosti（俄方国家通讯社，可达）：仅取与乌战相关头条，作 RU 侧信源。"""
+    out = []
+    for txt, href in _extract_news_headlines(path, "https://ria.ru", max_n=10,
+                                             require_ukraine=True):
+        out.append(_news_row(txt, href, "ru", "RIA Novosti", "url_ru"))
+    log(f"ria: {len(out)} 条（乌战相关）")
+    return out
+
+
+# 解析器注册表（config.parser -> 函数）；置于所有解析器定义之后。
 PARSERS = {
     "viina": parse_viina_zip,
     "petro_equipment": parse_petro_json,
@@ -434,6 +551,8 @@ PARSERS = {
     "oryx": parse_oryx_feed,
     "ua_mod": parse_ua_mod_html,
     "ru_mod": parse_ru_mod_html,
+    "ua_ukrinform": parse_ua_ukrinform_html,
+    "ru_ria": parse_ru_ria_html,
 }
 
 

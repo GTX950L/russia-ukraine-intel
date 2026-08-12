@@ -13,6 +13,10 @@ event_types:
   - economy        # 经济与制裁
   - cyber          # 网络/电子/认知战
   - deterrence     # 战略威慑(核态势)
+  - aid            # 军事援助与武器交付(新增)
+  - energy         # 能源与关键基础设施(新增)
+  - law            # 法律与战争罪(新增)
+  - humanitarian   # 人道与难民(新增)
   - forecast       # 未来推测(若单独成行)
 
 theaters:

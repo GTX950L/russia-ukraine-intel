@@ -97,6 +97,24 @@ sources:
     parser: isw
     enabled: true
     note: "每日战报；RSS 被 403 拦截，改抓产品页抽取最新战报标题/链接(仅摘要，正文分析需人工/AI 复核)"
+  - name: Ukrainian-Ukrinform
+    side: ua
+    type: official_news
+    format: html
+    reliability: C
+    url: https://www.ukrinform.net/
+    parser: ua_ukrinform
+    enabled: true
+    note: "乌方国家通讯社首页(可达)；抽取当期乌战头条作 UA 侧信源，与 RU 侧形成对照；best-effort"
+  - name: Russian-RIA
+    side: ru
+    type: state_news
+    format: html
+    reliability: C
+    url: https://ria.ru/world
+    parser: ru_ria
+    enabled: true
+    note: "俄方国家通讯社(可达)；仅取与乌战相关头条作 RU 侧信源；best-effort"
 
 # ---------- 流水线参数 / Pipeline ----------
 pipeline:

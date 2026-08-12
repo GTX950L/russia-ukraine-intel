@@ -2,7 +2,7 @@
 
 > 中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 · 全自动流水线
 
-一个面向长期维护的开放情报（OSINT）跟踪项目：按时间轴记录俄乌战争的战线、兵力、装备、领导人言行、平民、外部势力、外交谈判、经济制裁、网络认知战、战略威慑，并对未来做有依据的推测。
+一个面向长期维护的开放情报（OSINT）跟踪项目：按时间轴记录俄乌战争的战线、兵力、装备、领导人言行、平民、外部势力、外交谈判、经济制裁、网络认知战、战略威慑，以及军事援助与武器交付、能源与关键基础设施、法律与战争罪、人道与难民，并对未来做有依据的推测。
 **在线站点 / Live site**
 - 📰 站点首页（最新每日简报）: https://gtx950l.github.io/russia-ukraine-intel/
 - 🗂 简报归档（日 / 周 / 月 / 年）: https://gtx950l.github.io/russia-ukraine-intel/briefings.html
@@ -10,7 +10,7 @@
 ## 目录 / Contents
 
 - [核心原则 / Core Principles](#核心原则--core-principles)
-- [内容维度（12 板块）/ Coverage (12 sections)](#内容维度12-板块--coverage-12-sections)
+- [内容维度（16 板块）/ Coverage (16 sections)](#内容维度16-板块--coverage-16-sections)
 - [更新节奏 / Update Cadence](#更新节奏--update-cadence)
 - [仓库结构 / Repository Layout](#仓库结构--repository-layout)
 - [文档地图 / Document Map](#文档地图--document-map)
@@ -27,10 +27,10 @@
 4. **全自动流水线 / Fully automated pipeline** — 采集 → 解析 → 生成 → 校验 → 渲染 → 发布，由 GitHub Actions 定时驱动（见 `.github/workflows/daily.yml`）。
 5. **可信度分级贯穿始终 / Reliability grading everywhere** — 每条事件标注 NATO 来源可靠性 A–F 与信息置信度 1–6；乌俄说法分歧时专设记录（**分歧本身就是情报**）。
 
-## 内容维度（12 板块）/ Coverage (12 sections)
+## 内容维度（16 板块）/ Coverage (16 sections)
 
-与 `templates/daily.md` 的 12 个章节一一对应，也对应 `scripts/utils.py` 中的 `TYPE_LABELS`（11 类事件）+ 自动生成的「信源对照」板块。
-Maps 1:1 to the 12 sections in `templates/daily.md` and to `TYPE_LABELS` in `scripts/utils.py` (11 event types) plus the auto-generated *Source Cross-check* section.
+与 `templates/daily.md` 的章节一一对应，也对应 `scripts/utils.py` 中的 `TYPE_LABELS`（15 类事件）+ 自动生成的「信源对照」板块。
+Maps to the sections in `templates/daily.md` and to `TYPE_LABELS` in `scripts/utils.py` (15 event types) plus the auto-generated *Source Cross-check* section.
 
 | # | 板块 / Section | 对应 event_type |
 |---|------|------|
@@ -44,8 +44,12 @@ Maps 1:1 to the 12 sections in `templates/daily.md` and to `TYPE_LABELS` in `scr
 | 8 | 经济与制裁 / Economy & Sanctions | `economy` |
 | 9 | 网络/电子/认知战 / Cyber, Electronic & Cognitive | `cyber` |
 | 10 | 战略威慑（核态势）/ Strategic Deterrence | `deterrence` |
-| 11 | 信源对照 / Source Cross-check | 自动（有分歧时） |
-| 12 | 未来推测 / Forecast | `forecast` |
+| 11 | 军事援助与武器交付 / Military Aid & Arms Deliveries | `aid` |
+| 12 | 能源与关键基础设施 / Energy & Critical Infrastructure | `energy` |
+| 13 | 法律与战争罪 / Law of Armed Conflict / War Crimes | `law` |
+| 14 | 人道与难民 / Humanitarian & Refugees | `humanitarian` |
+| 15 | 信源对照 / Source Cross-check | 自动（有分歧或双方信源时） |
+| 16 | 未来推测 / Forecast | `forecast` |
 
 ## 更新节奏 / Update Cadence
 

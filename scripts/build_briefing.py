@@ -39,15 +39,27 @@ def build_range(rows_all, start: str, end: str, out_path, header_lines: list[str
         for r in grp:
             parts.append(fmt_row(r) + "\n")
     disc = [r for r in rows if str(r.get("disagreement_flag", "")).lower().startswith("y")]
-    if disc:
+    ua_rows = [r for r in rows if r.get("source_side") == "ua"]
+    ru_rows = [r for r in rows if r.get("source_side") == "ru"]
+    if disc or (ua_rows and ru_rows):
         parts.append("\n## 信源对照 / Source Cross-check\n")
-        parts.append("| 维度 | 乌 | 俄 | 第三方 | 分歧点 |\n"
-                     "|------|----|----|--------|--------|\n")
+        parts.append("| 维度 | 乌方 UA | 俄方 RU | 第三方 THIRD | 分歧点 |\n"
+                     "|------|---------|---------|--------------|--------|\n")
         for r in disc:
             parts.append(
                 f"| {r.get('title_zh', '')} | {r.get('source_ua', '')} | "
                 f"{r.get('source_ru', '')} | {r.get('source_third', '')} | "
                 f"{r.get('disagreement_note_zh', '')} |\n")
+        # 周期内乌/俄信源头条并列，形成对照（无显式分歧时也呈现双方叙事）
+        if ua_rows or ru_rows:
+            for r in (ua_rows + ru_rows)[:12]:
+                side = "乌" if r.get("source_side") == "ua" else "俄"
+                # 仅取「真正」的本方/对方信源，避免单方可达时回退到自身导致重复。
+                src = r.get("source_ua") if r.get("source_side") == "ua" else r.get("source_ru")
+                other = r.get("source_ru") if r.get("source_side") == "ua" else r.get("source_ua")
+                parts.append(
+                    f"| {r.get('title_zh', '')[:50]} | {src} | {other} | "
+                    f"{r.get('source_third', '')} | （{side}方叙事，待交叉核验） |\n")
     if analysis_slot:
         # 保留人工/AI 撰写的深度解析层，不被自动重生成覆盖
         kept = ""

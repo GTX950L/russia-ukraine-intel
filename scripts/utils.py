@@ -47,6 +47,10 @@ TYPE_LABELS: dict[str, tuple[str, str]] = {
     "economy": ("经济与制裁", "Economy & Sanctions"),
     "cyber": ("网络/电子/认知战", "Cyber, Electronic & Cognitive"),
     "deterrence": ("战略威慑(核态势)", "Strategic Deterrence"),
+    "aid": ("军事援助与武器交付", "Military Aid & Arms Deliveries"),
+    "energy": ("能源与关键基础设施", "Energy & Critical Infrastructure"),
+    "law": ("法律与战争罪", "Law of Armed Conflict / War Crimes"),
+    "humanitarian": ("人道与难民", "Humanitarian & Refugees"),
     "forecast": ("未来推测", "Forecast"),
 }
 
