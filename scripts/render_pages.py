@@ -243,7 +243,7 @@ BRIEFING_PAGE = """<!doctype html>
 <style>%s</style>
 </head>
 <body>
-<header><h1>%s</h1><div class="sub"><a href="../../index.html">← 返回首页</a> ｜ <a href="../../briefings.html">全部简报</a></div></header>
+<header><h1>%s</h1><div class="sub"><a href="../../index.html">← 返回首页</a> ｜ <a href="../../briefings.html">全部简报</a> ｜ <a href="../../map.html">🗺 态势地图</a></div></header>
 <div class="wrap lb">%s</div>
 <footer><div class="wrap" style="padding:14px 20px">非官方、开源、中立汇编，仅供参考。<a href="../../index.html">返回首页</a></div></footer>
 </body>
@@ -259,7 +259,7 @@ ARCHIVE_PAGE = """<!doctype html>
 <style>%s</style>
 </head>
 <body>
-<header><h1>全部简报归档</h1><div class="sub"><a href="index.html">← 返回首页</a> ｜ 共 %d 份</div></header>
+<header><h1>全部简报归档</h1><div class="sub"><a href="index.html">← 返回首页</a> ｜ <a href="map.html">🗺 态势地图</a> ｜ 共 %d 份</div></header>
 <div class="wrap archive">%s</div>
 </body>
 </html>
@@ -325,7 +325,8 @@ def build_latest_block(items: list[dict]) -> tuple[str, str]:
         '<section class="latest">'
         f'<div class="lh"><h2>📌 今日最新情报</h2><span class="lmeta">{latest["stem"]}</span>'
         f'<a class="lbtn" href="briefings/{latest["group"]}/{latest["stem"]}.html">打开完整简报 ↗</a>'
-        f'<a class="lbtn" href="briefings.html">全部简报归档</a></div>'
+        f'<a class="lbtn" href="briefings.html">全部简报归档</a>'
+        f'<a class="lbtn" href="map.html">🗺 态势地图</a></div>'
         f'<div class="lb">{body}</div></section>'
     )
     rel = f'briefings/{latest["group"]}/{latest["stem"]}.html'
