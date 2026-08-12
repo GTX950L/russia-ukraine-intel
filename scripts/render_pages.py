@@ -564,15 +564,15 @@ MAP_HTML = """<!doctype html>
     padding:10px 14px;font-size:12px;line-height:1.8;box-shadow:0 2px 8px rgba(0,0,0,.08)}
   #legend{left:14px;top:14px;z-index:999}
   #meta{right:14px;top:14px;z-index:999;text-align:right;color:#555}
-  .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .lg{display:flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer;border-radius:6px;padding:2px 6px;margin:0 -6px}
+  .lg:hover{background:#f2f6fb}
+  .lg.off{opacity:.35}
   .sw{display:inline-block;width:16px;height:10px;border-radius:3px;flex:none}
   .swl{display:inline-block;width:16px;height:2px;flex:none}
   .dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
   #legend h3{margin:0 0 6px;font-size:13px;font-weight:500}
+  #legend .hint{color:#888;font-size:11px;margin:-2px 0 6px}
   #legend a{color:#185fa5;text-decoration:none}
-  #layers{border-top:1px solid #eee;margin-top:8px;padding-top:8px}
-  #layers label{display:block;cursor:pointer}
-  #layers input{margin-right:6px;vertical-align:middle}
   #loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1000;
     background:#fff;border:1px solid #e3e3e3;border-radius:10px;padding:10px 18px;font-size:13px;display:none}
 </style>
@@ -582,21 +582,17 @@ MAP_HTML = """<!doctype html>
 <div id="loading">正在加载图层…</div>
 <div id="legend" class="panel">
   <h3>图例</h3>
-  <div class="lg"><span class="sw" style="background:#e24b4a;opacity:.45"></span>俄控区（当日）</div>
-  <div class="lg"><span class="swl" style="border-top:2px dashed #7f77dd"></span>前一日控制线</div>
-  <div class="lg"><span class="swl" style="background:#888"></span>主要道路</div>
-  <div class="lg"><span class="swl" style="background:#333;border-top:2px solid #333"></span>铁路</div>
-  <div class="lg"><span class="dot" style="background:#185fa5"></span>城市</div>
-  <div class="lg"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇</div>
-  <div class="lg"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽</div>
-  <div class="lg"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>当日事件（精确地点）</div>
-  <div id="layers">
-    <label><input type="checkbox" id="lyRoads" checked> 道路 / 铁路</label>
-    <label><input type="checkbox" id="lyPrev" checked> 前一日对比</label>
-    <label><input type="checkbox" id="lyHot" checked> 事件热区</label>
-    <label><input type="checkbox" id="lyVillages"> 村庄（放大到 9 级显示）</label>
-  </div>
-  <div><a href="index.html">← 返回首页</a> ｜ <a href="briefings.html">简报</a></div>
+  <div class="hint">点击项目可开关图层</div>
+  <div class="lg on" data-layer="control"><span class="sw" style="background:#e24b4a;opacity:.45"></span>俄控区（当日）</div>
+  <div class="lg on" data-layer="prev"><span class="swl" style="border-top:2px dashed #7f77dd"></span>前一日控制线</div>
+  <div class="lg on" data-layer="roads"><span class="swl" style="background:#888"></span>主要道路</div>
+  <div class="lg on" data-layer="rail"><span class="swl" style="background:#333;border-top:2px solid #333"></span>铁路</div>
+  <div class="lg on" data-layer="cities"><span class="dot" style="background:#185fa5"></span>城市</div>
+  <div class="lg on" data-layer="strongholds"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇</div>
+  <div class="lg on" data-layer="hubs"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽</div>
+  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>当日事件</div>
+  <div class="lg" data-layer="villages"><span class="dot" style="background:#b4b2a9"></span>村庄（缩放 9 级+）</div>
+  <div style="margin-top:8px"><a href="index.html">← 返回首页</a> ｜ <a href="briefings.html">简报</a></div>
 </div>
 <div id="meta" class="panel">
   数据：DeepState 每日快照 + OSM(ODbL) + 情报标注<br>
@@ -621,86 +617,104 @@ const info = new TMap.InfoWindow({ map, position: new TMap.LatLng(48.6, 36.5), o
 const showInfo = (extra, pos) => { info.setPosition(pos); info.setContent('<div style="font-size:13px;max-width:260px;line-height:1.6">'+extra+'</div>'); info.open(); };
 const LL = (p) => new TMap.LatLng(p[0], p[1]);
 
+/* 图层注册表 + 显隐状态（undefined=默认开） */
+const L = {};
+const STATE = {};
+
 /* 前一日对比线 */
-let lyPrev = null;
 if (prev && prev.polygons.length) {
-  lyPrev = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: '#7f77dd', showBorder: true, borderColor: '#7f77dd', borderWidth: 2, showBorderDash: true, borderDash: [6,4] }) },
+  L.prev = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: '#7f77dd', showBorder: true, borderColor: '#7f77dd', borderWidth: 2, showBorderDash: true, borderDash: [6,4] }) },
     geometries: prev.polygons.map((ring, i) => ({ id: 'pp'+i, styleId: 'p', paths: [ring.map(LL)] })) });
 }
 /* 当日俄控区 */
 if (ctl && ctl.polygons.length) {
-  new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: 'rgba(226,75,74,0.35)', showBorder: true, borderColor: '#a32d2d', borderWidth: 2 }) },
+  L.control = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: 'rgba(226,75,74,0.35)', showBorder: true, borderColor: '#a32d2d', borderWidth: 2 }) },
     geometries: ctl.polygons.map((ring, i) => ({ id: 'c'+i, styleId: 'p', paths: [ring.map(LL)] })) });
 }
-/* 城市 */
+/* 城市分级：大城市(所有缩放) + 小城镇(zoom>=8)，避免低缩放满屏点 */
 if (MAP_DATA.cities && MAP_DATA.cities.length) {
   const big = new TMap.MarkerStyle({ width: 8, height: 8, anchor: { x: 4, y: 4 }, color: '#185fa5' });
   const small = new TMap.MarkerStyle({ width: 5, height: 5, anchor: { x: 2.5, y: 2.5 }, color: '#85b7eb' });
-  const mm = new TMap.MultiMarker({ map, styles: { big, small },
-    geometries: MAP_DATA.cities.map((c, i) => ({ id: 'ci'+i, styleId: c.p === 'city' ? 'big' : 'small',
-      position: new TMap.LatLng(c.lat, c.lon), extra: '<b>'+c.n+'</b>' })) });
-  mm.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  const mk = (c, i) => ({ id: 'ci'+i, styleId: c.p === 'city' ? 'big' : 'small',
+    position: new TMap.LatLng(c.lat, c.lon), extra: '<b>'+c.n+'</b>' });
+  const cityList = MAP_DATA.cities.filter(c => c.p === 'city');
+  const townList = MAP_DATA.cities.filter(c => c.p !== 'city');
+  if (cityList.length) {
+    L.cities = new TMap.MultiMarker({ map, styles: { big, small },
+      geometries: cityList.map((c, i) => mk(c, i)) });
+    L.cities.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  }
+  if (townList.length) {
+    L.towns = new TMap.MultiMarker({ map, styles: { big, small },
+      geometries: townList.map((c, i) => mk(c, i)) });
+    L.towns.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+    L.towns.setVisible(false);
+  }
 }
-/* 重镇 / 枢纽 */
+/* 重镇 / 枢纽（拆两个图层，便于图例分别开关） */
 if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
   const sh = new TMap.MarkerStyle({ width: 13, height: 13, anchor: { x: 6.5, y: 6.5 }, color: '#a32d2d' });
   const hu = new TMap.MarkerStyle({ width: 11, height: 11, anchor: { x: 5.5, y: 5.5 }, color: '#d85a30' });
-  const smm = new TMap.MultiMarker({ map, styles: { sh, hu },
-    geometries: MAP_DATA.strongholds.map((s, i) => ({ id: 's'+i, styleId: s.type === 'stronghold' ? 'sh' : 'hu',
-      position: new TMap.LatLng(s.lat, s.lon),
-      extra: '<b>'+s.n+'</b> <span style="color:#777">'+s.en+'</span><br>'+s.note })) });
-  smm.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  const mk = (s, i) => ({ id: 's'+i, styleId: s.type === 'stronghold' ? 'sh' : 'hu',
+    position: new TMap.LatLng(s.lat, s.lon),
+    extra: '<b>'+s.n+'</b> <span style="color:#777">'+s.en+'</span><br>'+s.note });
+  const shs = MAP_DATA.strongholds.filter(s => s.type === 'stronghold').map((s, i) => mk(s, i));
+  const hubs = MAP_DATA.strongholds.filter(s => s.type !== 'stronghold').map((s, i) => mk(s, i));
+  L.strongholds = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: shs });
+  L.strongholds.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  L.hubs = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: hubs });
+  L.hubs.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
 }
-/* 事件热区（战区级） */
-let lyHot = null;
-if (MAP_DATA.event_areas && MAP_DATA.event_areas.length) {
+/* 当日事件：战区热区 + 精确地点合并为一层 */
+{
+  const geoms = [];
   const styles = {};
-  MAP_DATA.event_areas.forEach((a, i) => {
-    const size = Math.min(10 + a.count * 3, 30);
-    styles['e'+i] = new TMap.MarkerStyle({ width: size, height: size, anchor: { x: size/2, y: size/2 }, color: '#e24b4a', borderWidth: 2, borderColor: '#fff' });
-  });
-  lyHot = new TMap.MultiMarker({ map, styles,
-    geometries: MAP_DATA.event_areas.map((a, i) => ({ id: 'e'+i, styleId: 'e'+i,
-      position: new TMap.LatLng(a.lat, a.lon),
-      extra: '<b>'+a.zh+'</b>：当日 '+a.count+' 条事件' })) });
-  lyHot.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
-}
-/* 事件精确地点（标题地名匹配） */
-if (MAP_DATA.event_points && MAP_DATA.event_points.length) {
-  const ep = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff5722', borderWidth: 2, borderColor: '#fff' });
-  const emm = new TMap.MultiMarker({ map, styles: { ep },
-    geometries: MAP_DATA.event_points.map((p, i) => ({ id: 'ep'+i, styleId: 'ep',
-      position: new TMap.LatLng(p.lat, p.lon),
-      extra: '<b>事件地点：'+p.names.join(' / ')+'</b><br>关联 '+p.count+' 条事件' })) });
-  emm.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  if (MAP_DATA.event_areas && MAP_DATA.event_areas.length) {
+    MAP_DATA.event_areas.forEach((a, i) => {
+      const size = Math.min(12 + a.count, 26);
+      styles['a'+i] = new TMap.MarkerStyle({ width: size, height: size, anchor: { x: size/2, y: size/2 }, color: '#e24b4a', borderWidth: 2, borderColor: '#fff' });
+      geoms.push({ id: 'a'+i, styleId: 'a'+i, position: new TMap.LatLng(a.lat, a.lon),
+        extra: '<b>'+a.zh+'</b>：当日 '+a.count+' 条事件' });
+    });
+  }
+  if (MAP_DATA.event_points && MAP_DATA.event_points.length) {
+    MAP_DATA.event_points.forEach((p, i) => {
+      styles['p'+i] = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff5722', borderWidth: 2, borderColor: '#fff' });
+      geoms.push({ id: 'p'+i, styleId: 'p'+i, position: new TMap.LatLng(p.lat, p.lon),
+        extra: '<b>事件地点：'+p.names.join(' / ')+'</b><br>关联 '+p.count+' 条事件' });
+    });
+  }
+  if (geoms.length) {
+    L.events = new TMap.MultiMarker({ map, styles, geometries: geoms });
+    L.events.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  }
 }
 /* 道路 + 铁路（zoom>=7 按需加载一次） */
-let lyRoads = null, roadsLoaded = false;
+let roadsLoaded = false;
 function loadRoads() {
   if (roadsLoaded) return;
   roadsLoaded = true;
   const ld = document.getElementById('loading'); ld.style.display = 'block';
   fetch('roads-data.json').then(r => r.json()).then(d => {
     ld.style.display = 'none';
-    const rl = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#999', lineWidth: 2 }) },
+    L.roads = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#999', lineWidth: 2 }) },
       geometries: d.roads.map((w, i) => ({ id: 'r'+i, styleId: 'r', paths: w.c.map(LL) })) });
-    const rl2 = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#333', lineWidth: 1.5 }) },
+    L.rail = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#333', lineWidth: 1.5 }) },
       geometries: d.rail.map((w, i) => ({ id: 'l'+i, styleId: 'r', paths: w.c.map(LL) })) });
-    lyRoads = { roads: rl, rail: rl2 };
-    applyLayerChecks();
+    applyState();
   }).catch(() => { ld.style.display = 'none'; });
 }
 /* 村庄（zoom>=9 按需加载 + 视野过滤渲染） */
-let vmm = null, villagesData = null, villagesLoaded = false;
+let villagesData = null, villagesLoaded = false;
 function updateVillages() {
-  if (map.getZoom() < 9) { if (vmm) vmm.setVisible(false); return; }
+  if (map.getZoom() < 9) { if (L.villages) L.villages.setVisible(false); return; }
   if (!villagesLoaded) {
     villagesLoaded = true;
     fetch('villages-data.json').then(r => r.json()).then(d => {
       villagesData = d.villages;
       const vs = new TMap.MarkerStyle({ width: 3, height: 3, anchor: { x: 1.5, y: 1.5 }, color: '#b4b2a9' });
-      vmm = new TMap.MultiMarker({ map, styles: { vs }, geometries: [] });
-      vmm.on('click', (e) => showInfo('<b>'+e.geometry.name+'</b>', e.geometry.position));
+      L.villages = new TMap.MultiMarker({ map, styles: { vs }, geometries: [] });
+      L.villages.on('click', (e) => showInfo('<b>'+e.geometry.name+'</b>', e.geometry.position));
       renderVillages();
     });
     return;
@@ -708,39 +722,50 @@ function updateVillages() {
   renderVillages();
 }
 function renderVillages() {
-  if (!vmm || !villagesData) return;
+  if (!L.villages || !villagesData) return;
   const b = map.getBounds();
   const vis = [];
   for (const v of villagesData) {
     const ll = new TMap.LatLng(v.lat, v.lon);
     if (b.contains(ll)) vis.push({ id: 'v'+vis.length, styleId: 'vs', position: ll, name: v.n, extra: v.n });
   }
-  vmm.setGeometries(vis);
-  vmm.setVisible(document.getElementById('lyVillages').checked);
+  L.villages.setGeometries(vis);
+  L.villages.setVisible(map.getZoom() >= 9 && STATE.villages !== false);
 }
-/* 图层开关 */
-function applyLayerChecks() {
-  if (lyRoads) { lyRoads.roads.setVisible(document.getElementById('lyRoads').checked); lyRoads.rail.setVisible(document.getElementById('lyRoads').checked); }
-  if (lyPrev) lyPrev.setVisible(document.getElementById('lyPrev').checked);
-  if (lyHot) lyHot.setVisible(document.getElementById('lyHot').checked);
+/* 图例点击：开关图层 */
+function toggleLayer(name) {
+  const el = document.querySelector('#legend .lg[data-layer="'+name+'"]');
+  if (!el) return;
+  const willBeOn = el.classList.contains('off');
+  el.classList.toggle('off', !willBeOn);
+  STATE[name] = willBeOn;
+  if (name === 'roads' && willBeOn && !roadsLoaded) { loadRoads(); return; }
+  applyState();
 }
-document.getElementById('lyRoads').addEventListener('change', (e) => { if (e.target.checked && !roadsLoaded) loadRoads(); else if (lyRoads) applyLayerChecks(); });
-document.getElementById('lyPrev').addEventListener('change', () => applyLayerChecks());
-document.getElementById('lyHot').addEventListener('change', () => applyLayerChecks());
-document.getElementById('lyVillages').addEventListener('change', () => { if (vmm) vmm.setVisible(map.getZoom() >= 9 && document.getElementById('lyVillages').checked); });
-/* 缩放联动 */
+function applyState() {
+  if (L.control) L.control.setVisible(STATE.control !== false);
+  if (L.prev) L.prev.setVisible(STATE.prev !== false);
+  if (L.roads) L.roads.setVisible(STATE.roads !== false);
+  if (L.rail) L.rail.setVisible(STATE.rail !== false);
+  if (L.cities) L.cities.setVisible(STATE.cities !== false);
+  if (L.towns) L.towns.setVisible(map.getZoom() >= 8 && STATE.cities !== false);
+  if (L.strongholds) L.strongholds.setVisible(STATE.strongholds !== false);
+  if (L.hubs) L.hubs.setVisible(STATE.hubs !== false);
+  if (L.events) L.events.setVisible(STATE.events !== false);
+  if (L.villages) L.villages.setVisible(map.getZoom() >= 9 && STATE.villages !== false);
+}
+document.querySelectorAll('#legend .lg[data-layer]').forEach(el => {
+  el.addEventListener('click', () => toggleLayer(el.dataset.layer));
+});
+/* 缩放联动：城市分级 + 道路 + 村庄 */
 let zoomTimer = null;
-map.on('zoom_changed', () => {
-  clearTimeout(zoomTimer);
-  zoomTimer = setTimeout(() => {
-    if (map.getZoom() >= 7) loadRoads();
-    updateVillages();
-  }, 250);
-});
-map.on('center_changed', () => {
-  clearTimeout(zoomTimer);
-  zoomTimer = setTimeout(updateVillages, 200);
-});
+function onZoom() {
+  if (L.towns) L.towns.setVisible(map.getZoom() >= 8 && STATE.cities !== false);
+  if (map.getZoom() >= 7) loadRoads();
+  updateVillages();
+}
+map.on('zoom_changed', () => { clearTimeout(zoomTimer); zoomTimer = setTimeout(onZoom, 200); });
+map.on('center_changed', () => { clearTimeout(zoomTimer); zoomTimer = setTimeout(updateVillages, 200); });
 </script>
 </body>
 </html>
