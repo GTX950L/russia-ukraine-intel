@@ -15,7 +15,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from utils import DOCS, MASTER, THEATER_ZH, TYPE_LABELS, read_events, load_config, log, BRIEF
+from utils import DOCS, MASTER, RAW, ROOT, THEATER_ZH, TYPE_LABELS, read_events, load_config, log, BRIEF
 
 # ---------------------------------------------------------------------------
 # 轻量 markdown → html（覆盖本项目简报模板：标题/引用/列表/表格/粗斜体/代码/裸链接）
@@ -192,6 +192,7 @@ INDEX_HEAD = """<!doctype html>
   <footer>
     非官方、开源、中立汇编，数据可能滞后或有误，仅供参考。原始数据：<a href="events.json">events.json</a>
     ｜ 简报：<a href="briefings.html">全部简报</a> ｜ 今日最新：<a href="%s">最新简报</a>
+    ｜ 态势地图：<a href="map.html">战场地图</a>
     ｜ 方法论：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">references/</a>
   </footer>
 </div>
@@ -365,7 +366,375 @@ def main() -> None:
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
     (DOCS / "briefings.html").write_text(
         ARCHIVE_PAGE % (CSS, len(items), build_archive_html(items)), encoding="utf-8")
+    render_map_html(rows)
     log(f"pages rendered: {len(rows)} events, {len(items)} briefings -> docs/")
+
+
+# ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# 战场态势地图（docs/map.html + map-data.json / roads-data.json / villages-data.json）
+# 底图：腾讯地图 GL JS（合规图商；海外区域为"非默认场景"，key 用占位符，用户自行申请）
+# 数据分层：首屏(战线/城市/重镇/热区) + zoom>=7 加载道路铁路 + zoom>=9 加载村庄(视野过滤)
+# ---------------------------------------------------------------------------
+
+MAP_STATIC = ROOT / "data" / "map" / "static"
+MAP_SNAPSHOTS = ROOT / "data" / "map" / "snapshots"
+
+# 战区 -> 中心坐标（用于事件热区标注；无地理语义的战区不参与）
+THEATER_CENTER = {
+    "east-avdiivka": (48.14, 37.74), "east-bakhmut": (48.60, 38.00),
+    "east-donetsk": (48.35, 37.90), "east-luhansk": (48.90, 38.40),
+    "south-kherson": (46.64, 33.30), "south-zaporizhzhia": (47.30, 35.60),
+    "south-crimea": (45.30, 34.10), "north-kharkiv": (49.80, 36.90),
+    "border-kursk": (51.20, 35.30), "black-sea": (45.00, 32.00),
+    "homeland-ru": (51.50, 37.00), "homeland-ua": (49.50, 33.50),
+}
+
+# 海外地图渲染属于"非默认场景"：不内置任何 key，只放申请占位符
+TENCENT_MAP_KEY_PLACEHOLDER = (
+    "Please apply for your own key at the Tencent Location Service "
+    "Open Platform (lbs.qq.com) and replace this placeholder")
+
+
+def _thin(points: list, step: int = 3) -> list:
+    """抽稀：每隔 step 取一点，并保留末点（保证闭合/端点完整）。"""
+    if len(points) <= 4:
+        return points
+    return points[::step] + ([points[-1]] if points[-1] != points[::step][-1] else [])
+
+
+def _load_static_json(name: str) -> list:
+    p = MAP_STATIC / name
+    if p.exists():
+        try:
+            return json.loads(p.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            log(f"map static {name} parse failed; use empty")
+    return []
+
+
+def _geojson_polygons(path, thin_step: int = 3) -> list[list[list]]:
+    """读 DeepState 快照 geojson -> [ [ [lat,lon],... ], ... ]（每 polygon 取外环并抽稀）。"""
+    try:
+        d = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return []
+    out = []
+    for f in d.get("features", []):
+        g = f.get("geometry", {})
+        if g.get("type") == "MultiPolygon":
+            for poly in g.get("coordinates", []):
+                if poly:
+                    ring = _thin([[c[1], c[0]] for c in poly[0]], thin_step)
+                    if len(ring) > 2:
+                        out.append(ring)
+        elif g.get("type") == "Polygon":
+            ring = _thin([[c[1], c[0]] for c in g.get("coordinates", [])[0]], thin_step)
+            if len(ring) > 2:
+                out.append(ring)
+    return out
+
+
+def _build_name_index() -> dict[str, tuple[float, float]]:
+    """城市/镇/村庄/重镇/枢纽 -> 坐标索引，用于事件标题地名匹配。"""
+    idx: dict[str, tuple[float, float]] = {}
+    for c in _load_static_json("cities.json"):
+        if c.get("n"):
+            idx[c["n"]] = (c["lat"], c["lon"])
+    for v in _load_static_json("villages.json"):
+        if v.get("n") and len(v["n"]) >= 4:  # 短名易误匹配，跳过
+            idx[v["n"]] = (v["lat"], v["lon"])
+    for s in _load_static_json("strongholds.json"):
+        if s.get("n"):
+            idx[s["n"]] = (s["lat"], s["lon"])
+        if s.get("en"):
+            idx[s["en"]] = (s["lat"], s["lon"])
+    return idx
+
+
+def build_map_data(rows: list[dict]) -> dict:
+    """汇总首屏地图数据（战线/城市/重镇/热区/事件精确点），不含道路铁路村庄（按需加载）。"""
+    # 快照优先取 data/map/snapshots/；若无（如 CI 未归档），回退到 data/raw/ 里的 DeepState 文件
+    snaps = sorted(MAP_SNAPSHOTS.glob("*.geojson"), reverse=True) if MAP_SNAPSHOTS.exists() else []
+    if not snaps and RAW.exists():
+        snaps = sorted(RAW.glob("DeepStateMap_*.geojson"), reverse=True)[:2]
+    control, control_prev = None, None
+    if snaps:
+        control = {"date": snaps[0].stem, "polygons": _geojson_polygons(snaps[0])}
+    if len(snaps) > 1:
+        control_prev = {"date": snaps[1].stem, "polygons": _geojson_polygons(snaps[1])}
+
+    # 战区级热区（背景粒度）
+    hot = Counter()
+    for r in rows:
+        t = r.get("theater", "")
+        if t in THEATER_CENTER:
+            hot[t] += 1
+    event_areas = [{"key": k, "zh": THEATER_ZH.get(k, k),
+                    "lat": THEATER_CENTER[k][0], "lon": THEATER_CENTER[k][1],
+                    "count": v} for k, v in hot.items()]
+
+    # 精确地名匹配：事件标题里出现的地名 -> 坐标打点（同点聚合）。
+    # 只匹配标题（摘要太长、含大量普通词，会拖慢匹配且易误判）
+    idx = _build_name_index()
+    pts: dict[tuple, dict] = {}
+    for r in rows:
+        text = (" " + r.get("title_zh", "") + " " + r.get("title_en", "") + " ").lower()
+        for name, (lat, lon) in idx.items():
+            if len(name) > 2 and name.lower() in text:
+                key = (round(lat, 3), round(lon, 3))
+                e = pts.setdefault(key, {"lat": round(lat, 3), "lon": round(lon, 3),
+                                         "names": set(), "count": 0})
+                e["names"].add(name)
+                e["count"] += 1
+    event_points = [{"lat": e["lat"], "lon": e["lon"],
+                     "names": sorted(e["names"])[:4], "count": e["count"]}
+                    for e in pts.values()]
+
+    return {
+        "generated_at": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M +08:00"),
+        "control": control,
+        "control_prev": control_prev,
+        "cities": _load_static_json("cities.json"),
+        "strongholds": _load_static_json("strongholds.json"),
+        "event_areas": event_areas,
+        "event_points": event_points,
+        "events_total": len(rows),
+    }
+
+
+MAP_HTML = """<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>战场态势地图</title>
+<style>
+  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1a1a1a}
+  #map{width:100%;height:100vh}
+  .panel{position:absolute;background:#fff;border:1px solid #e3e3e3;border-radius:12px;
+    padding:10px 14px;font-size:12px;line-height:1.8;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  #legend{left:14px;top:14px;z-index:999}
+  #meta{right:14px;top:14px;z-index:999;text-align:right;color:#555}
+  .lg{display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .sw{display:inline-block;width:16px;height:10px;border-radius:3px;flex:none}
+  .swl{display:inline-block;width:16px;height:2px;flex:none}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+  #legend h3{margin:0 0 6px;font-size:13px;font-weight:500}
+  #legend a{color:#185fa5;text-decoration:none}
+  #layers{border-top:1px solid #eee;margin-top:8px;padding-top:8px}
+  #layers label{display:block;cursor:pointer}
+  #layers input{margin-right:6px;vertical-align:middle}
+  #loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1000;
+    background:#fff;border:1px solid #e3e3e3;border-radius:10px;padding:10px 18px;font-size:13px;display:none}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="loading">正在加载图层…</div>
+<div id="legend" class="panel">
+  <h3>图例</h3>
+  <div class="lg"><span class="sw" style="background:#e24b4a;opacity:.45"></span>俄控区（当日）</div>
+  <div class="lg"><span class="swl" style="border-top:2px dashed #7f77dd"></span>前一日控制线</div>
+  <div class="lg"><span class="swl" style="background:#888"></span>主要道路</div>
+  <div class="lg"><span class="swl" style="background:#333;border-top:2px solid #333"></span>铁路</div>
+  <div class="lg"><span class="dot" style="background:#185fa5"></span>城市</div>
+  <div class="lg"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇</div>
+  <div class="lg"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽</div>
+  <div class="lg"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>当日事件（精确地点）</div>
+  <div id="layers">
+    <label><input type="checkbox" id="lyRoads" checked> 道路 / 铁路</label>
+    <label><input type="checkbox" id="lyPrev" checked> 前一日对比</label>
+    <label><input type="checkbox" id="lyHot" checked> 事件热区</label>
+    <label><input type="checkbox" id="lyVillages"> 村庄（放大到 9 级显示）</label>
+  </div>
+  <div><a href="index.html">← 返回首页</a> ｜ <a href="briefings.html">简报</a></div>
+</div>
+<div id="meta" class="panel">
+  数据：DeepState 每日快照 + OSM(ODbL) + 情报标注<br>
+  快照：__SNAP_INFO__<br>
+  生成：__GEN_AT__
+</div>
+<script type="text/javascript">
+const MAP_DATA = __MAP_DATA__;
+</script>
+<script src="https://map.qq.com/api/gljs?v=1.exp&key=__MAP_KEY__"></script>
+<script>
+if ("__MAP_KEY__".indexOf("replace this placeholder") !== -1) {
+  document.getElementById('map').innerHTML =
+    '<div style="padding:40px;font-family:sans-serif;color:#a32d2d">' +
+    '底图 key 未配置：请在腾讯位置服务开放平台(lbs.qq.com)申请 key 后，' +
+    '替换 docs/map.html 中 script 标签的 key 参数。</div>';
+}
+const ctl = MAP_DATA.control, prev = MAP_DATA.control_prev;
+const map = new TMap.Map('map', { center: new TMap.LatLng(48.6, 36.5), zoom: 6 });
+const info = new TMap.InfoWindow({ map, position: new TMap.LatLng(48.6, 36.5), offset: { x: 0, y: -32 } });
+const showInfo = (extra, pos) => { info.setPosition(pos); info.setContent('<div style="font-size:13px;max-width:260px;line-height:1.6">'+extra+'</div>'); info.open(); };
+const LL = (p) => new TMap.LatLng(p[0], p[1]);
+
+/* 前一日对比线 */
+let lyPrev = null;
+if (prev && prev.polygons.length) {
+  lyPrev = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: '#7f77dd', showBorder: true, borderColor: '#7f77dd', borderWidth: 2, showBorderDash: true, borderDash: [6,4] }) },
+    geometries: prev.polygons.map((ring, i) => ({ id: 'pp'+i, styleId: 'p', paths: [ring.map(LL)] })) });
+}
+/* 当日俄控区 */
+if (ctl && ctl.polygons.length) {
+  new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: 'rgba(226,75,74,0.35)', showBorder: true, borderColor: '#a32d2d', borderWidth: 2 }) },
+    geometries: ctl.polygons.map((ring, i) => ({ id: 'c'+i, styleId: 'p', paths: [ring.map(LL)] })) });
+}
+/* 城市 */
+if (MAP_DATA.cities && MAP_DATA.cities.length) {
+  const big = new TMap.MarkerStyle({ width: 8, height: 8, anchor: { x: 4, y: 4 }, color: '#185fa5' });
+  const small = new TMap.MarkerStyle({ width: 5, height: 5, anchor: { x: 2.5, y: 2.5 }, color: '#85b7eb' });
+  const mm = new TMap.MultiMarker({ map, styles: { big, small },
+    geometries: MAP_DATA.cities.map((c, i) => ({ id: 'ci'+i, styleId: c.p === 'city' ? 'big' : 'small',
+      position: new TMap.LatLng(c.lat, c.lon), extra: '<b>'+c.n+'</b>' })) });
+  mm.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+}
+/* 重镇 / 枢纽 */
+if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
+  const sh = new TMap.MarkerStyle({ width: 13, height: 13, anchor: { x: 6.5, y: 6.5 }, color: '#a32d2d' });
+  const hu = new TMap.MarkerStyle({ width: 11, height: 11, anchor: { x: 5.5, y: 5.5 }, color: '#d85a30' });
+  const smm = new TMap.MultiMarker({ map, styles: { sh, hu },
+    geometries: MAP_DATA.strongholds.map((s, i) => ({ id: 's'+i, styleId: s.type === 'stronghold' ? 'sh' : 'hu',
+      position: new TMap.LatLng(s.lat, s.lon),
+      extra: '<b>'+s.n+'</b> <span style="color:#777">'+s.en+'</span><br>'+s.note })) });
+  smm.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+}
+/* 事件热区（战区级） */
+let lyHot = null;
+if (MAP_DATA.event_areas && MAP_DATA.event_areas.length) {
+  const styles = {};
+  MAP_DATA.event_areas.forEach((a, i) => {
+    const size = Math.min(10 + a.count * 3, 30);
+    styles['e'+i] = new TMap.MarkerStyle({ width: size, height: size, anchor: { x: size/2, y: size/2 }, color: '#e24b4a', borderWidth: 2, borderColor: '#fff' });
+  });
+  lyHot = new TMap.MultiMarker({ map, styles,
+    geometries: MAP_DATA.event_areas.map((a, i) => ({ id: 'e'+i, styleId: 'e'+i,
+      position: new TMap.LatLng(a.lat, a.lon),
+      extra: '<b>'+a.zh+'</b>：当日 '+a.count+' 条事件' })) });
+  lyHot.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+}
+/* 事件精确地点（标题地名匹配） */
+if (MAP_DATA.event_points && MAP_DATA.event_points.length) {
+  const ep = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff5722', borderWidth: 2, borderColor: '#fff' });
+  const emm = new TMap.MultiMarker({ map, styles: { ep },
+    geometries: MAP_DATA.event_points.map((p, i) => ({ id: 'ep'+i, styleId: 'ep',
+      position: new TMap.LatLng(p.lat, p.lon),
+      extra: '<b>事件地点：'+p.names.join(' / ')+'</b><br>关联 '+p.count+' 条事件' })) });
+  emm.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+}
+/* 道路 + 铁路（zoom>=7 按需加载一次） */
+let lyRoads = null, roadsLoaded = false;
+function loadRoads() {
+  if (roadsLoaded) return;
+  roadsLoaded = true;
+  const ld = document.getElementById('loading'); ld.style.display = 'block';
+  fetch('roads-data.json').then(r => r.json()).then(d => {
+    ld.style.display = 'none';
+    const rl = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#999', lineWidth: 2 }) },
+      geometries: d.roads.map((w, i) => ({ id: 'r'+i, styleId: 'r', paths: w.c.map(LL) })) });
+    const rl2 = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#333', lineWidth: 1.5 }) },
+      geometries: d.rail.map((w, i) => ({ id: 'l'+i, styleId: 'r', paths: w.c.map(LL) })) });
+    lyRoads = { roads: rl, rail: rl2 };
+    applyLayerChecks();
+  }).catch(() => { ld.style.display = 'none'; });
+}
+/* 村庄（zoom>=9 按需加载 + 视野过滤渲染） */
+let vmm = null, villagesData = null, villagesLoaded = false;
+function updateVillages() {
+  if (map.getZoom() < 9) { if (vmm) vmm.setVisible(false); return; }
+  if (!villagesLoaded) {
+    villagesLoaded = true;
+    fetch('villages-data.json').then(r => r.json()).then(d => {
+      villagesData = d.villages;
+      const vs = new TMap.MarkerStyle({ width: 3, height: 3, anchor: { x: 1.5, y: 1.5 }, color: '#b4b2a9' });
+      vmm = new TMap.MultiMarker({ map, styles: { vs }, geometries: [] });
+      vmm.on('click', (e) => showInfo('<b>'+e.geometry.name+'</b>', e.geometry.position));
+      renderVillages();
+    });
+    return;
+  }
+  renderVillages();
+}
+function renderVillages() {
+  if (!vmm || !villagesData) return;
+  const b = map.getBounds();
+  const vis = [];
+  for (const v of villagesData) {
+    const ll = new TMap.LatLng(v.lat, v.lon);
+    if (b.contains(ll)) vis.push({ id: 'v'+vis.length, styleId: 'vs', position: ll, name: v.n, extra: v.n });
+  }
+  vmm.setGeometries(vis);
+  vmm.setVisible(document.getElementById('lyVillages').checked);
+}
+/* 图层开关 */
+function applyLayerChecks() {
+  if (lyRoads) { lyRoads.roads.setVisible(document.getElementById('lyRoads').checked); lyRoads.rail.setVisible(document.getElementById('lyRoads').checked); }
+  if (lyPrev) lyPrev.setVisible(document.getElementById('lyPrev').checked);
+  if (lyHot) lyHot.setVisible(document.getElementById('lyHot').checked);
+}
+document.getElementById('lyRoads').addEventListener('change', (e) => { if (e.target.checked && !roadsLoaded) loadRoads(); else if (lyRoads) applyLayerChecks(); });
+document.getElementById('lyPrev').addEventListener('change', () => applyLayerChecks());
+document.getElementById('lyHot').addEventListener('change', () => applyLayerChecks());
+document.getElementById('lyVillages').addEventListener('change', () => { if (vmm) vmm.setVisible(map.getZoom() >= 9 && document.getElementById('lyVillages').checked); });
+/* 缩放联动 */
+let zoomTimer = null;
+map.on('zoom_changed', () => {
+  clearTimeout(zoomTimer);
+  zoomTimer = setTimeout(() => {
+    if (map.getZoom() >= 7) loadRoads();
+    updateVillages();
+  }, 250);
+});
+map.on('center_changed', () => {
+  clearTimeout(zoomTimer);
+  zoomTimer = setTimeout(updateVillages, 200);
+});
+</script>
+</body>
+</html>
+"""
+
+
+def render_map_html(rows: list[dict]) -> None:
+    md = build_map_data(rows)
+    (DOCS / "map-data.json").write_text(json.dumps(md, ensure_ascii=False), encoding="utf-8")
+
+    # 独立按需加载文件：道路/铁路合并抽稀；村庄抽稀
+    def _thin_lines(items: list, step: int, precision: int = 3) -> list:
+        return [{"n": w.get("n", ""), "c": [[round(p[0], precision), round(p[1], precision)]
+                                            for p in _thin(w["c"], step)]}
+                for w in items if len(w.get("c", [])) >= 2]
+
+    roads = _load_static_json("roads.json")
+    rail = _load_static_json("rail.json")
+    villages = _load_static_json("villages.json")
+    (DOCS / "roads-data.json").write_text(
+        json.dumps({"roads": _thin_lines(roads, 3), "rail": _thin_lines(rail, 2)},
+                   ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # 村庄是点数据（lat/lon），降精度到 3 位（约 110m）
+    vd = [{"n": v.get("n", ""), "lat": round(v["lat"], 3), "lon": round(v["lon"], 3)}
+          for v in villages]
+    (DOCS / "villages-data.json").write_text(
+        json.dumps({"villages": vd}, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8")
+
+    snap_info = "无快照"
+    if md["control"]:
+        snap_info = md["control"]["date"]
+        if md["control_prev"]:
+            snap_info += "（对比 " + md["control_prev"]["date"] + "）"
+    html = (MAP_HTML
+            .replace("__MAP_DATA__", json.dumps(md, ensure_ascii=False))
+            .replace("__MAP_KEY__", TENCENT_MAP_KEY_PLACEHOLDER)
+            .replace("__SNAP_INFO__", snap_info)
+            .replace("__GEN_AT__", md["generated_at"]))
+    (DOCS / "map.html").write_text(html, encoding="utf-8")
+    log(f"map rendered: control={'yes' if md['control'] else 'no'} "
+        f"cities={len(md['cities'])} strongholds={len(md['strongholds'])} "
+        f"event_areas={len(md['event_areas'])} event_points={len(md['event_points'])} -> docs/")
 
 
 if __name__ == "__main__":

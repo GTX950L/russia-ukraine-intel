@@ -32,8 +32,19 @@ data/master/events.csv   ← 唯一可信源（Single Source of Truth），权�
 
 data/seed/*.csv          ← 手工补录入口（与 events.csv 同 schema）
 data/raw/*.csv           ← 采集层落地（信源适配器输出，目前信源默认禁用）
+data/map/snapshots/*.geojson ← DeepState 控制区快照（地图用，保留 3 天）
+data/map/static/*.json   ← 静态地图库（城市/村庄/道路/铁路/重镇枢纽：OSM 导出 + 人工情报）
 config.yaml / data/vocab.yaml / SCHEMA_VERSION  ← 机器可读的规则与版本
 ```
+
+**地图相关约定 / Map conventions**：
+- 地图数据分两层：`docs/map-data.json`（首屏：战线/城市/重镇/热区）+ `docs/roads-data.json` / `docs/villages-data.json`（缩放后按需加载），均由 `render_pages.py` 自动生成。
+- 控制区快照：优先 `data/map/snapshots/`，缺失时自动回退到 `data/raw/DeepStateMap_*.geojson`。
+- 静态地图库更新：`python scripts/fetch_osm_static.py`（一次性工具，需要时可重跑）。
+- **Overpass bbox 顺序是 (lat_min, lon_min, lat_max, lon_max)**，写反会拉到其他国家数据（踩过坑）。
+- 防御重镇/交通枢纽标注库：`data/map/static/strongholds.json`（人工情报层，可增删维护）。
+- 底图 key：海外渲染为"非默认场景"，需维护者在腾讯位置服务申请 key 后替换 `docs/map.html` 的 key 参数；**不要内置任何真实 key**。
+- 铁律同数据层：`docs/map*.json` / `docs/map.html` 是派生文件，不要手改。
 
 **铁律（数据层）/ Hard rule (data layer)**：不要手改 `briefings/` 里 `## AI 深度解析` 标题**之前**的内容，也不要手改 `docs/`——这些是派生文件，下次流水线会覆盖。
 **例外（解析层）/ Exception (analysis layer)**：`briefings/weekly|monthly|yearly/*.md` 中 `## AI 深度解析` 标题**之后**的段落，由维护者或 AI 手写，流水线重生成时**保留不覆盖**。这就是"深度解析手动层"。

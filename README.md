@@ -51,6 +51,22 @@ Maps to the sections in `templates/daily.md` and to `TYPE_LABELS` in `scripts/ut
 | 15 | 信源对照 / Source Cross-check | 自动（有分歧或双方信源时） |
 | 16 | 未来推测 / Forecast | `forecast` |
 
+## 🗺 战场态势地图 / Battle Map（每日动态 / Daily）
+
+> 站点入口 / Entry: https://gtx950l.github.io/russia-ukraine-intel/map.html
+
+地图按三层叠加，每日由流水线自动更新 / Layered, auto-refreshed daily:
+
+| 图层 / Layer | 内容 / Content | 频率 / Cadence | 数据源 / Source |
+|------|------|------|------|
+| 俄控区/战线 / Control area | 当日控制区 + 前一日对比线 / Today's area + yesterday's line | 每日 / Daily | DeepState 镜像快照（`data/map/snapshots/`，保留 3 天） |
+| 静态标注 / Static marks | 城市/镇 + 防御重镇/交通枢纽 + 事件热区 / Cities + strongholds/hubs + event hot zones | 低频 / Low-freq | OSM 导出 + 人工情报库（`data/map/static/`） |
+| 细节层 / Detail layer | 主要道路/铁路（缩放≥7）、村庄（缩放≥9 加载） / Roads/rail (z≥7), villages (z≥9) | 低频 / Low-freq | OSM 导出（`fetch_osm_static.py` 更新） |
+
+- **底图合规 / Map compliance**：腾讯地图（key 需在 [腾讯位置服务](https://lbs.qq.com) 申请后替换 `docs/map.html` 的 key 参数；未配置时页面有降级提示）/ Tencent Maps; key placeholder until you apply at lbs.qq.com.
+- **事件精确打点 / Event pinpointing**：当日事件标题中出现的地名自动匹配到坐标 / Place names in event titles auto-matched to coordinates.
+- 静态库更新 / Static refresh：`python scripts/fetch_osm_static.py`（OSM 数据，ODbL，仅作标注层，不作底图）。
+
 ## 更新节奏 / Update Cadence
 
 | 节奏 / Cadence | 产物 / Artifact | 说明 / Notes |
@@ -67,7 +83,9 @@ data/master/events.csv   单一可信源（每条事实一行）/ Single source 
 data/raw/                采集层落地的原始外源（按日期归档）/ Raw fetched sources
 data/seed/               维护者手工补录的结构化事件（CSV，同 schema）/ Hand-curated seed events
 data/vocab.yaml          受控词表（战区/类型/来源方/评级）/ Controlled vocabulary
-scripts/                 自动化脚本 / Automation (fetch · normalize · build · render · validate)
+data/map/snapshots/      DeepState 控制区快照（地图，每日，保留 3 天）/ Control-area snapshots
+data/map/static/         静态地图库（城市/村庄/道路/铁路/重镇枢纽）/ Static map library
+scripts/                 自动化脚本 / Automation (fetch · normalize · build · render · validate · osm_static)
 templates/               日/周/月/年 双语简报模板与写作提纲 / Bilingual briefing templates & guides
 references/              方法论：可信度量表 / 信源册 / 战区标签 / Methodology references
 briefings/               生成的简报（派生产物）/ Generated briefings (derived)

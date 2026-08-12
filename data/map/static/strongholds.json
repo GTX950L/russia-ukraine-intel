@@ -1,0 +1,282 @@
+[
+{
+"n": "阿夫迪夫卡",
+"en": "Avdiivka",
+"lat": 48.139,
+"lon": 37.743,
+"type": "stronghold",
+"note": "顿涅茨克北郊防线核心"
+},
+{
+"n": "巴赫穆特",
+"en": "Bakhmut",
+"lat": 48.595,
+"lon": 38.001,
+"type": "stronghold",
+"note": "顿巴斯攻防焦点"
+},
+{
+"n": "恰西夫亚尔",
+"en": "Chasiv Yar",
+"lat": 48.574,
+"lon": 37.833,
+"type": "stronghold",
+"note": "巴赫穆特西侧高地防线"
+},
+{
+"n": "托列茨克",
+"en": "Toretsk",
+"lat": 48.392,
+"lon": 37.843,
+"type": "stronghold",
+"note": "戈尔洛夫卡方向要塞"
+},
+{
+"n": "波克罗夫斯克",
+"en": "Pokrovsk",
+"lat": 48.283,
+"lon": 37.183,
+"type": "hub",
+"note": "铁路公路双枢纽，乌东补给要冲"
+},
+{
+"n": "库拉霍韦",
+"en": "Kurakhove",
+"lat": 48.001,
+"lon": 37.283,
+"type": "stronghold",
+"note": "南顿涅茨克防线节点"
+},
+{
+"n": "武赫莱达尔",
+"en": "Vuhledar",
+"lat": 47.783,
+"lon": 37.25,
+"type": "stronghold",
+"note": "南线高地堡垒"
+},
+{
+"n": "大诺沃西尔卡",
+"en": "Velyka Novosilka",
+"lat": 47.838,
+"lon": 36.839,
+"type": "stronghold",
+"note": "顿涅茨克-扎波罗热边界节点"
+},
+{
+"n": "胡利亚伊波莱",
+"en": "Huliaipole",
+"lat": 47.664,
+"lon": 36.259,
+"type": "stronghold",
+"note": "扎波罗热东线支点"
+},
+{
+"n": "奥里希夫",
+"en": "Orikhiv",
+"lat": 47.569,
+"lon": 35.785,
+"type": "stronghold",
+"note": "扎波罗热前线后方支撑点"
+},
+{
+"n": "库皮扬斯克",
+"en": "Kupiansk",
+"lat": 49.713,
+"lon": 37.617,
+"type": "hub",
+"note": "哈尔科夫州东部铁路枢纽"
+},
+{
+"n": "伊久姆",
+"en": "Izium",
+"lat": 49.195,
+"lon": 37.282,
+"type": "hub",
+"note": "战略铁路/公路交汇点"
+},
+{
+"n": "利曼",
+"en": "Lyman",
+"lat": 48.988,
+"lon": 37.805,
+"type": "hub",
+"note": "顿涅茨克北部铁路枢纽"
+},
+{
+"n": "斯瓦托韦",
+"en": "Svatove",
+"lat": 49.409,
+"lon": 38.154,
+"type": "hub",
+"note": "卢甘斯克州西部门户"
+},
+{
+"n": "克雷明纳",
+"en": "Kreminna",
+"lat": 49.05,
+"lon": 38.222,
+"type": "stronghold",
+"note": "卢甘斯克州前沿"
+},
+{
+"n": "沃夫昌斯克",
+"en": "Vovchansk",
+"lat": 50.291,
+"lon": 36.941,
+"type": "stronghold",
+"note": "哈尔科夫北部边境镇"
+},
+{
+"n": "克拉斯诺霍里夫卡",
+"en": "Krasnohorivka",
+"lat": 48.01,
+"lon": 37.523,
+"type": "stronghold",
+"note": "马里因卡-顿涅茨克西侧据点"
+},
+{
+"n": "谢利多韦",
+"en": "Selydove",
+"lat": 48.147,
+"lon": 37.299,
+"type": "stronghold",
+"note": "波克罗夫斯克南侧屏护"
+},
+{
+"n": "巴拉克利亚",
+"en": "Balakliia",
+"lat": 49.463,
+"lon": 36.85,
+"type": "hub",
+"note": "哈尔科夫州南部铁路点"
+},
+{
+"n": "洛佐瓦",
+"en": "Lozova",
+"lat": 48.89,
+"lon": 36.311,
+"type": "hub",
+"note": "通往顿巴斯的重要铁路节点"
+},
+{
+"n": "基辅",
+"en": "Kyiv",
+"lat": 50.45,
+"lon": 30.524,
+"type": "hub",
+"note": "首都，全国交通中心"
+},
+{
+"n": "哈尔科夫",
+"en": "Kharkiv",
+"lat": 49.993,
+"lon": 36.231,
+"type": "hub",
+"note": "东部最大城市/铁路枢纽"
+},
+{
+"n": "第聂伯罗",
+"en": "Dnipro",
+"lat": 48.467,
+"lon": 35.041,
+"type": "hub",
+"note": "中东部后勤枢纽"
+},
+{
+"n": "扎波罗热",
+"en": "Zaporizhzhia",
+"lat": 47.838,
+"lon": 35.14,
+"type": "hub",
+"note": "第聂伯河门户"
+},
+{
+"n": "波尔塔瓦",
+"en": "Poltava",
+"lat": 49.589,
+"lon": 34.552,
+"type": "hub",
+"note": "中部铁路交汇"
+},
+{
+"n": "克列门丘格",
+"en": "Kremenchuk",
+"lat": 49.068,
+"lon": 33.424,
+"type": "hub",
+"note": "第聂伯河渡口+炼油中心"
+},
+{
+"n": "敖德萨",
+"en": "Odesa",
+"lat": 46.483,
+"lon": 30.733,
+"type": "hub",
+"note": "黑海最大港"
+},
+{
+"n": "尼古拉耶夫",
+"en": "Mykolaiv",
+"lat": 46.975,
+"lon": 31.994,
+"type": "hub",
+"note": "造船/港口城市"
+},
+{
+"n": "赫尔松",
+"en": "Kherson",
+"lat": 46.635,
+"lon": 32.617,
+"type": "hub",
+"note": "第聂伯河下游门户"
+},
+{
+"n": "马里乌波尔",
+"en": "Mariupol",
+"lat": 47.097,
+"lon": 37.553,
+"type": "hub",
+"note": "亚速海港口（俄控）"
+},
+{
+"n": "梅利托波尔",
+"en": "Melitopol",
+"lat": 46.844,
+"lon": 35.365,
+"type": "hub",
+"note": "南部公路枢纽（俄控）"
+},
+{
+"n": "别尔江斯克",
+"en": "Berdiansk",
+"lat": 46.76,
+"lon": 36.789,
+"type": "hub",
+"note": "亚速海港口（俄控）"
+},
+{
+"n": "苏梅",
+"en": "Sumy",
+"lat": 50.921,
+"lon": 34.8,
+"type": "hub",
+"note": "东北部边境城市"
+},
+{
+"n": "切尔尼戈夫",
+"en": "Chernihiv",
+"lat": 51.498,
+"lon": 31.283,
+"type": "hub",
+"note": "北部边境城市"
+},
+{
+"n": "利沃夫",
+"en": "Lviv",
+"lat": 49.839,
+"lon": 24.03,
+"type": "hub",
+"note": "西部铁路/援乌通道枢纽"
+}
+]
