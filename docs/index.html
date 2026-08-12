@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>俄乌战争每日情报</title>
-<style>
-  :root { --bg:#fff; --fg:#1a1a1a; --mut:#666; --bd:#e3e3e3; --acc:#185fa5; }
+<style>  :root { --bg:#fff; --fg:#1a1a1a; --mut:#666; --bd:#e3e3e3; --acc:#185fa5; }
   * { box-sizing:border-box; }
   body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin:0; color:var(--fg); background:var(--bg); }
   header { padding:28px 20px 10px; border-bottom:1px solid var(--bd); }
   h1 { margin:0 0 4px; font-size:22px; }
   .sub { color:var(--mut); font-size:13px; }
+  .sub a { color:var(--acc); text-decoration:none; }
   .wrap { max-width:1080px; margin:0 auto; padding:18px 20px 60px; }
   .stats { display:flex; gap:12px; flex-wrap:wrap; margin:16px 0; }
   .card { flex:1 1 140px; border:1px solid var(--bd); border-radius:12px; padding:14px; text-align:center; }
@@ -26,11 +26,38 @@
   .disc { color:#b3401b; font-weight:600; }
   footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:30px; padding-top:14px; }
   a { color:var(--acc); }
+  .latest { border:1px solid var(--bd); border-radius:12px; margin:16px 0; }
+  .lh { display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--bd); flex-wrap:wrap; }
+  .lh h2 { margin:0; font-size:16px; }
+  .lmeta { color:var(--mut); font-size:12px; }
+  .lbtn { font-size:12px; border:1px solid var(--bd); border-radius:8px; padding:4px 10px; text-decoration:none; color:var(--acc); background:#fafafa; }
+  .lbtn:hover { background:#eef3fb; }
+  .lb { padding:6px 18px 14px; max-height:480px; overflow:auto; font-size:13px; line-height:1.65; }
+  .lb h1 { font-size:17px; margin:10px 0 6px; }
+  .lb h2 { font-size:15px; margin:14px 0 6px; }
+  .lb h3 { font-size:14px; margin:10px 0 4px; }
+  .lb blockquote { margin:8px 0; padding:6px 12px; background:#fafafa; border-left:3px solid var(--acc); color:var(--mut); font-size:12px; }
+  .lb ul { margin:6px 0; padding-left:22px; }
+  .lb table { font-size:12px; margin:8px 0; }
+  .lb hr { border:none; border-top:1px dashed var(--bd); margin:12px 0; }
+  .lb code { background:#f2f2f2; border-radius:4px; padding:1px 5px; font-size:12px; }
+  .lb a { word-break:break-all; }
+  .lb p { margin:8px 0; }
+  .archive section { margin:18px 0; }
+  .archive h2 { font-size:15px; border-bottom:1px solid var(--bd); padding-bottom:6px; }
+  .archive ul { list-style:none; padding:0; margin:8px 0; }
+  .archive li { padding:6px 0; border-bottom:1px dashed #eee; font-size:13px; }
+  .archive li a { text-decoration:none; }
+  .archive .d { color:var(--mut); font-size:12px; margin-left:8px; }
 </style>
 </head>
 <body>
-<header><h1>俄乌战争每日情报</h1><div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：2026-08-12 02:19 UTC</div></header>
+<header><h1>俄乌战争每日情报</h1><div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：2026-08-12 03:27 UTC</div></header>
 <div class="wrap">
+  <section class="latest"><div class="lh"><h2>📌 今日最新情报</h2><span class="lmeta">2026-08-12</span><a class="lbtn" href="briefings/daily/2026-08-12.html">打开完整简报 ↗</a><a class="lbtn" href="briefings.html">全部简报归档</a></div><div class="lb"><h1>俄乌战争每日快讯 · 2026-08-12</h1>
+<blockquote><b>编号</b> D-20260812 ｜ <b>编辑</b> system ｜ <b>数据基线</b> <code>data/master/events.csv</code><br><b>免责声明</b>：非官方、开源、中立汇编；数据可能滞后或有误，仅供参考。</blockquote>
+<hr>
+<p><i>本简报由自动化流水线生成骨架，叙述由维护者定稿。原始数据见 <code>data/master/events.csv</code>。</i></p></div></section>
   <div class="stats"><div class="card"><div class="num">7</div><div class="lbl">事件总数</div></div><div class="card"><div class="num">2</div><div class="lbl">分歧事件</div></div><div class="card"><div class="num">4</div><div class="lbl">维度覆盖</div></div><div class="card"><div class="num">4</div><div class="lbl">战区覆盖</div></div></div>
   <div class="filters">
     <input id="q" placeholder="搜索关键词 / search...">
@@ -43,7 +70,7 @@
   </table>
   <footer>
     非官方、开源、中立汇编，数据可能滞后或有误，仅供参考。原始数据：<a href="events.json">events.json</a>
-    ｜ 简报：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/briefings">briefings/</a>
+    ｜ 简报：<a href="briefings.html">全部简报</a> ｜ 今日最新：<a href="briefings/daily/2026-08-12.html">最新简报</a>
     ｜ 方法论：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">references/</a>
   </footer>
 </div>

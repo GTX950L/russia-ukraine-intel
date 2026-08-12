@@ -4,6 +4,15 @@
 
 一个面向长期维护的开放情报（OSINT）跟踪项目：按时间轴记录俄乌战争的战线、兵力、装备、领导人言行、平民、外部势力、外交谈判、经济制裁、网络认知战、战略威慑，并对未来做有依据的推测。
 
+## 🚀 快速入口
+
+| 入口 | 链接 |
+|------|------|
+| 📰 **当日最新情报**（站点首页，自动展示最新一份每日简报） | https://gtx950l.github.io/russia-ukraine-intel/ |
+| 🗂 **全部内容综合页**（事件时间线 + 搜索/维度/战区筛选） | https://gtx950l.github.io/russia-ukraine-intel/ |
+| 📚 **简报归档**（日 / 周 / 月 / 年 全部简报渲染页） | https://gtx950l.github.io/russia-ukraine-intel/briefings.html |
+| 📊 原始数据（events.json） | https://gtx950l.github.io/russia-ukraine-intel/events.json |
+
 ## 核心原则
 
 1. **中立、可溯源、可核查**：记录者姿态，不站队；每条关键事实附来源，标可信度，不把推测当事实。
