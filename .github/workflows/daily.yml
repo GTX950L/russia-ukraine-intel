@@ -46,12 +46,8 @@ jobs:
         run: |
           python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)"
           python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --week
-          if [ "$(TZ=Asia/Shanghai date +%d)" = "01" ]; then
-            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
-          fi
-          if [ "$(TZ=Asia/Shanghai date +%m-%d)" = "01-01" ]; then
-            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
-          fi
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
 
       - name: ⑤ Render Pages
         # 地图 key 从 GitHub Secret 注入（仓库不存明文 key），未配置时页面用占位符降级提示
