@@ -102,6 +102,8 @@ python scripts/validate.py        # ← 必须 0 退出；否则不要提交
 - **流水线失败会自动建 GitHub Issue 告警**（详见 workflow 末尾 Notify 步骤）。
 - 发布站点 / Site: `https://gtx950l.github.io/russia-ukraine-intel/`（GitHub Pages，源 = main 分支 /docs）。
 
+---
+
 ## 6. 信源开启义务 / Source-enable obligation
 
 - `config.yaml` 里所有 `sources` 默认 `enabled: false`（因为 URL 需人工核验）。**当前 7 个源已全部核验并启用**（VIINA / PetroIvaniuk / DeepState / Oryx / 乌防部 / 俄防部 / ISW）。

@@ -2,7 +2,7 @@ name: Daily Intelligence Pipeline
 
 on:
   schedule:
-    - cron: "0 6 * * *"      # 每日 06:00 UTC 触发
+    - cron: "0 22 * * *"     # 每日 22:00 UTC 触发（= 北京时间 06:00，保证 7 点前出情报）
   workflow_dispatch:         # 允许手动运行
   push:
     paths:
@@ -12,6 +12,11 @@ on:
 
 permissions:
   contents: write
+  issues: write             # 失败时自动建 Issue 告警
+
+concurrency:
+  group: daily-pipeline
+  cancel-in-progress: false # 不取消正在跑的实例，排队执行，避免 raw 竞争
 
 jobs:
   build:
@@ -37,14 +42,15 @@ jobs:
         run: python scripts/normalize.py
 
       - name: ③ Build briefings (daily + week/month/year boundary)
+        # 统一按北京时间（UTC+8）命名日期，避免用户早上看到"昨天"的简报
         run: |
-          python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)"
-          python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --week
-          if [ "$(date -u +%d)" = "01" ]; then
-            python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --month
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)"
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --week
+          if [ "$(TZ=Asia/Shanghai date +%d)" = "01" ]; then
+            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
           fi
-          if [ "$(date -u +%m-%d)" = "01-01" ]; then
-            python scripts/build_briefing.py --date "$(date -u +%Y-%m-%d)" --year
+          if [ "$(TZ=Asia/Shanghai date +%m-%d)" = "01-01" ]; then
+            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
           fi
 
       - name: ⑤ Render Pages
@@ -61,6 +67,19 @@ jobs:
           if git diff --cached --quiet; then
             echo "no changes"
           else
-            git commit -m "auto: $(date -u +%Y-%m-%d) pipeline run"
+            git commit -m "auto: $(TZ=Asia/Shanghai date +%Y-%m-%d) pipeline run"
             git push
+          fi
+
+      - name: 🚨 Notify on failure
+        if: failure()
+        run: |
+          # 失败自动建 Issue 告警（已存在未关闭的告警则不重复建）
+          # 注意：全部用单行命令，避免多行字符串导致 YAML 块缩进/引号问题
+          BODY="流水线失败，运行链接：${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          EXISTS=$(gh issue list --repo "${{ github.repository }}" --state open --search "in:title 流水线失败" --json number --jq 'length' 2>/dev/null || echo 0)
+          if [ "$EXISTS" = "0" ]; then
+            gh issue create --repo "${{ github.repository }}" --title "⚠️ 流水线失败（自动告警）" --body "$BODY"
+          else
+            echo "已有未关闭的告警 Issue，跳过创建"
           fi

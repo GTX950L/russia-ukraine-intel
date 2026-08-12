@@ -18,7 +18,7 @@ import io
 import json
 import re
 import zipfile
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from utils import (DATA, MASTER, RAW, SEED, SCHEMA_VERSION, load_config,
@@ -200,7 +200,7 @@ def parse_deepstate_geojson(path: Path) -> list[dict]:
             if items:
                 summary += " 区域：" + "; ".join(items)
         out.append({
-            "date": date or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "date": date or datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
             "theater": "political", "event_type": "external",
             "title_zh": f"DeepState 战线控制快照（{date or '当日'}）",
             "title_en": f"DeepState front-line control snapshot ({date or 'today'})",
@@ -250,7 +250,7 @@ def parse_isw_html(path: Path) -> list[dict]:
             if dm:
                 date = dm.group(1)
         if not date:
-            date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            date = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
         out.append({
             "date": date, "theater": "political", "event_type": "external",
             "title_zh": f"ISW 每日战报：{txt[:80]}",
@@ -275,7 +275,18 @@ def parse_oryx_feed(path: Path) -> list[dict]:
     """Oryx Blogspot Atom feed → 最新发布事件的标题/日期/链接。
 
     Oryx 主清单为超长文、难自动计数；这里只抽取『最新发布』信号，明细需人工核对。
+    注意：feeds/posts/default 是全站 feed（会混入叙利亚等无关战区文章），
+    必须用关键词过滤掉与俄乌无关的条目。
     """
+    # 标题命中任一关键词才算与俄乌相关
+    RU_UA_KEYWORDS = (
+        "ukraine", "russia", "ukrainian", "russian", "donbas", "donetsk", "luhansk",
+        "kherson", "zaporizhzhia", "kharkiv", "crimea", "kursk", "odessa", "odesa",
+        "t-72", "t-80", "t-90", "t-64", "bmp", "btr", "mt-lb", "ka-52", "su-25",
+        "su-34", "su-35", "mig-31", "lancet", "shahed", "geran", "tornado-s",
+        "tank", "artillery", "armored", "armoured", "equipment loss", "destroyed",
+        "vehicle", "wagner", "azov", "armed forces", "ministry of defence",
+    )
     out = []
     try:
         import xml.etree.ElementTree as ET
@@ -296,11 +307,14 @@ def parse_oryx_feed(path: Path) -> list[dict]:
                 href = child.get("href")
                 if href:
                     link = href
-        dm = re.search(r"(\d{4}-\d{2}-\d{2})", published)
-        date = dm.group(1) if dm else datetime.now(timezone.utc).strftime("%Y-%m-%d")
         if not title:
             log("oryx: 无标题，跳过")
             return out
+        if not any(k in title.lower() for k in RU_UA_KEYWORDS):
+            log(f"oryx: 标题与俄乌无关，跳过: {title[:60]}")
+            return out
+        dm = re.search(r"(\d{4}-\d{2}-\d{2})", published)
+        date = dm.group(1) if dm else datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
         out.append({
             "date": date, "theater": "political", "event_type": "equipment",
             "title_zh": f"Oryx 最新发布：{title[:80]}",
@@ -341,7 +355,7 @@ def parse_ua_mod_html(path: Path) -> list[dict]:
             if mon:
                 date = f"{y}-{mon}-{d:02d}"
         if not date:
-            date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            date = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
         pairs = [
             ("Особовий склад", "personnel"), ("Танки", "tanks"),
             ("Бойові машини", "afv"), ("Артилерійські системи", "artillery"),
@@ -392,7 +406,7 @@ def parse_ru_mod_html(path: Path) -> list[dict]:
         title = soup.title.get_text(strip=True) if soup.title else ""
         paras = [p.get_text(" ", strip=True) for p in soup.find_all("p")]
         body = next((p for p in paras if len(p) > 60), "")
-        date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        date = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
         out.append({
             "date": date, "theater": "political", "event_type": "external",
             "title_zh": f"俄国防部每日简报（自动抽取，需人工核实）：{title[:60]}",
@@ -432,9 +446,16 @@ def main() -> None:
     existing = read_events()
     seen = {row_hash(r) for r in existing}
     used_ids = {r.get("event_id") for r in existing}
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    seq = max([int(r["event_id"].split("-")[-1])
-               for r in existing if r.get("event_id", "").startswith(today + "-")] + [0])
+    today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+    # 序号基线取全局最大（跨日期递增），避免不同日期前缀的事件撞号
+    seq = 0
+    for r in existing:
+        m = re.match(r"^.*-(\d+)$", r.get("event_id", ""))
+        if m:
+            try:
+                seq = max(seq, int(m.group(1)))
+            except ValueError:
+                pass
 
     merged = list(existing)
     added = 0
@@ -449,9 +470,14 @@ def main() -> None:
             return
         seen.add(row_hash(r))
         if not r.get("event_id") or r.get("event_id") in used_ids:
-            seq += 1
-            r["event_id"] = new_event_id(r.get("date") or today, seq)
-            used_ids.add(r["event_id"])
+            # 冲突避让：循环递增直到生成一个未占用的 id
+            while True:
+                seq += 1
+                cand = new_event_id(r.get("date") or today, seq)
+                if cand not in used_ids:
+                    break
+            r["event_id"] = cand
+            used_ids.add(cand)
         r.setdefault("schema_version", SCHEMA_VERSION)
         r.setdefault("updated_at", today)
         r.setdefault("editor", "pipeline")
