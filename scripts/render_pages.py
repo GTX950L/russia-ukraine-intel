@@ -441,21 +441,48 @@ def _geojson_polygons(path, thin_step: int = 3) -> list[list[list]]:
     return out
 
 
-def _build_name_index() -> dict[str, tuple[float, float]]:
-    """城市/镇/村庄/重镇/枢纽 -> 坐标索引，用于事件标题地名匹配。"""
-    idx: dict[str, tuple[float, float]] = {}
+# 西里尔/拉丁字母（俄语/乌克兰语/英语名需要词边界匹配，避免普通词误判为地名）
+_LETTERS = r"a-zA-Zа-яА-ЯіїєґІЇЄҐ"
+
+# 常见普通词黑名单：即便命中村庄名也不打点（"第一/新/旧/中心/五月"等）
+_COMMON_WORDS = {
+    "первый", "второй", "третий", "новый", "новая", "новое", "старый", "старая",
+    "центр", "центральный", "завод", "село", "город", "деревня", "дом", "дома",
+    "май", "июнь", "июль", "август", "день", "год", "улица", "район",
+    "перша", "нова", "стара", "селище", "місто", "вулиця",
+}
+
+
+def _build_name_index() -> dict[str, tuple[float, float, bool]]:
+    """城市/镇/村庄/重镇/枢纽 -> (lat, lon, 是否小地名)。
+
+    is_minor=True（村庄）要求名字 >=5 字符且词边界匹配，减少"Рекорд"类普通词误判。
+    """
+    idx: dict[str, tuple[float, float, bool]] = {}
     for c in _load_static_json("cities.json"):
         if c.get("n"):
-            idx[c["n"]] = (c["lat"], c["lon"])
+            idx[c["n"]] = (c["lat"], c["lon"], False)
     for v in _load_static_json("villages.json"):
-        if v.get("n") and len(v["n"]) >= 4:  # 短名易误匹配，跳过
-            idx[v["n"]] = (v["lat"], v["lon"])
+        if v.get("n") and len(v["n"]) >= 5:  # 短名易误匹配，跳过
+            idx[v["n"]] = (v["lat"], v["lon"], True)
     for s in _load_static_json("strongholds.json"):
         if s.get("n"):
-            idx[s["n"]] = (s["lat"], s["lon"])
+            idx[s["n"]] = (s["lat"], s["lon"], False)
         if s.get("en"):
-            idx[s["en"]] = (s["lat"], s["lon"])
+            idx[s["en"]] = (s["lat"], s["lon"], False)
     return idx
+
+
+def _name_hits(text: str, name: str) -> bool:
+    """地名匹配：中文名直接子串；西里尔/拉丁名要求词边界（两侧不是字母）。
+
+    text 已转小写，故西里尔/拉丁名也要先 lower 再匹配。
+    """
+    if re.search(r"[" + _LETTERS + "]", name):
+        n = name.lower()
+        pat = r"(?<![" + _LETTERS + "])" + re.escape(n) + r"(?![" + _LETTERS + "])"
+        return re.search(pat, text) is not None
+    return name in text
 
 
 def build_map_data(rows: list[dict]) -> dict:
@@ -470,9 +497,17 @@ def build_map_data(rows: list[dict]) -> dict:
     if len(snaps) > 1:
         control_prev = {"date": snaps[1].stem, "polygons": _geojson_polygons(snaps[1])}
 
-    # 战区级热区（背景粒度）
+    # 事件红点只统计"当日"：最近 48 小时（北京时间，与每日简报 [昨天,今天] 覆盖一致），
+    # 避免把全部历史事件都打上图（满图红点）
+    now = datetime.now(timezone(timedelta(hours=8)))
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+    recent = [r for r in rows if (r.get("date") or "") >= yesterday]
+    recent_ids = {r.get("event_id") for r in recent}
+
+    # 战区级热区（背景粒度，仅当日事件）
     hot = Counter()
-    for r in rows:
+    for r in recent:
         t = r.get("theater", "")
         if t in THEATER_CENTER:
             hot[t] += 1
@@ -480,14 +515,18 @@ def build_map_data(rows: list[dict]) -> dict:
                     "lat": THEATER_CENTER[k][0], "lon": THEATER_CENTER[k][1],
                     "count": v} for k, v in hot.items()]
 
-    # 精确地名匹配：事件标题里出现的地名 -> 坐标打点（同点聚合）。
+    # 精确地名匹配：当日事件标题里出现的地名 -> 坐标打点（同点聚合）。
     # 只匹配标题（摘要太长、含大量普通词，会拖慢匹配且易误判）
     idx = _build_name_index()
     pts: dict[tuple, dict] = {}
-    for r in rows:
+    for r in recent:
         text = (" " + r.get("title_zh", "") + " " + r.get("title_en", "") + " ").lower()
-        for name, (lat, lon) in idx.items():
-            if len(name) > 2 and name.lower() in text:
+        for name, (lat, lon, minor) in idx.items():
+            if len(name) <= 2 or name.lower() in _COMMON_WORDS:
+                continue
+            if minor and len(name) < 5:
+                continue  # 村庄短名直接跳过
+            if _name_hits(text, name):
                 key = (round(lat, 3), round(lon, 3))
                 e = pts.setdefault(key, {"lat": round(lat, 3), "lon": round(lon, 3),
                                          "names": set(), "count": 0})
@@ -498,14 +537,16 @@ def build_map_data(rows: list[dict]) -> dict:
                     for e in pts.values()]
 
     return {
-        "generated_at": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M +08:00"),
+        "generated_at": now.strftime("%Y-%m-%d %H:%M +08:00"),
         "control": control,
         "control_prev": control_prev,
         "cities": _load_static_json("cities.json"),
         "strongholds": _load_static_json("strongholds.json"),
         "event_areas": event_areas,
         "event_points": event_points,
-        "events_total": len(rows),
+        "event_range": f"{yesterday} ~ {today}",
+        "events_total": len(recent),
+        "events_archive_total": len(rows),
     }
 
 
@@ -559,6 +600,7 @@ MAP_HTML = """<!doctype html>
 <div id="meta" class="panel">
   数据：DeepState 每日快照 + OSM(ODbL) + 情报标注<br>
   快照：__SNAP_INFO__<br>
+  事件红点：__EVENT_RANGE__（共 __EVENT_NUM__ 条）<br>
   生成：__GEN_AT__
 </div>
 <script type="text/javascript">
@@ -736,6 +778,8 @@ def render_map_html(rows: list[dict]) -> None:
             .replace("__MAP_DATA__", json.dumps(md, ensure_ascii=False))
             .replace("__MAP_KEY__", _map_key())
             .replace("__SNAP_INFO__", snap_info)
+            .replace("__EVENT_RANGE__", md["event_range"])
+            .replace("__EVENT_NUM__", str(md["events_total"]))
             .replace("__GEN_AT__", md["generated_at"]))
     (DOCS / "map.html").write_text(html, encoding="utf-8")
     log(f"map rendered: control={'yes' if md['control'] else 'no'} "
