@@ -5,7 +5,10 @@
 额外生成：
 - docs/briefings.html         全部简报归档页
 - docs/briefings/<组>/<名>.html  每份简报的独立渲染页（md → html）
-- 首页顶部"今日最新情报"区块（自动展示最新一份每日简报）
+- 首页顶部"今日要点"区块（自动从最新每日简报提取精简要点卡片，不再内嵌全文）
+
+视觉设计：地图为核心，首页 = 统计卡 + 态势地图(iframe) + 今日要点卡片 + 事件检索表；
+全站统一 CSS 变量设计体系（浅色主题）。
 """
 from __future__ import annotations
 
@@ -117,138 +120,396 @@ def md_to_html(md: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# 页面模板（浅色主题）
+# 页面模板（浅色主题 · 地图为核心的简洁视觉体系）
 # ---------------------------------------------------------------------------
 
 CSS = """\
-  :root { --bg:#fff; --fg:#1a1a1a; --mut:#666; --bd:#e3e3e3; --acc:#185fa5; }
+  :root {
+    --bg:#f5f6f8; --fg:#1c2330; --mut:#667085; --bd:#e4e8ef;
+    --card:#ffffff; --acc:#1a5fb4; --acc-soft:#eaf1fb;
+    --red:#c0392b; --red-soft:#fdecea;
+    --amber:#b36b00; --amber-soft:#fdf3e2;
+    --green:#1e7d4f; --green-soft:#e8f5ee;
+    --purple:#7f77dd; --shadow:0 1px 3px rgba(23,33,60,.06),0 4px 14px rgba(23,33,60,.05);
+  }
   * { box-sizing:border-box; }
-  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin:0; color:var(--fg); background:var(--bg); }
-  header { padding:28px 20px 10px; border-bottom:1px solid var(--bd); }
-  h1 { margin:0 0 4px; font-size:22px; }
-  .sub { color:var(--mut); font-size:13px; }
-  .sub a { color:var(--acc); text-decoration:none; }
-  .wrap { max-width:1080px; margin:0 auto; padding:18px 20px 60px; }
-  .stats { display:flex; gap:12px; flex-wrap:wrap; margin:16px 0; }
-  .card { flex:1 1 140px; border:1px solid var(--bd); border-radius:12px; padding:14px; text-align:center; }
-  .card .num { font-size:26px; font-weight:600; color:var(--acc); }
-  .card .lbl { font-size:12px; color:var(--mut); margin-top:4px; }
-  .filters { display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 16px; }
-  input,select { padding:8px 10px; border:1px solid var(--bd); border-radius:8px; font-size:13px; }
-  input { flex:1 1 240px; }
-  table { width:100%; border-collapse:collapse; font-size:13px; }
-  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--bd); vertical-align:top; }
-  th { background:#fafafa; position:sticky; top:0; }
-  .tag { display:inline-block; background:#eef3fb; color:var(--acc); border-radius:6px; padding:1px 7px; font-size:11px; margin-right:4px; }
-  .disc { color:#b3401b; font-weight:600; }
-  footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:30px; padding-top:14px; }
-  a { color:var(--acc); }
-  .latest { border:1px solid var(--bd); border-radius:12px; margin:16px 0; }
-  .lh { display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--bd); flex-wrap:wrap; }
-  .lh h2 { margin:0; font-size:16px; }
-  .lmeta { color:var(--mut); font-size:12px; }
-  .lbtn { font-size:12px; border:1px solid var(--bd); border-radius:8px; padding:4px 10px; text-decoration:none; color:var(--acc); background:#fafafa; }
-  .lbtn:hover { background:#eef3fb; }
-  .lb { padding:6px 18px 14px; max-height:480px; overflow:auto; font-size:13px; line-height:1.65; }
-  .lb h1 { font-size:17px; margin:10px 0 6px; }
-  .lb h2 { font-size:15px; margin:14px 0 6px; }
-  .lb h3 { font-size:14px; margin:10px 0 4px; }
-  .lb blockquote { margin:8px 0; padding:6px 12px; background:#fafafa; border-left:3px solid var(--acc); color:var(--mut); font-size:12px; }
-  .lb ul { margin:6px 0; padding-left:22px; }
-  .lb table { font-size:12px; margin:8px 0; }
-  .lb hr { border:none; border-top:1px dashed var(--bd); margin:12px 0; }
-  .lb code { background:#f2f2f2; border-radius:4px; padding:1px 5px; font-size:12px; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif; margin:0; color:var(--fg); background:var(--bg); }
+  a { color:var(--acc); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  /* ---------- 顶栏 ---------- */
+  .topbar { background:var(--card); border-bottom:1px solid var(--bd); }
+  .topbar-in { max-width:1200px; margin:0 auto; padding:18px 22px 12px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .topbar h1 { margin:0; font-size:20px; letter-spacing:.2px; }
+  .topbar h1 .dot { color:var(--red); }
+  .sub { color:var(--mut); font-size:12.5px; }
+  nav { margin:10px 0 0; display:flex; gap:6px; flex-wrap:wrap; }
+  nav a { font-size:12.5px; padding:4px 12px; border-radius:999px; border:1px solid var(--bd); color:var(--fg); background:#fafbfc; }
+  nav a:hover { background:var(--acc-soft); border-color:#c9d8ef; text-decoration:none; }
+  .wrap { max-width:1200px; margin:0 auto; padding:20px 22px 70px; }
+  /* ---------- 统计卡 ---------- */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:0 0 18px; }
+  .card { background:var(--card); border:1px solid var(--bd); border-radius:14px; padding:14px 16px; box-shadow:var(--shadow); }
+  .card .num { font-size:24px; font-weight:700; color:var(--fg); line-height:1.2; }
+  .card .num small { font-size:13px; color:var(--mut); font-weight:500; }
+  .card .lbl { font-size:12px; color:var(--mut); margin-top:3px; display:flex; align-items:center; gap:6px; }
+  .card .ico { font-size:15px; }
+  .card.acc .num { color:var(--acc); } .card.red .num { color:var(--red); }
+  .card.green .num { color:var(--green); } .card.amber .num { color:var(--amber); }
+  /* ---------- 通用区块卡 ---------- */
+  .sec { background:var(--card); border:1px solid var(--bd); border-radius:14px; box-shadow:var(--shadow); margin:0 0 18px; overflow:hidden; }
+  .sec-h { display:flex; align-items:center; gap:10px; padding:13px 18px; border-bottom:1px solid var(--bd); flex-wrap:wrap; }
+  .sec-h h2 { margin:0; font-size:15.5px; }
+  .sec-h .muted { color:var(--mut); font-size:12px; }
+  .sec-h .sp { flex:1; }
+  .btn { font-size:12px; border:1px solid var(--bd); border-radius:8px; padding:5px 12px; color:var(--acc); background:#fafbfc; text-decoration:none; }
+  .btn:hover { background:var(--acc-soft); text-decoration:none; }
+  .btn.red { color:var(--red); border-color:#f0c8c2; } .btn.red:hover { background:var(--red-soft); }
+  .sec-b { padding:14px 18px; }
+  /* ---------- 态势地图 ---------- */
+  .map-frame { display:block; width:100%; height:520px; border:0; background:#eef1f5; }
+  @media (max-width:720px){ .map-frame { height:60vh; min-height:340px; } }
+  /* ---------- 今日要点 ---------- */
+  .pts { display:flex; flex-direction:column; }
+  .grp-t { font-size:12px; color:var(--acc); font-weight:600; margin:12px 0 6px; display:flex; align-items:center; gap:8px; }
+  .grp-t:first-child { margin-top:0; }
+  .grp-t::after { content:""; flex:1; height:1px; background:var(--bd); }
+  .pt { border:1px solid var(--bd); border-left:3px solid var(--acc); border-radius:10px; padding:9px 13px; margin:0 0 8px; cursor:pointer; transition:background .12s; }
+  .pt:hover { background:#fafbfd; }
+  .pt .row1 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .pt .zh { font-weight:600; font-size:13.5px; }
+  .pt .en { color:var(--mut); font-size:12px; margin-top:2px; }
+  .pt .sum { color:#4a5568; font-size:12.5px; margin-top:5px; padding-top:6px; border-top:1px dashed var(--bd); line-height:1.6; }
+  .rel { display:inline-block; min-width:20px; text-align:center; font-size:10.5px; font-weight:700; border-radius:5px; padding:1px 5px; color:#fff; }
+  .rel-A { background:var(--green); } .rel-B { background:var(--acc); } .rel-C { background:#e08c2e; }
+  .rel-D { background:var(--red); } .rel-E { background:#7a1f14; } .rel-F { background:#4a4a4a; }
+  .rel-x { background:#9aa3b2; }
+  .conf { font-size:11px; color:var(--mut); border:1px solid var(--bd); border-radius:5px; padding:1px 6px; }
+  .flag { font-size:11px; color:var(--red); background:var(--red-soft); border-radius:5px; padding:1px 6px; font-weight:600; }
+  .src { font-size:11px; color:var(--mut); }
+  /* ---------- 信源对照 ---------- */
+  details.cross { border:1px solid var(--bd); border-radius:10px; margin:10px 0; }
+  details.cross summary { cursor:pointer; padding:10px 14px; font-size:13px; font-weight:600; color:var(--fg); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.cross summary::before { content:"▸"; color:var(--acc); transition:transform .15s; }
+  details.cross[open] summary::before { transform:rotate(90deg); }
+  details.cross .box { padding:0 14px 12px; }
+  details.cross table { width:100%; border-collapse:collapse; font-size:12px; margin:4px 0; }
+  details.cross th, details.cross td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--bd); vertical-align:top; }
+  details.cross th { background:#fafbfc; }
+  /* ---------- 事件检索 ---------- */
+  .filters { display:flex; gap:10px; flex-wrap:wrap; }
+  input,select { padding:8px 11px; border:1px solid var(--bd); border-radius:9px; font-size:13px; background:#fff; color:var(--fg); }
+  input { flex:1 1 260px; }
+  table.ev { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.ev th, table.ev td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--bd); vertical-align:top; }
+  table.ev th { background:#fafbfc; position:sticky; top:0; font-weight:600; color:var(--mut); font-size:11.5px; white-space:nowrap; }
+  table.ev tbody tr:hover { background:#f7f9fd; }
+  table.ev td.et .en { display:block; color:var(--mut); font-size:11.5px; margin-top:1px; }
+  table.ev td.et .sum { display:block; color:#4a5568; font-size:11.5px; margin-top:3px; }
+  .tag { display:inline-block; background:var(--acc-soft); color:var(--acc); border-radius:6px; padding:1px 7px; font-size:10.5px; margin:2px 4px 0 0; }
+  .disc { color:var(--red); font-weight:700; font-size:11.5px; }
+  .empty { color:#98a2b3; text-align:center; padding:26px 0 !important; }
+  .morebar { text-align:center; padding:12px 0 4px; }
+  .morebar button { border:1px solid var(--bd); background:#fff; border-radius:9px; padding:8px 22px; font-size:13px; color:var(--acc); cursor:pointer; }
+  .morebar button:hover { background:var(--acc-soft); }
+  .cnt { font-size:12px; color:var(--mut); }
+  /* ---------- 简报页正文 ---------- */
+  .lb { font-size:14px; line-height:1.75; }
+  .lb h1 { font-size:20px; margin:6px 0 12px; }
+  .lb h2 { font-size:16px; margin:22px 0 8px; padding-bottom:6px; border-bottom:2px solid var(--acc-soft); }
+  .lb h3 { font-size:14.5px; margin:16px 0 6px; }
+  .lb blockquote { margin:10px 0; padding:9px 14px; background:#fafbfc; border-left:3px solid var(--acc); color:var(--mut); font-size:13px; border-radius:0 8px 8px 0; }
+  .lb ul { margin:8px 0; padding-left:24px; }
+  .lb li { margin:4px 0; }
+  .lb table { font-size:12.5px; margin:10px 0; }
+  .lb hr { border:none; border-top:1px dashed var(--bd); margin:18px 0; }
+  .lb code { background:#f1f3f7; border-radius:4px; padding:1px 5px; font-size:12.5px; }
   .lb a { word-break:break-all; }
-  .lb p { margin:8px 0; }
-  .archive section { margin:18px 0; }
-  .archive h2 { font-size:15px; border-bottom:1px solid var(--bd); padding-bottom:6px; }
-  .archive ul { list-style:none; padding:0; margin:8px 0; }
-  .archive li { padding:6px 0; border-bottom:1px dashed #eee; font-size:13px; }
-  .archive li a { text-decoration:none; }
-  .archive .d { color:var(--mut); font-size:12px; margin-left:8px; }
+  .lb p { margin:10px 0; }
+  .lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 8px; text-align:left; }
+  .lb th { background:#fafbfc; }
+  /* ---------- 归档页 ---------- */
+  .archive { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+  .archive .ag { background:var(--card); border:1px solid var(--bd); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; }
+  .archive .ag-h { padding:12px 16px; font-size:14.5px; font-weight:700; border-bottom:1px solid var(--bd); background:linear-gradient(180deg,#fafbfc,#fff); }
+  .archive ul { list-style:none; padding:0; margin:0; }
+  .archive li { padding:9px 16px; border-bottom:1px dashed #eef1f6; font-size:13px; display:flex; align-items:center; gap:10px; }
+  .archive li:last-child { border-bottom:none; }
+  .archive li a { text-decoration:none; font-weight:500; }
+  .archive .d { color:var(--mut); font-size:11.5px; margin-left:auto; white-space:nowrap; }
+  footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:26px; padding-top:14px; line-height:1.8; }
 """
+
+
+# ---------------------------------------------------------------------------
+# 首页：今日要点解析（从最新每日简报 md 提取精简卡片，替代全文内嵌）
+# ---------------------------------------------------------------------------
+
+def parse_daily_points(md: str) -> list[dict]:
+    """解析每日简报 md → 分组要点列表。
+
+    目标行格式（由 templates/daily.md 固定生成）：
+      ## 战线状况 / Frontline
+      - **标题(中)** / Title(EN) ｜ 可靠B 置信3 来源方:third ⚠分歧
+        - 中：中文摘要
+        - EN：English summary
+    解析失败（结构变化）时返回空列表，调用方回退到全文折叠块。
+    """
+    groups: list[dict] = []
+    cur: dict | None = None
+    for raw in md.replace("\r\n", "\n").split("\n"):
+        line = raw.strip()
+        m = re.match(r"^##\s+(.+?)\s*/\s*(.+)$", line)
+        if m:
+            cur = {"zh": m.group(1).strip(), "en": m.group(2).strip(), "items": []}
+            groups.append(cur)
+            continue
+        m = re.match(r"^-\s+\*\*(.+?)\*\*\s*/\s*(.+)$", line)
+        if m and cur is not None:
+            zh = m.group(1).strip()
+            rest = m.group(2).strip()
+            item = {"zh": zh, "en": "", "rel": "", "conf": "", "src": "",
+                    "disc": False, "sum_zh": "", "sum_en": ""}
+            # rest 形如 "EN 标题 ｜ 可靠B 置信3 来源方:third ⚠分歧"
+            meta = re.search(r"｜\s*(.*)$", rest)
+            if meta:
+                item["en"] = rest[: meta.start()].strip()
+                mtxt = meta.group(1)
+                rm = re.search(r"可靠\s*([A-Fa-f])", mtxt)
+                if rm:
+                    item["rel"] = rm.group(1).upper()
+                cm = re.search(r"置信\s*(\d)", mtxt)
+                if cm:
+                    item["conf"] = cm.group(1)
+                sm = re.search(r"来源方[:：]\s*(\S+)", mtxt)
+                if sm:
+                    item["src"] = sm.group(1).strip(",;。")
+                item["disc"] = ("⚠" in mtxt or "分歧" in mtxt)
+            else:
+                item["en"] = rest
+            cur["items"].append(item)
+            continue
+        m = re.match(r"^-\s*(中|EN|en)[:：]\s*(.+)$", line)
+        if m and cur is not None and cur["items"]:
+            if m.group(1) == "中":
+                cur["items"][-1]["sum_zh"] = m.group(2).strip()
+            else:
+                cur["items"][-1]["sum_en"] = m.group(2).strip()
+    return [g for g in groups if g["items"]]
+
+
+def points_block(md: str, limit: int = 14) -> str:
+    """今日要点卡片 HTML（每组至多 limit 条，超出折叠在"完整简报"里）。"""
+    groups = parse_daily_points(md)
+    if not groups:
+        return ""
+    parts = ['<div class="pts">']
+    shown = 0
+    for g in groups:
+        if shown >= limit:
+            break
+        parts.append(f'<div class="grp-t">{g["zh"]} <span style="color:#98a2b3;font-weight:400">{g["en"]}</span></div>')
+        for it in g["items"]:
+            if shown >= limit:
+                break
+            shown += 1
+            rel = it["rel"] or "x"
+            disc = '<span class="flag">⚠ 分歧</span>' if it["disc"] else ""
+            conf = f'<span class="conf">置信{it["conf"]}</span>' if it["conf"] else ""
+            src = f'<span class="src">来源方:{it["src"]}</span>' if it["src"] else ""
+            sum_html = ""
+            if it["sum_zh"] or it["sum_en"]:
+                s = f'<div class="sum" hidden>{it["sum_zh"] or ""}'
+                if it["sum_en"] and it["sum_en"] != it["sum_zh"]:
+                    s += f'<br><span style="color:#98a2b3">{it["sum_en"]}</span>'
+                sum_html = s + "</div>"
+            parts.append(
+                f'<div class="pt" onclick="this.querySelector(\'.sum\')?.toggleAttribute(\'hidden\')">'
+                f'<div class="row1"><span class="zh">{it["zh"]}</span>'
+                f'<span class="rel rel-{rel}">{rel}</span>{conf}{disc}{src}</div>'
+                f'<div class="en">{it["en"]}</div>{sum_html}</div>'
+            )
+    parts.append("</div>")
+    return "\n".join(parts)
+
+
+def crosscheck_block(md: str) -> str:
+    """信源对照（最新简报"信源对照 / Source Cross-check"小节）→ 折叠块。"""
+    m = re.search(r"##\s*信源对照.*?(?=\n##\s|\Z)", md, flags=re.S)
+    if not m:
+        return ""
+    tbl = ""
+    for row in m.group(0).split("\n"):
+        if row.strip().startswith("|") and not re.match(r"^[\s:\-|]+$", row.strip()):
+            cells = [c.strip() for c in row.strip().strip("|").split("|")]
+            tag = "th" if tbl == "" else "td"
+            tbl += "<tr>" + "".join(f"<{tag}>{_inline(c)}</{tag}>" for c in cells) + "</tr>"
+    if not tbl:
+        return ""
+    return (
+        '<details class="cross"><summary>信源对照 / Source Cross-check（乌方 UA · 俄方 RU · 第三方 THIRD）</summary>'
+        f'<div class="box"><table>{tbl}</table></div></details>'
+    )
+
+
+# ---------------------------------------------------------------------------
+# 页面骨架模板（占位符 __XXX__ 替换，避免 % 格式化转义问题）
+# ---------------------------------------------------------------------------
 
 INDEX_HEAD = """<!doctype html>
 <html lang="zh">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>%s</title>
-<style>%s</style>
+<title>__TITLE__</title>
+<style>__CSS__</style>
 </head>
 <body>
-<header><h1>%s</h1><div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：%s</div></header>
-<div class="wrap">
-  %s
-  <div class="stats">%s</div>
-  <div class="filters">
-    <input id="q" placeholder="搜索关键词 / search...">
-    <select id="fType"><option value="">全部维度</option></select>
-    <select id="fTheater"><option value="">全部战区</option></select>
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>⚔️ 俄乌战争<span class="dot">·</span>每日情报</h1>
+    <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：__UPDATED__</div>
+    <nav>
+      <a href="#map">🗺 态势地图</a>
+      <a href="#today">📌 今日要点</a>
+      <a href="#events">📊 事件检索</a>
+      <a href="briefings.html">🗂 全部简报</a>
+      <a href="map.html" target="_blank">⛶ 全屏地图</a>
+    </nav>
   </div>
-  <table>
-    <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（中/EN）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
-    <tbody id="tbody"></tbody>
-  </table>
+</div>
+<div class="wrap">
+  <div class="stats">
+    __STATS__
+  </div>
+
+  <section class="sec" id="map">
+    <div class="sec-h">
+      <h2>🗺 战场态势</h2>
+      <span class="muted">俄控区 / 前一日对比线 / 当日事件热区（点击地图可开关图层）</span>
+      <span class="sp"></span>
+      <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
+    </div>
+    <iframe class="map-frame" src="map.html" loading="lazy"
+      title="战场态势地图" referrerpolicy="no-referrer"></iframe>
+  </section>
+
+  <section class="sec" id="today">
+    <div class="sec-h">
+      <h2>📌 今日要点</h2>
+      <span class="muted">__LATEST_DATE__ ｜ 点击条目展开详情</span>
+      <span class="sp"></span>
+      <a class="btn" href="__LATEST_REL__">查看完整简报 ↗</a>
+      <a class="btn" href="briefings.html">全部简报</a>
+    </div>
+    <div class="sec-b">
+      __LATEST_BLOCK__
+      __CROSSCHECK__
+    </div>
+  </section>
+
+  <section class="sec" id="events">
+    <div class="sec-h">
+      <h2>📊 全部事件检索</h2>
+      <span class="muted">共 <b id="cnt">0</b> 条匹配</span>
+      <span class="sp"></span>
+      <div class="filters">
+        <input id="q" placeholder="搜索关键词 / search...">
+        <select id="fType"><option value="">全部维度</option></select>
+        <select id="fTheater"><option value="">全部战区</option></select>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="ev">
+        <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（中 / EN）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="morebar"><button id="more">加载更多 ↓</button></div>
+  </section>
+
   <footer>
     非官方、开源、中立汇编，数据可能滞后或有误，仅供参考。原始数据：<a href="events.json">events.json</a>
-    ｜ 简报：<a href="briefings.html">全部简报</a> ｜ 今日最新：<a href="%s">最新简报</a>
+    ｜ 简报：<a href="briefings.html">全部简报</a> ｜ 今日最新：<a href="__LATEST_REL__">最新简报</a>
     ｜ 态势地图：<a href="map.html">战场地图</a>
     ｜ 方法论：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">references/</a>
   </footer>
 </div>
 <script>
-const EVENTS = %s;
-const TYPE_ZH = %s;
-const THEATER_ZH = %s;
+const TYPE_ZH = __TYPE_ZH__;
+const THEATER_ZH = __THEATER_ZH__;
+const PAGE = 50;
 const tbody = document.getElementById('tbody');
 const q = document.getElementById('q');
 const fType = document.getElementById('fType');
 const fTheater = document.getElementById('fTheater');
+const cntEl = document.getElementById('cnt');
+const moreBtn = document.getElementById('more');
+let EVENTS = [];
+let cur = PAGE;
 function uniq(a){ return [...new Set(a)].filter(Boolean); }
-uniq(EVENTS.map(e=>e.event_type)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(TYPE_ZH[t]||t); fType.appendChild(o); });
-uniq(EVENTS.map(e=>e.theater)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(THEATER_ZH[t]||t); fTheater.appendChild(o); });
-function render(){
+fetch('events.json').then(r=>r.json()).then(data=>{
+  EVENTS = data;
+  uniq(EVENTS.map(e=>e.event_type)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(TYPE_ZH[t]||t); fType.appendChild(o); });
+  uniq(EVENTS.map(e=>e.theater)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(THEATER_ZH[t]||t); fTheater.appendChild(o); });
+  render();
+}).catch(()=>{ cntEl.textContent = '数据加载失败'; });
+function filtered(){
   const kw=q.value.trim().toLowerCase(), ft=fType.value, fth=fTheater.value;
-  const rows=EVENTS.filter(e=>{
+  return EVENTS.filter(e=>{
     if(ft && e.event_type!==ft) return false;
     if(fth && e.theater!==fth) return false;
     if(kw){ const hay=(e.title_zh+' '+e.title_en+' '+e.summary_zh+' '+e.summary_en+' '+(e.tags||'')).toLowerCase(); if(!hay.includes(kw)) return false; }
     return true;
   });
-  tbody.innerHTML = rows.map(e=>{
+}
+function render(){
+  const rows = filtered();
+  tbody.innerHTML = rows.slice(0, cur).map(e=>{
     const disc=(e.disagreement_flag||'').toLowerCase().startsWith('y');
     const tags=(e.tags||'').split(';').filter(Boolean).map(t=>'<span class="tag">'+t+'</span>').join('');
-    return '<tr><td>'+(e.date||'')+'</td><td>'+(THEATER_ZH[e.theater]||e.theater||'')+'</td><td>'+(TYPE_ZH[e.event_type]||e.event_type||'')+'</td>'
-      +'<td><b>'+(e.title_zh||'')+'</b> / '+(e.title_en||'')+'<br><span style="color:#666">'+(e.summary_zh||'')+'</span> '+tags+'</td>'
-      +'<td>'+(e.reliability||'')+'</td><td>'+(e.confidence||'')+'</td>'
-      +'<td>'+(disc?'<span class="disc">分歧</span>':(e.source_side||''))+'</td></tr>';
-  }).join('') || '<tr><td colspan="7" style="color:#888">无匹配</td></tr>';
+    return '<tr><td style="white-space:nowrap">'+(e.date||'')+'</td><td>'+(THEATER_ZH[e.theater]||e.theater||'')+'</td><td>'+(TYPE_ZH[e.event_type]||e.event_type||'')+'</td>'
+      +'<td class="et"><b>'+(e.title_zh||'')+'</b><span class="en">'+(e.title_en||'')+'</span><span class="sum">'+(e.summary_zh||'')+'</span> '+tags+'</td>'
+      +'<td><span class="rel rel-'+(e.reliability||'x')+'">'+(e.reliability||'')+'</span></td><td>'+(e.confidence||'')+'</td>'
+      +'<td>'+(disc?'<span class="disc">⚠ 分歧</span>':(e.source_side||''))+'</td></tr>';
+  }).join('') || '<tr><td colspan="7" class="empty">无匹配事件</td></tr>';
+  cntEl.textContent = rows.length + ' / ' + EVENTS.length;
+  moreBtn.style.display = rows.length > cur ? 'inline-block' : 'none';
 }
 q.addEventListener('input', render);
 fType.addEventListener('change', render);
 fTheater.addEventListener('change', render);
+moreBtn.addEventListener('click', () => { cur += PAGE; render(); });
 render();
 </script>
 </body>
 </html>
 """
 
+
 BRIEFING_PAGE = """<!doctype html>
 <html lang="zh">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>%s ｜ 简报</title>
-<style>%s</style>
+<title>__TITLE__ ｜ 简报</title>
+<style>__CSS__</style>
 </head>
 <body>
-<header><h1>%s</h1><div class="sub"><a href="../../index.html">← 返回首页</a> ｜ <a href="../../briefings.html">全部简报</a> ｜ <a href="../../map.html">🗺 态势地图</a></div></header>
-<div class="wrap lb">%s</div>
-<footer><div class="wrap" style="padding:14px 20px">非官方、开源、中立汇编，仅供参考。<a href="../../index.html">返回首页</a></div></footer>
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>📄 __TITLE__</h1>
+    <div class="sub"><a href="__ROOT__index.html">← 返回首页</a> ｜ <a href="__ROOT__briefings.html">全部简报</a> ｜ <a href="__ROOT__map.html">🗺 态势地图</a></div>
+  </div>
+</div>
+<div class="wrap"><div class="sec"><div class="sec-b lb">__BODY__</div></div>
+<footer class="wrap" style="padding:16px 0 0;border-top:1px solid var(--bd)">
+  非官方、开源、中立汇编，仅供参考。<a href="__ROOT__index.html">返回首页</a>
+</footer>
+</div>
 </body>
 </html>
 """
+
 
 ARCHIVE_PAGE = """<!doctype html>
 <html lang="zh">
@@ -256,25 +517,33 @@ ARCHIVE_PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>全部简报归档</title>
-<style>%s</style>
+<style>__CSS__</style>
 </head>
 <body>
-<header><h1>全部简报归档</h1><div class="sub"><a href="index.html">← 返回首页</a> ｜ <a href="map.html">🗺 态势地图</a> ｜ 共 %d 份</div></header>
-<div class="wrap archive">%s</div>
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>🗂 全部简报归档</h1>
+    <div class="sub"><a href="index.html">← 返回首页</a> ｜ <a href="map.html">🗺 态势地图</a> ｜ 共 __COUNT__ 份</div>
+  </div>
+</div>
+<div class="wrap"><div class="archive">__BODY__</div></div>
 </body>
 </html>
 """
 
+
 GROUP_LABELS = {
-    "daily": "每日快讯", "weekly": "每周复盘",
-    "monthly": "每月深度", "yearly": "每年评估",
+    "daily": "📰 每日快讯", "weekly": "📈 每周复盘",
+    "monthly": "📚 每月深度", "yearly": "🧭 每年评估",
 }
+
+GROUP_ORDER = ("daily", "weekly", "monthly", "yearly")
 
 
 def scan_briefings() -> list[dict]:
     """扫描 briefings/*/ 下的 md，返回按组排序的结构化列表。"""
     items: list[dict] = []
-    for sub in ("daily", "weekly", "monthly", "yearly"):
+    for sub in GROUP_ORDER:
         d = BRIEF / sub
         if not d.exists():
             continue
@@ -289,7 +558,13 @@ def render_briefing_pages(items: list[dict]) -> None:
     """为每份简报生成独立渲染页 docs/briefings/<组>/<名>.html。"""
     for it in items:
         body = md_to_html(it["md"])
-        html = BRIEFING_PAGE % (it["title"], CSS, it["title"], body)
+        depth = 3 if it["group"] == "daily" else 3
+        root = "../" * depth  # docs/briefings/daily/xxx.html → ../../../
+        html = (BRIEFING_PAGE
+                .replace("__TITLE__", it["title"])
+                .replace("__CSS__", CSS)
+                .replace("__ROOT__", root)
+                .replace("__BODY__", body))
         out = DOCS / "briefings" / it["group"] / (it["stem"] + ".html")
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(html, encoding="utf-8")
@@ -297,40 +572,36 @@ def render_briefing_pages(items: list[dict]) -> None:
 
 
 def build_archive_html(items: list[dict]) -> str:
-    """归档页主体：按组列出全部简报链接。"""
+    """归档页主体：按组卡片网格列出全部简报链接。"""
     parts: list[str] = []
-    for group in ("daily", "weekly", "monthly", "yearly"):
+    for group in GROUP_ORDER:
         group_items = [i for i in items if i["group"] == group]
         if not group_items:
             continue
-        parts.append(f"<section><h2>{GROUP_LABELS[group]} / {group}</h2><ul>")
+        lis = []
         for it in group_items:
-            parts.append(
+            lis.append(
                 f'<li><a href="briefings/{it["group"]}/{it["stem"]}.html">{it["title"]}</a>'
                 f'<span class="d">{it["stem"]}</span></li>'
             )
-        parts.append("</ul></section>")
+        parts.append(
+            f'<div class="ag"><div class="ag-h">{GROUP_LABELS[group]} <span style="color:#98a2b3;font-size:12px;font-weight:400">({len(group_items)})</span></div>'
+            f'<ul>{"".join(lis)}</ul></div>'
+        )
     return "\n".join(parts)
 
 
 def build_latest_block(items: list[dict]) -> tuple[str, str]:
-    """首页"今日最新情报"区块：取最新一份每日简报（无则回退其他组最新）。"""
+    """首页"今日要点"区块：取最新一份每日简报（无则回退其他组最新）→ 精简要点卡。"""
     dailies = [i for i in items if i["group"] == "daily"]
     pool = dailies or items
     if not pool:
         return "", ""
     latest = pool[0]  # 已按文件名倒序
-    body = md_to_html(latest["md"])
-    block = (
-        '<section class="latest">'
-        f'<div class="lh"><h2>📌 今日最新情报</h2><span class="lmeta">{latest["stem"]}</span>'
-        f'<a class="lbtn" href="briefings/{latest["group"]}/{latest["stem"]}.html">打开完整简报 ↗</a>'
-        f'<a class="lbtn" href="briefings.html">全部简报归档</a>'
-        f'<a class="lbtn" href="map.html">🗺 态势地图</a></div>'
-        f'<div class="lb">{body}</div></section>'
-    )
     rel = f'briefings/{latest["group"]}/{latest["stem"]}.html'
-    return block, rel
+    pts = points_block(latest["md"])
+    cross = crosscheck_block(latest["md"])
+    return pts, rel
 
 
 def main() -> None:
@@ -342,37 +613,61 @@ def main() -> None:
     counter_type = Counter(r.get("event_type", "") for r in rows)
     counter_theater = Counter(r.get("theater", "") for r in rows)
     disagreements = sum(1 for r in rows if str(r.get("disagreement_flag", "")).lower().startswith("y"))
+    dates = [r.get("date", "") for r in rows if r.get("date")]
+    today_events = sum(1 for d in dates if d == (max(dates) if dates else ""))
+    latest_date = max(dates) if dates else ""
+
+    items = scan_briefings()
+    latest_block, latest_rel = build_latest_block(items)
+    cross = crosscheck_block(_latest_md(items))
+    render_briefing_pages(items)
 
     stats = (
-        f'<div class="card"><div class="num">{len(rows)}</div><div class="lbl">事件总数</div></div>'
-        f'<div class="card"><div class="num">{disagreements}</div><div class="lbl">分歧事件</div></div>'
-        f'<div class="card"><div class="num">{len(counter_type)}</div><div class="lbl">维度覆盖</div></div>'
-        f'<div class="card"><div class="num">{len(counter_theater)}</div><div class="lbl">战区覆盖</div></div>'
+        f'<div class="card acc"><div class="ico">📊</div><div class="num">{len(rows)}</div><div class="lbl">事件总数</div></div>'
+        f'<div class="card red"><div class="ico">🔥</div><div class="num">{today_events}</div><div class="lbl">今日事件（{latest_date}）</div></div>'
+        f'<div class="card amber"><div class="ico">⚔️</div><div class="num">{disagreements}</div><div class="lbl">分歧事件</div></div>'
+        f'<div class="card green"><div class="ico">🗂</div><div class="num">{len(counter_type)}</div><div class="lbl">维度覆盖</div></div>'
+        f'<div class="card"><div class="ico">📍</div><div class="num">{len(counter_theater)}</div><div class="lbl">战区覆盖</div></div>'
+        f'<div class="card"><div class="ico">📚</div><div class="num">{len(items)}</div><div class="lbl">简报份数</div></div>'
     )
 
     type_zh = {k: v[0] for k, v in TYPE_LABELS.items()}
     rows_sorted = sorted(rows, key=lambda r: r.get("date", ""), reverse=True)
 
-    items = scan_briefings()
-    latest_block, latest_rel = build_latest_block(items)
-    render_briefing_pages(items)
-
     DOCS.mkdir(parents=True, exist_ok=True)
     (DOCS / "index.html").write_text(
-        INDEX_HEAD % (title_zh, CSS, title_zh, updated, latest_block, stats, latest_rel,
-                      json.dumps(rows_sorted, ensure_ascii=False),
-                      json.dumps(type_zh, ensure_ascii=False),
-                      json.dumps(THEATER_ZH, ensure_ascii=False)),
+        (INDEX_HEAD
+         .replace("__TITLE__", title_zh)
+         .replace("__CSS__", CSS)
+         .replace("__UPDATED__", updated)
+         .replace("__STATS__", stats)
+         .replace("__LATEST_BLOCK__", latest_block or '<p style="color:#98a2b3">暂无简报</p>')
+         .replace("__CROSSCHECK__", cross)
+         .replace("__LATEST_DATE__", latest_date)
+         .replace("__LATEST_REL__", latest_rel or "briefings.html")
+         .replace("__TYPE_ZH__", json.dumps(type_zh, ensure_ascii=False))
+         .replace("__THEATER_ZH__", json.dumps(THEATER_ZH, ensure_ascii=False))),
         encoding="utf-8")
     (DOCS / "events.json").write_text(json.dumps(rows_sorted, ensure_ascii=False), encoding="utf-8")
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
     (DOCS / "briefings.html").write_text(
-        ARCHIVE_PAGE % (CSS, len(items), build_archive_html(items)), encoding="utf-8")
+        (ARCHIVE_PAGE
+         .replace("__CSS__", CSS)
+         .replace("__COUNT__", str(len(items)))
+         .replace("__BODY__", build_archive_html(items))),
+        encoding="utf-8")
     render_map_html(rows)
     log(f"pages rendered: {len(rows)} events, {len(items)} briefings -> docs/")
 
 
-# ---------------------------------------------------------------------------
+def _latest_md(items: list[dict]) -> str:
+    """取最新一份每日简报的原始 md（供信源对照提取）。"""
+    for i in items:
+        if i["group"] == "daily":
+            return i["md"]
+    return items[0]["md"] if items else ""
+
+
 # ---------------------------------------------------------------------------
 # 战场态势地图（docs/map.html + map-data.json / roads-data.json / villages-data.json）
 # 底图：腾讯地图 GL JS（合规图商；海外区域为"非默认场景"，key 用占位符，用户自行申请）
@@ -487,7 +782,7 @@ def _name_hits(text: str, name: str) -> bool:
 
 
 def build_map_data(rows: list[dict]) -> dict:
-    """汇总首屏地图数据（战线/城市/重镇/热区/事件精确点），不含道路铁路村庄（按需加载）。"""
+    """汇总首屏地图数据（战线/城市/重镇/热区/事件精确点/事件明细），不含道路铁路村庄（按需加载）。"""
     # 快照优先取 data/map/snapshots/；若无（如 CI 未归档），回退到 data/raw/ 里的 DeepState 文件
     snaps = sorted(MAP_SNAPSHOTS.glob("*.geojson"), reverse=True) if MAP_SNAPSHOTS.exists() else []
     if not snaps and RAW.exists():
@@ -537,6 +832,20 @@ def build_map_data(rows: list[dict]) -> dict:
                      "names": sorted(e["names"])[:4], "count": e["count"]}
                     for e in pts.values()]
 
+    # 事件明细（最近 48h）：供地图点击热区/地点时弹出事件列表
+    events_detail = []
+    for r in recent:
+        events_detail.append({
+            "date": r.get("date", ""),
+            "theater": r.get("theater", ""),
+            "type_zh": TYPE_LABELS.get(r.get("event_type", ""), (r.get("event_type", ""), ""))[0],
+            "title_zh": (r.get("title_zh", "") or "")[:140],
+            "title_en": (r.get("title_en", "") or "")[:140],
+            "rel": r.get("reliability", ""),
+            "conf": r.get("confidence", ""),
+            "disc": str(r.get("disagreement_flag", "")).lower().startswith("y"),
+        })
+
     return {
         "generated_at": now.strftime("%Y-%m-%d %H:%M +08:00"),
         "control": control,
@@ -545,6 +854,7 @@ def build_map_data(rows: list[dict]) -> dict:
         "strongholds": _load_static_json("strongholds.json"),
         "event_areas": event_areas,
         "event_points": event_points,
+        "events": events_detail,
         "event_range": f"{yesterday} ~ {today}",
         "events_total": len(recent),
         "events_archive_total": len(rows),
@@ -558,47 +868,79 @@ MAP_HTML = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>战场态势地图</title>
 <style>
-  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1a1a1a}
-  #map{width:100%;height:100vh}
-  .panel{position:absolute;background:#fff;border:1px solid #e3e3e3;border-radius:12px;
-    padding:10px 14px;font-size:12px;line-height:1.8;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-  #legend{left:14px;top:14px;z-index:999}
-  #meta{right:14px;top:14px;z-index:999;text-align:right;color:#555}
+  :root { --acc:#1a5fb4; --red:#c0392b; --mut:#667085; --bd:#e4e8ef; }
+  html,body{margin:0;padding:0;height:100%;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1c2330}
+  #map{position:absolute;inset:40px 0 0 0;background:#eef1f5}
+  /* 顶部信息条 */
+  #topbar{position:absolute;left:0;right:0;top:0;height:40px;background:#fff;border-bottom:1px solid var(--bd);
+    display:flex;align-items:center;gap:12px;padding:0 14px;font-size:12.5px;z-index:1000;color:#3a4356}
+  #topbar b{font-size:13.5px;white-space:nowrap}
+  #topbar .m{color:var(--mut)}
+  #topbar .sp{flex:1}
+  #topbar a{color:var(--acc);text-decoration:none;white-space:nowrap}
+  #topbar a:hover{text-decoration:underline}
+  #topbar button{border:1px solid var(--bd);background:#fafbfc;border-radius:7px;padding:3px 10px;font-size:12px;
+    color:var(--acc);cursor:pointer;white-space:nowrap}
+  #topbar button:hover{background:#eaf1fb}
+  /* 面板 */
+  .panel{position:absolute;background:#fff;border:1px solid var(--bd);border-radius:12px;
+    padding:10px 14px;font-size:12px;line-height:1.8;box-shadow:0 2px 10px rgba(23,33,60,.10)}
+  #legend{left:14px;top:52px;z-index:999;max-width:200px}
+  #meta{right:14px;bottom:14px;z-index:999;text-align:right;color:var(--mut);font-size:11px;background:rgba(255,255,255,.92)}
+  .lg-grp{font-size:11px;color:var(--mut);font-weight:700;margin:8px 0 3px;letter-spacing:.5px}
+  .lg-grp:first-child{margin-top:0}
   .lg{display:flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer;border-radius:6px;padding:2px 6px;margin:0 -6px}
   .lg:hover{background:#f2f6fb}
   .lg.off{opacity:.35}
   .sw{display:inline-block;width:16px;height:10px;border-radius:3px;flex:none}
   .swl{display:inline-block;width:16px;height:2px;flex:none}
   .dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
-  #legend h3{margin:0 0 6px;font-size:13px;font-weight:500}
-  #legend .hint{color:#888;font-size:11px;margin:-2px 0 6px}
-  #legend a{color:#185fa5;text-decoration:none}
+  #legend h3{margin:0 0 2px;font-size:13px;font-weight:700}
+  #legend .hint{color:#98a2b3;font-size:11px;margin:0 0 2px}
+  #legend a{color:var(--acc);text-decoration:none}
   #loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1000;
-    background:#fff;border:1px solid #e3e3e3;border-radius:10px;padding:10px 18px;font-size:13px;display:none}
+    background:#fff;border:1px solid var(--bd);border-radius:10px;padding:10px 18px;font-size:13px;display:none;
+    box-shadow:0 2px 10px rgba(23,33,60,.1)}
+  #full{appearance:none}
+  .evlist{max-height:250px;overflow:auto}
+  .evlist .ev{padding:6px 0;border-bottom:1px solid #eef1f6}
+  .evlist .ev:last-child{border-bottom:none}
+  .evlist .ev .m{font-size:11px;color:var(--mut)}
 </style>
 </head>
 <body>
+<div id="topbar">
+  <b>🗺 战场态势地图</b>
+  <span class="m">快照 __SNAP_INFO__</span>
+  <span class="m">｜ 事件 __EVENT_RANGE__ · <b>__EVENT_NUM__</b> 条</span>
+  <span class="sp"></span>
+  <button id="full">⛶ 全屏</button>
+  <a href="index.html">首页</a>
+  <a href="briefings.html">简报</a>
+</div>
 <div id="map"></div>
 <div id="loading">正在加载图层…</div>
 <div id="legend" class="panel">
   <h3>图例</h3>
-  <div class="hint">点击项目可开关图层</div>
+  <div class="hint">点击条目可开关图层</div>
+  <div class="lg-grp">控制区</div>
   <div class="lg on" data-layer="control"><span class="sw" style="background:#e24b4a;opacity:.45"></span>俄控区（当日）</div>
   <div class="lg on" data-layer="prev"><span class="swl" style="border-top:2px dashed #7f77dd"></span>前一日控制线</div>
-  <div class="lg on" data-layer="roads"><span class="swl" style="background:#888"></span>主要道路</div>
+  <div class="lg-grp">交通</div>
+  <div class="lg on" data-layer="roads"><span class="swl" style="background:#8a93a6"></span>主要道路</div>
   <div class="lg on" data-layer="rail"><span class="swl" style="background:#333;border-top:2px solid #333"></span>铁路</div>
-  <div class="lg on" data-layer="cities"><span class="dot" style="background:#185fa5"></span>城市</div>
+  <div class="lg-grp">地标</div>
+  <div class="lg on" data-layer="cities"><span class="dot" style="background:#1a5fb4"></span>城市</div>
   <div class="lg on" data-layer="strongholds"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇</div>
   <div class="lg on" data-layer="hubs"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽</div>
-  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>当日事件</div>
   <div class="lg" data-layer="villages"><span class="dot" style="background:#b4b2a9"></span>村庄（缩放 9 级+）</div>
-  <div style="margin-top:8px"><a href="index.html">← 返回首页</a> ｜ <a href="briefings.html">简报</a></div>
+  <div class="lg-grp">事件</div>
+  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>当日事件热区</div>
 </div>
 <div id="meta" class="panel">
   数据：DeepState 每日快照 + OSM(ODbL) + 情报标注<br>
-  快照：__SNAP_INFO__<br>
-  事件红点：__EVENT_RANGE__（共 __EVENT_NUM__ 条）<br>
-  生成：__GEN_AT__
+  生成：__GEN_AT__<br>
+  <a href="index.html">← 返回首页</a> ｜ <a href="briefings.html">简报</a>
 </div>
 <script type="text/javascript">
 const MAP_DATA = __MAP_DATA__;
@@ -614,8 +956,18 @@ if ("__MAP_KEY__".indexOf("replace this placeholder") !== -1) {
 const ctl = MAP_DATA.control, prev = MAP_DATA.control_prev;
 const map = new TMap.Map('map', { center: new TMap.LatLng(48.6, 36.5), zoom: 6 });
 const info = new TMap.InfoWindow({ map, position: new TMap.LatLng(48.6, 36.5), offset: { x: 0, y: -32 } });
-const showInfo = (extra, pos) => { info.setPosition(pos); info.setContent('<div style="font-size:13px;max-width:260px;line-height:1.6">'+extra+'</div>'); info.open(); };
+const showInfo = (extra, pos) => { info.setPosition(pos); info.setContent('<div style="font-size:12.5px;max-width:300px;line-height:1.6">'+extra+'</div>'); info.open(); };
 const LL = (p) => new TMap.LatLng(p[0], p[1]);
+const EVENTS = MAP_DATA.events || [];
+const relSpan = (r) => '<span class="rel rel-'+(r||'x')+'" style="display:inline-block;min-width:16px;text-align:center;font-size:10px;font-weight:700;border-radius:4px;padding:0 4px;color:#fff;background:'+({A:'#1e7d4f',B:'#1a5fb4',C:'#e08c2e',D:'#c0392b',E:'#7a1f14',F:'#4a4a4a'}[r]||'#9aa3b2')+'">'+(r||'')+'</span>';
+function eventsList(evs, head){
+  if(!evs.length) return '<div style="color:#98a2b3">无关联事件</div>';
+  return '<div class="evlist">'+evs.map(e=>
+    '<div class="ev"><span class="m">'+e.date+' · '+e.type_zh+'</span> '+relSpan(e.rel)+' '
+    +(e.disc?'<span style="color:#c0392b;font-size:11px">⚠分歧</span>':'')
+    +'<div><b>'+e.title_zh+'</b></div>'
+    +'<div class="m">'+e.title_en+'</div></div>').join('')+'</div>';
+}
 
 /* 图层注册表 + 显隐状态（undefined=默认开） */
 const L = {};
@@ -633,7 +985,7 @@ if (ctl && ctl.polygons.length) {
 }
 /* 城市分级：大城市(所有缩放) + 小城镇(zoom>=8)，避免低缩放满屏点 */
 if (MAP_DATA.cities && MAP_DATA.cities.length) {
-  const big = new TMap.MarkerStyle({ width: 8, height: 8, anchor: { x: 4, y: 4 }, color: '#185fa5' });
+  const big = new TMap.MarkerStyle({ width: 8, height: 8, anchor: { x: 4, y: 4 }, color: '#1a5fb4' });
   const small = new TMap.MarkerStyle({ width: 5, height: 5, anchor: { x: 2.5, y: 2.5 }, color: '#85b7eb' });
   const mk = (c, i) => ({ id: 'ci'+i, styleId: c.p === 'city' ? 'big' : 'small',
     position: new TMap.LatLng(c.lat, c.lon), extra: '<b>'+c.n+'</b>' });
@@ -665,7 +1017,7 @@ if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
   L.hubs = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: hubs });
   L.hubs.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
 }
-/* 当日事件：战区热区 + 精确地点合并为一层 */
+/* 当日事件：战区热区 + 精确地点合并为一层；点击弹事件明细 */
 {
   const geoms = [];
   const styles = {};
@@ -673,15 +1025,18 @@ if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
     MAP_DATA.event_areas.forEach((a, i) => {
       const size = Math.min(12 + a.count, 26);
       styles['a'+i] = new TMap.MarkerStyle({ width: size, height: size, anchor: { x: size/2, y: size/2 }, color: '#e24b4a', borderWidth: 2, borderColor: '#fff' });
+      const evs = EVENTS.filter(e => e.theater === a.key).slice(0, 8);
       geoms.push({ id: 'a'+i, styleId: 'a'+i, position: new TMap.LatLng(a.lat, a.lon),
-        extra: '<b>'+a.zh+'</b>：当日 '+a.count+' 条事件' });
+        extra: '<b>'+a.zh+'</b>：当日 '+a.count+' 条事件<br><br>'+eventsList(evs, a.zh) });
     });
   }
   if (MAP_DATA.event_points && MAP_DATA.event_points.length) {
     MAP_DATA.event_points.forEach((p, i) => {
       styles['p'+i] = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff5722', borderWidth: 2, borderColor: '#fff' });
+      const names = p.names || [];
+      const evs = EVENTS.filter(e => names.some(n => n && (e.title_zh.indexOf(n) !== -1 || e.title_en.toLowerCase().indexOf(n.toLowerCase()) !== -1))).slice(0, 8);
       geoms.push({ id: 'p'+i, styleId: 'p'+i, position: new TMap.LatLng(p.lat, p.lon),
-        extra: '<b>事件地点：'+p.names.join(' / ')+'</b><br>关联 '+p.count+' 条事件' });
+        extra: '<b>事件地点：'+names.join(' / ')+'</b>（关联 '+p.count+' 条）<br><br>'+eventsList(evs, names.join(' / ')) });
     });
   }
   if (geoms.length) {
@@ -697,7 +1052,7 @@ function loadRoads() {
   const ld = document.getElementById('loading'); ld.style.display = 'block';
   fetch('roads-data.json').then(r => r.json()).then(d => {
     ld.style.display = 'none';
-    L.roads = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#999', lineWidth: 2 }) },
+    L.roads = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#8a93a6', lineWidth: 2 }) },
       geometries: d.roads.map((w, i) => ({ id: 'r'+i, styleId: 'r', paths: w.c.map(LL) })) });
     L.rail = new TMap.MultiPolyline({ map, styles: { r: new TMap.PolylineStyle({ color: '#333', lineWidth: 1.5 }) },
       geometries: d.rail.map((w, i) => ({ id: 'l'+i, styleId: 'r', paths: w.c.map(LL) })) });
@@ -766,6 +1121,11 @@ function onZoom() {
 }
 map.on('zoom_changed', () => { clearTimeout(zoomTimer); zoomTimer = setTimeout(onZoom, 200); });
 map.on('center_changed', () => { clearTimeout(zoomTimer); zoomTimer = setTimeout(updateVillages, 200); });
+/* 全屏 */
+document.getElementById('full').addEventListener('click', () => {
+  if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.exitFullscreen().catch(()=>{}); }
+});
 </script>
 </body>
 </html>
@@ -810,7 +1170,8 @@ def render_map_html(rows: list[dict]) -> None:
     (DOCS / "map.html").write_text(html, encoding="utf-8")
     log(f"map rendered: control={'yes' if md['control'] else 'no'} "
         f"cities={len(md['cities'])} strongholds={len(md['strongholds'])} "
-        f"event_areas={len(md['event_areas'])} event_points={len(md['event_points'])} -> docs/")
+        f"event_areas={len(md['event_areas'])} event_points={len(md['event_points'])} "
+        f"events_detail={len(md['events'])} -> docs/")
 
 
 if __name__ == "__main__":
