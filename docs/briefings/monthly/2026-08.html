@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>俄乌战争月度深度 · 2026-08 ｜ 简报</title>
+<style>  :root {
+    --bg:#f5f6f8; --fg:#1c2330; --mut:#667085; --bd:#e4e8ef;
+    --card:#ffffff; --acc:#1a5fb4; --acc-soft:#eaf1fb;
+    --red:#c0392b; --red-soft:#fdecea;
+    --amber:#b36b00; --amber-soft:#fdf3e2;
+    --green:#1e7d4f; --green-soft:#e8f5ee;
+    --purple:#7f77dd; --shadow:0 1px 3px rgba(23,33,60,.06),0 4px 14px rgba(23,33,60,.05);
+  }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif; margin:0; color:var(--fg); background:var(--bg); }
+  a { color:var(--acc); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  /* ---------- 顶栏 ---------- */
+  .topbar { background:var(--card); border-bottom:1px solid var(--bd); }
+  .topbar-in { max-width:1200px; margin:0 auto; padding:18px 22px 12px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .topbar h1 { margin:0; font-size:20px; letter-spacing:.2px; }
+  .topbar h1 .dot { color:var(--red); }
+  .sub { color:var(--mut); font-size:12.5px; }
+  nav { margin:10px 0 0; display:flex; gap:6px; flex-wrap:wrap; }
+  nav a { font-size:12.5px; padding:4px 12px; border-radius:999px; border:1px solid var(--bd); color:var(--fg); background:#fafbfc; }
+  nav a:hover { background:var(--acc-soft); border-color:#c9d8ef; text-decoration:none; }
+  .wrap { max-width:1200px; margin:0 auto; padding:20px 22px 70px; }
+  /* ---------- 统计卡 ---------- */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:0 0 18px; }
+  .card { background:var(--card); border:1px solid var(--bd); border-radius:14px; padding:14px 16px; box-shadow:var(--shadow); }
+  .card .num { font-size:24px; font-weight:700; color:var(--fg); line-height:1.2; }
+  .card .num small { font-size:13px; color:var(--mut); font-weight:500; }
+  .card .lbl { font-size:12px; color:var(--mut); margin-top:3px; display:flex; align-items:center; gap:6px; }
+  .card .ico { font-size:15px; }
+  .card.acc .num { color:var(--acc); } .card.red .num { color:var(--red); }
+  .card.green .num { color:var(--green); } .card.amber .num { color:var(--amber); }
+  /* ---------- 通用区块卡 ---------- */
+  .sec { background:var(--card); border:1px solid var(--bd); border-radius:14px; box-shadow:var(--shadow); margin:0 0 18px; overflow:hidden; }
+  .sec-h { display:flex; align-items:center; gap:10px; padding:13px 18px; border-bottom:1px solid var(--bd); flex-wrap:wrap; }
+  .sec-h h2 { margin:0; font-size:15.5px; }
+  .sec-h .muted { color:var(--mut); font-size:12px; }
+  .sec-h .sp { flex:1; }
+  .btn { font-size:12px; border:1px solid var(--bd); border-radius:8px; padding:5px 12px; color:var(--acc); background:#fafbfc; text-decoration:none; }
+  .btn:hover { background:var(--acc-soft); text-decoration:none; }
+  .btn.red { color:var(--red); border-color:#f0c8c2; } .btn.red:hover { background:var(--red-soft); }
+  .sec-b { padding:14px 18px; }
+  /* ---------- 态势地图 ---------- */
+  .map-frame { display:block; width:100%; height:520px; border:0; background:#eef1f5; }
+  @media (max-width:720px){ .map-frame { height:60vh; min-height:340px; } }
+  /* ---------- 今日要点 ---------- */
+  .pts { display:flex; flex-direction:column; }
+  .grp-t { font-size:12px; color:var(--acc); font-weight:600; margin:12px 0 6px; display:flex; align-items:center; gap:8px; }
+  .grp-t:first-child { margin-top:0; }
+  .grp-t::after { content:""; flex:1; height:1px; background:var(--bd); }
+  .pt { border:1px solid var(--bd); border-left:3px solid var(--acc); border-radius:10px; padding:9px 13px; margin:0 0 8px; cursor:pointer; transition:background .12s; }
+  .pt:hover { background:#fafbfd; }
+  .pt .row1 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .pt .zh { font-weight:600; font-size:13.5px; }
+  .pt .en { color:var(--mut); font-size:12px; margin-top:2px; }
+  .pt .sum { color:#4a5568; font-size:12.5px; margin-top:5px; padding-top:6px; border-top:1px dashed var(--bd); line-height:1.6; }
+  .rel { display:inline-block; min-width:20px; text-align:center; font-size:10.5px; font-weight:700; border-radius:5px; padding:1px 5px; color:#fff; }
+  .rel-A { background:var(--green); } .rel-B { background:var(--acc); } .rel-C { background:#e08c2e; }
+  .rel-D { background:var(--red); } .rel-E { background:#7a1f14; } .rel-F { background:#4a4a4a; }
+  .rel-x { background:#9aa3b2; }
+  .conf { font-size:11px; color:var(--mut); border:1px solid var(--bd); border-radius:5px; padding:1px 6px; }
+  .flag { font-size:11px; color:var(--red); background:var(--red-soft); border-radius:5px; padding:1px 6px; font-weight:600; }
+  .src { font-size:11px; color:var(--mut); }
+  /* ---------- 信源对照 ---------- */
+  details.cross { border:1px solid var(--bd); border-radius:10px; margin:10px 0; }
+  details.cross summary { cursor:pointer; padding:10px 14px; font-size:13px; font-weight:600; color:var(--fg); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.cross summary::before { content:"▸"; color:var(--acc); transition:transform .15s; }
+  details.cross[open] summary::before { transform:rotate(90deg); }
+  details.cross .box { padding:0 14px 12px; }
+  details.cross table { width:100%; border-collapse:collapse; font-size:12px; margin:4px 0; }
+  details.cross th, details.cross td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--bd); vertical-align:top; }
+  details.cross th { background:#fafbfc; }
+  /* ---------- 事件检索 ---------- */
+  .filters { display:flex; gap:10px; flex-wrap:wrap; }
+  input,select { padding:8px 11px; border:1px solid var(--bd); border-radius:9px; font-size:13px; background:#fff; color:var(--fg); }
+  input { flex:1 1 260px; }
+  table.ev { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.ev th, table.ev td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--bd); vertical-align:top; }
+  table.ev th { background:#fafbfc; position:sticky; top:0; font-weight:600; color:var(--mut); font-size:11.5px; white-space:nowrap; }
+  table.ev tbody tr:hover { background:#f7f9fd; }
+  table.ev td.et .en { display:block; color:var(--mut); font-size:11.5px; margin-top:1px; }
+  table.ev td.et .sum { display:block; color:#4a5568; font-size:11.5px; margin-top:3px; }
+  .tag { display:inline-block; background:var(--acc-soft); color:var(--acc); border-radius:6px; padding:1px 7px; font-size:10.5px; margin:2px 4px 0 0; }
+  .disc { color:var(--red); font-weight:700; font-size:11.5px; }
+  .empty { color:#98a2b3; text-align:center; padding:26px 0 !important; }
+  .morebar { text-align:center; padding:12px 0 4px; }
+  .morebar button { border:1px solid var(--bd); background:#fff; border-radius:9px; padding:8px 22px; font-size:13px; color:var(--acc); cursor:pointer; }
+  .morebar button:hover { background:var(--acc-soft); }
+  .cnt { font-size:12px; color:var(--mut); }
+  /* ---------- 简报页正文 ---------- */
+  .lb { font-size:14px; line-height:1.75; }
+  .lb h1 { font-size:20px; margin:6px 0 12px; }
+  .lb h2 { font-size:16px; margin:22px 0 8px; padding-bottom:6px; border-bottom:2px solid var(--acc-soft); }
+  .lb h3 { font-size:14.5px; margin:16px 0 6px; }
+  .lb blockquote { margin:10px 0; padding:9px 14px; background:#fafbfc; border-left:3px solid var(--acc); color:var(--mut); font-size:13px; border-radius:0 8px 8px 0; }
+  .lb ul { margin:8px 0; padding-left:24px; }
+  .lb li { margin:4px 0; }
+  .lb table { font-size:12.5px; margin:10px 0; }
+  .lb hr { border:none; border-top:1px dashed var(--bd); margin:18px 0; }
+  .lb code { background:#f1f3f7; border-radius:4px; padding:1px 5px; font-size:12.5px; }
+  .lb a { word-break:break-all; }
+  .lb p { margin:10px 0; }
+  .lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 8px; text-align:left; }
+  .lb th { background:#fafbfc; }
+  /* ---------- 归档页 ---------- */
+  .archive { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+  .archive .ag { background:var(--card); border:1px solid var(--bd); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; }
+  .archive .ag-h { padding:12px 16px; font-size:14.5px; font-weight:700; border-bottom:1px solid var(--bd); background:linear-gradient(180deg,#fafbfc,#fff); }
+  .archive ul { list-style:none; padding:0; margin:0; }
+  .archive li { padding:9px 16px; border-bottom:1px dashed #eef1f6; font-size:13px; display:flex; align-items:center; gap:10px; }
+  .archive li:last-child { border-bottom:none; }
+  .archive li a { text-decoration:none; font-weight:500; }
+  .archive .d { color:var(--mut); font-size:11.5px; margin-left:auto; white-space:nowrap; }
+  footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:26px; padding-top:14px; line-height:1.8; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>📄 俄乌战争月度深度 · 2026-08</h1>
+    <div class="sub"><a href="../../../index.html">← 返回首页</a> ｜ <a href="../../../briefings.html">全部简报</a> ｜ <a href="../../../map.html">🗺 态势地图</a></div>
+  </div>
+</div>
+<div class="wrap"><div class="sec"><div class="sec-b lb"><h1>俄乌战争月度深度 · 2026-08</h1>
+<blockquote><b>编号</b> M-202608 ｜ <b>编辑</b> system</blockquote>
+<h2>战线状况 / Frontline</h2>
+<ul>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Simferopol: frontline event</b> / Simferopol: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Simferopol，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Simferopol，主类型 frontline，信源 liga</li>
+<li><b>Zalizne: frontline event</b> / Zalizne: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Zalizne，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Zalizne，主类型 frontline，信源 militarnyy</li>
+<li><b>Kostiantynivka: frontline event</b> / Kostiantynivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kostiantynivka，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kostiantynivka，主类型 frontline，信源 militarnyy</li>
+<li><b>Voronyne: frontline event</b> / Voronyne: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Voronyne，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Voronyne，主类型 frontline，信源 militarnyy</li>
+<li><b>Khmelnytskyy: frontline event</b> / Khmelnytskyy: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Khmelnytskyy，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Khmelnytskyy，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Kuban: frontline event</b> / Kuban: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kuban，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kuban，主类型 frontline，信源 pravdaua</li>
+<li><b>Chornomorske: frontline event</b> / Chornomorske: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Chornomorske，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Chornomorske，主类型 frontline，信源 pravdaua</li>
+<li><b>Volna: frontline event</b> / Volna: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Volna，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Volna，主类型 frontline，信源 militarnyy</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Pavlohrad: frontline event</b> / Pavlohrad: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Pavlohrad，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Pavlohrad，主类型 frontline，信源 militarnyy</li>
+<li><b>Kostiantynivka: frontline event</b> / Kostiantynivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kostiantynivka，主类型 frontline，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kostiantynivka，主类型 frontline，信源 nv, pravdaua</li>
+<li><b>Zaporizhzhya: frontline event</b> / Zaporizhzhya: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Zaporizhzhya，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Zaporizhzhya，主类型 frontline，信源 nv</li>
+<li><b>Simferopol: frontline event</b> / Simferopol: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Simferopol，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Simferopol，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Odessa: frontline event</b> / Odessa: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Odessa，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Odessa，主类型 frontline，信源 nv</li>
+<li><b>Kuban: frontline event</b> / Kuban: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kuban，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kuban，主类型 frontline，信源 pravdaua</li>
+<li><b>Slobozhans'ke: frontline event</b> / Slobozhans'ke: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Slobozhans'ke，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Slobozhans'ke，主类型 frontline，信源 pravdaua</li>
+<li><b>Volovytsia: frontline event</b> / Volovytsia: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Volovytsia，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Volovytsia，主类型 frontline，信源 pravdaua</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>n/a: frontline event</b> / n/a: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 n/a，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 n/a，主类型 frontline，信源 militarnyy</li>
+<li><b>Kostiantynivka: frontline event</b> / Kostiantynivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kostiantynivka，主类型 frontline，信源 nv, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kostiantynivka，主类型 frontline，信源 nv, unian</li>
+<li><b>Chernihiv: frontline event</b> / Chernihiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chernihiv，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chernihiv，主类型 frontline，信源 nv</li>
+<li><b>Helendzhyk: frontline event</b> / Helendzhyk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Helendzhyk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Helendzhyk，主类型 frontline，信源 nv</li>
+<li><b>Simferopol: frontline event</b> / Simferopol: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Simferopol，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Simferopol，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Poltava: frontline event</b> / Poltava: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Poltava，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Poltava，主类型 frontline，信源 pravdaua</li>
+<li><b>Petropavlivka: frontline event</b> / Petropavlivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Petropavlivka，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Petropavlivka，主类型 frontline，信源 pravdaua</li>
+<li><b>Deremezna: frontline event</b> / Deremezna: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Deremezna，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Deremezna，主类型 frontline，信源 unian</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Vesele: frontline event</b> / Vesele: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Vesele，主类型 frontline，信源 meduza</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Vesele，主类型 frontline，信源 meduza</li>
+<li><b>Volna: frontline event</b> / Volna: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Volna，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Volna，主类型 frontline，信源 militarnyy</li>
+<li><b>Khmelnytskyy: frontline event</b> / Khmelnytskyy: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Khmelnytskyy，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Khmelnytskyy，主类型 frontline，信源 militarnyy</li>
+<li><b>Kupiansk: frontline event</b> / Kupiansk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kupiansk，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kupiansk，主类型 frontline，信源 militarnyy</li>
+<li><b>Slobozhans'ke: frontline event</b> / Slobozhans'ke: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Slobozhans'ke，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Slobozhans'ke，主类型 frontline，信源 militarnyy</li>
+<li><b>Bila Tserkva: frontline event</b> / Bila Tserkva: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Bila Tserkva，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Bila Tserkva，主类型 frontline，信源 militarnyy</li>
+<li><b>Chorna Dolyna: frontline event</b> / Chorna Dolyna: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Chorna Dolyna，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Chorna Dolyna，主类型 frontline，信源 militarnyy</li>
+<li><b>Kherson: frontline event</b> / Kherson: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kherson，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kherson，主类型 frontline，信源 militarnyy</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Volovytsia: frontline event</b> / Volovytsia: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Volovytsia，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Volovytsia，主类型 frontline，信源 nv</li>
+<li><b>Kharkiv: frontline event</b> / Kharkiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kharkiv，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kharkiv，主类型 frontline，信源 nv</li>
+<li><b>Novyi: frontline event</b> / Novyi: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Novyi，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Novyi，主类型 frontline，信源 unian</li>
+<li><b>Chernihiv: frontline event</b> / Chernihiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Chernihiv，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Chernihiv，主类型 frontline，信源 unian</li>
+<li><b>Ruttschenkowo: frontline event</b> / Ruttschenkowo: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Ruttschenkowo，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Ruttschenkowo，主类型 frontline，信源 unian</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kyiv，主类型 frontline，信源 liga, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kyiv，主类型 frontline，信源 liga, pravdaua</li>
+<li><b>Chernihiv: frontline event</b> / Chernihiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Chernihiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Chernihiv，主类型 frontline，信源 liga</li>
+<li><b>Zaporizhzhya: frontline event</b> / Zaporizhzhya: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Zaporizhzhya，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Zaporizhzhya，主类型 frontline，信源 liga</li>
+<li><b>Novyi: frontline event</b> / Novyi: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Novyi，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Novyi，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Kostiantynivka: frontline event</b> / Kostiantynivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kostiantynivka，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kostiantynivka，主类型 frontline，信源 nv</li>
+<li><b>Kherson: frontline event</b> / Kherson: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kherson，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kherson，主类型 frontline，信源 unian</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Simferopol: frontline event</b> / Simferopol: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Simferopol，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Simferopol，主类型 frontline，信源 liga</li>
+<li><b>Balaklava: frontline event</b> / Balaklava: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Balaklava，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Balaklava，主类型 frontline，信源 militarnyy</li>
+<li><b>Kerch: frontline event</b> / Kerch: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kerch，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kerch，主类型 frontline，信源 militarnyy</li>
+<li><b>Pravda: frontline event</b> / Pravda: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Pravda，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Pravda，主类型 frontline，信源 militarnyy</li>
+<li><b>Kharkiv: frontline event</b> / Kharkiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kharkiv，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kharkiv，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Ruttschenkowo: frontline event</b> / Ruttschenkowo: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Ruttschenkowo，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Ruttschenkowo，主类型 frontline，信源 pravdaua</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Yalta: frontline event</b> / Yalta: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Yalta，主类型 frontline，信源 militarnyy, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Yalta，主类型 frontline，信源 militarnyy, unian</li>
+<li><b>Simferopol: frontline event</b> / Simferopol: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Simferopol，主类型 frontline，信源 militarnyy, pravdaua, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Simferopol，主类型 frontline，信源 militarnyy, pravdaua, unian</li>
+<li><b>Donetsk: frontline event</b> / Donetsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Donetsk，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Donetsk，主类型 frontline，信源 militarnyy</li>
+<li><b>Ruttschenkowo: frontline event</b> / Ruttschenkowo: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Ruttschenkowo，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Ruttschenkowo，主类型 frontline，信源 nv</li>
+<li><b>Lyman: frontline event</b> / Lyman: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Lyman，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Lyman，主类型 frontline，信源 nv</li>
+<li><b>Svobodnoye: frontline event</b> / Svobodnoye: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Svobodnoye，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Svobodnoye，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Odessa: frontline event</b> / Odessa: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Odessa，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Odessa，主类型 frontline，信源 pravdaua</li>
+<li><b>Zaporizhzhya: frontline event</b> / Zaporizhzhya: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Zaporizhzhya，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Zaporizhzhya，主类型 frontline，信源 unian</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kyiv，主类型 frontline，信源 liga, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kyiv，主类型 frontline，信源 liga, nv</li>
+<li><b>Zaporizhzhya: frontline event</b> / Zaporizhzhya: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Zaporizhzhya，主类型 frontline，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Zaporizhzhya，主类型 frontline，信源 militarnyy</li>
+<li><b>Davydivka: frontline event</b> / Davydivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Davydivka，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Davydivka，主类型 frontline，信源 nv</li>
+<li><b>Helendzhyk: frontline event</b> / Helendzhyk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Helendzhyk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Helendzhyk，主类型 frontline，信源 nv</li>
+<li><b>Kherson: frontline event</b> / Kherson: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kherson，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kherson，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Kropyvnytskyy: frontline event</b> / Kropyvnytskyy: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kropyvnytskyy，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kropyvnytskyy，主类型 frontline，信源 unian</li>
+<li><b>Chorna Dolyna: frontline event</b> / Chorna Dolyna: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Chorna Dolyna，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Chorna Dolyna，主类型 frontline，信源 unian</li>
+<li><b>Odessa: frontline event</b> / Odessa: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Odessa，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Odessa，主类型 frontline，信源 unian</li>
+<li><b>Kostiantynivka: frontline event</b> / Kostiantynivka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kostiantynivka，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kostiantynivka，主类型 frontline，信源 pravdaua</li>
+<li><b>Odessa: frontline event</b> / Odessa: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Odessa，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Odessa，主类型 frontline，信源 liga</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Ruttschenkowo: frontline event</b> / Ruttschenkowo: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Ruttschenkowo，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Ruttschenkowo，主类型 frontline，信源 nv</li>
+<li><b>Pokrovsk: frontline event</b> / Pokrovsk: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Pokrovsk，主类型 frontline，信源 nv</li>
+<li><b>Bilka: frontline event</b> / Bilka: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Bilka，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Bilka，主类型 frontline，信源 pravdaua</li>
+<li><b>Chorna Dolyna: frontline event</b> / Chorna Dolyna: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Chorna Dolyna，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Chorna Dolyna，主类型 frontline，信源 pravdaua</li>
+<li><b>Lyman: frontline event</b> / Lyman: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Lyman，主类型 frontline，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Lyman，主类型 frontline，信源 pravdaua</li>
+<li><b>Sumy: frontline event</b> / Sumy: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Sumy，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Sumy，主类型 frontline，信源 liga</li>
+<li><b>Kyiv: frontline event</b> / Kyiv: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Kyiv，主类型 frontline，信源 liga</li>
+<li><b>Chornobyl: frontline event</b> / Chornobyl: frontline event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Chornobyl，主类型 frontline，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Chornobyl，主类型 frontline，信源 unian</li>
+<li><b>DeepState 战线控制快照（2026-08-12）</b> / DeepState front-line control snapshot (2026-08-12)  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：DeepState 控制区/前线快照（2026-08-12）：1 个要素，几何类型 MultiPolygon。</li>
+<li style="margin-left:1em">EN：DeepState 控制区/前线快照（2026-08-12）：1 个要素，几何类型 MultiPolygon。</li>
+<li><b>顿涅茨克方向战线推进说法不一</b> / Conflicting claims on Donetsk front advances  ｜ 可靠B 置信3 来源方:third ⚠分歧</li>
+<li style="margin-left:1em">中：乌方称击退俄方进攻；俄方称占领若干据点。双方说法分歧，需独立源交叉核验。</li>
+<li style="margin-left:1em">EN：UA says it repelled RU assaults; RU claims seizing positions. Claims diverge; verify with independent sources.</li>
+</ul>
+<h2>兵力状况 / Troops & Manpower</h2>
+<ul>
+<li><b>Pokrovsk: troops event</b> / Pokrovsk: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Pokrovsk，主类型 troops，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Pokrovsk，主类型 troops，信源 pravdaua</li>
+<li><b>Kharkiv: troops event</b> / Kharkiv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kharkiv，主类型 troops，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kharkiv，主类型 troops，信源 unian</li>
+<li><b>Zakumske: troops event</b> / Zakumske: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Zakumske，主类型 troops，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Zakumske，主类型 troops，信源 unian</li>
+<li><b>Miskyi Ostriv: troops event</b> / Miskyi Ostriv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li><b>Pokrovsk: troops event</b> / Pokrovsk: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Pokrovsk，主类型 troops，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Pokrovsk，主类型 troops，信源 pravdaua</li>
+<li><b>Miskyi Ostriv: troops event</b> / Miskyi Ostriv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li><b>Olenivka: troops event</b> / Olenivka: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Olenivka，主类型 troops，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Olenivka，主类型 troops，信源 nv</li>
+<li><b>Kyiv: troops event</b> / Kyiv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 troops，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 troops，信源 nv</li>
+<li><b>Chorna Dolyna: troops event</b> / Chorna Dolyna: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chorna Dolyna，主类型 troops，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chorna Dolyna，主类型 troops，信源 nv</li>
+<li><b>Miskyi Ostriv: troops event</b> / Miskyi Ostriv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li><b>Simferopol: troops event</b> / Simferopol: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Simferopol，主类型 troops，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Simferopol，主类型 troops，信源 pravdaua</li>
+<li><b>Miskyi Ostriv: troops event</b> / Miskyi Ostriv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li><b>Miskyi Ostriv: troops event</b> / Miskyi Ostriv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Miskyi Ostriv，主类型 troops，信源 liga</li>
+<li><b>Ruttschenkowo: troops event</b> / Ruttschenkowo: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Ruttschenkowo，主类型 troops，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Ruttschenkowo，主类型 troops，信源 nv, pravdaua</li>
+<li><b>Simferopol: troops event</b> / Simferopol: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Simferopol，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Simferopol，主类型 troops，信源 liga</li>
+<li><b>Kyiv: troops event</b> / Kyiv: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 troops，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 troops，信源 nv</li>
+<li><b>Chernivtsi: troops event</b> / Chernivtsi: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Chernivtsi，主类型 troops，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Chernivtsi，主类型 troops，信源 pravdaua</li>
+<li><b>Pokrovsk: troops event</b> / Pokrovsk: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Pokrovsk，主类型 troops，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Pokrovsk，主类型 troops，信源 pravdaua</li>
+<li><b>Posich: troops event</b> / Posich: troops event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Posich，主类型 troops，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Posich，主类型 troops，信源 liga</li>
+</ul>
+<h2>装备状况 / Equipment</h2>
+<ul>
+<li><b>俄方装备损失更新（2026-08-12）</b> / Russian equipment losses update (2026-08-12)  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：俄方装备累计损失（截至2026-08-12）：aircraft=439; helicopter=354; tank=12259; APC=25127; field artillery=47773; MRL=2023; anti-aircraft warfare=1561; ground robotic systems=2203; drone=456339; cruise missiles=5007</li>
+<li style="margin-left:1em">EN：Cumulative Russian equipment losses (as of 2026-08-12): aircraft=439; helicopter=354; tank=12259; APC=25127; field artillery=47773; MRL=2023; anti-aircraft warfare=1561; ground robotic systems=2203; drone=456339; cruise missiles=5007</li>
+</ul>
+<h2>平民状况 / Civilian</h2>
+<ul>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li><b>Pustomyty: civilian event</b> / Pustomyty: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Pustomyty，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Pustomyty，主类型 civilian，信源 liga</li>
+<li><b>Simferopol: civilian event</b> / Simferopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Simferopol，主类型 civilian，信源 militarnyy, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Simferopol，主类型 civilian，信源 militarnyy, pravdaua</li>
+<li><b>Chonhar: civilian event</b> / Chonhar: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Chonhar，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Chonhar，主类型 civilian，信源 militarnyy</li>
+<li><b>Chorna Dolyna: civilian event</b> / Chorna Dolyna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Chorna Dolyna，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Chorna Dolyna，主类型 civilian，信源 militarnyy</li>
+<li><b>Pavlohrad: civilian event</b> / Pavlohrad: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Pavlohrad，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Pavlohrad，主类型 civilian，信源 militarnyy</li>
+<li><b>Sevastopol: civilian event</b> / Sevastopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Sevastopol，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Sevastopol，主类型 civilian，信源 nv</li>
+<li><b>Podil: civilian event</b> / Podil: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Podil，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Podil，主类型 civilian，信源 nv</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Odessa，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Odessa，主类型 civilian，信源 nv</li>
+<li><b>Kharkiv: civilian event</b> / Kharkiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kharkiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kharkiv，主类型 civilian，信源 nv</li>
+<li><b>Brovary: civilian event</b> / Brovary: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Brovary，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Brovary，主类型 civilian，信源 nv</li>
+<li><b>Chernihiv: civilian event</b> / Chernihiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Chernihiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Chernihiv，主类型 civilian，信源 nv</li>
+<li><b>Stara Darnytsya: civilian event</b> / Stara Darnytsya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Stara Darnytsya，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Stara Darnytsya，主类型 civilian，信源 nv</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Dnipro，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Dnipro，主类型 civilian，信源 nv</li>
+<li><b>Bortnychi: civilian event</b> / Bortnychi: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Bortnychi，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Bortnychi，主类型 civilian，信源 nv</li>
+<li><b>Posich: civilian event</b> / Posich: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Posich，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Posich，主类型 civilian，信源 nv</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kherson，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kherson，主类型 civilian，信源 pravdaua</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Deremezna，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Deremezna，主类型 civilian，信源 pravdaua</li>
+<li><b>Nikopol: civilian event</b> / Nikopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Nikopol，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Nikopol，主类型 civilian，信源 pravdaua</li>
+<li><b>Ruttschenkowo: civilian event</b> / Ruttschenkowo: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Ruttschenkowo，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Ruttschenkowo，主类型 civilian，信源 militarnyy</li>
+<li><b>Voronyne: civilian event</b> / Voronyne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Odessa，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Odessa，主类型 civilian，信源 liga</li>
+<li><b>Luhove: civilian event</b> / Luhove: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Luhove，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Luhove，主类型 civilian，信源 liga</li>
+<li><b>Kharkiv: civilian event</b> / Kharkiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kharkiv，主类型 civilian，信源 meduza, pravdaua, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kharkiv，主类型 civilian，信源 meduza, pravdaua, unian</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li><b>Yablon'ki: civilian event</b> / Yablon'ki: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Yablon'ki，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Yablon'ki，主类型 civilian，信源 nv</li>
+<li><b>Miskyi Ostriv: civilian event</b> / Miskyi Ostriv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Miskyi Ostriv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Miskyi Ostriv，主类型 civilian，信源 nv</li>
+<li><b>Mariupol: civilian event</b> / Mariupol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Mariupol，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Mariupol，主类型 civilian，信源 nv</li>
+<li><b>Slobozhans'ke: civilian event</b> / Slobozhans'ke: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Slobozhans'ke，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Slobozhans'ke，主类型 civilian，信源 nv</li>
+<li><b>Mykolayiv: civilian event</b> / Mykolayiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Mykolayiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Mykolayiv，主类型 civilian，信源 nv</li>
+<li><b>Poltava: civilian event</b> / Poltava: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Poltava，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Poltava，主类型 civilian，信源 nv</li>
+<li><b>Chaika: civilian event</b> / Chaika: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Chaika，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Chaika，主类型 civilian，信源 nv</li>
+<li><b>Kryvorizhzhya: civilian event</b> / Kryvorizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kryvorizhzhya，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kryvorizhzhya，主类型 civilian，信源 pravdaua</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li><b>Khmelnytskyy: civilian event</b> / Khmelnytskyy: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Khmelnytskyy，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Khmelnytskyy，主类型 civilian，信源 liga</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kherson，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kherson，主类型 civilian，信源 pravdaua</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li><b>Simferopol: civilian event</b> / Simferopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Simferopol，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Simferopol，主类型 civilian，信源 liga</li>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li><b>Poltava: civilian event</b> / Poltava: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Poltava，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Poltava，主类型 civilian，信源 militarnyy</li>
+<li><b>Kupiansk: civilian event</b> / Kupiansk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kupiansk，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kupiansk，主类型 civilian，信源 militarnyy</li>
+<li><b>n/a: civilian event</b> / n/a: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 n/a，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 n/a，主类型 civilian，信源 nv</li>
+<li><b>Marianivka: civilian event</b> / Marianivka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Marianivka，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Marianivka，主类型 civilian，信源 nv</li>
+<li><b>Chernihiv: civilian event</b> / Chernihiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chernihiv，主类型 civilian，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chernihiv，主类型 civilian，信源 nv, pravdaua</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kherson，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kherson，主类型 civilian，信源 nv</li>
+<li><b>Lviv: civilian event</b> / Lviv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li><b>Radushne: civilian event</b> / Radushne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Radushne，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Radushne，主类型 civilian，信源 nv</li>
+<li><b>Kryvyy Rih: civilian event</b> / Kryvyy Rih: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kryvyy Rih，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kryvyy Rih，主类型 civilian，信源 nv</li>
+<li><b>Kalinovka: civilian event</b> / Kalinovka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kalinovka，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kalinovka，主类型 civilian，信源 nv</li>
+<li><b>Chorna Dolyna: civilian event</b> / Chorna Dolyna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chorna Dolyna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chorna Dolyna，主类型 civilian，信源 nv</li>
+<li><b>Bilka: civilian event</b> / Bilka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Bilka，主类型 civilian，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Bilka，主类型 civilian，信源 nv, pravdaua</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Zaporizhzhya，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Zaporizhzhya，主类型 civilian，信源 pravdaua</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li><b>Voronyne: civilian event</b> / Voronyne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li><b>Beryslav: civilian event</b> / Beryslav: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Beryslav，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Beryslav，主类型 civilian，信源 pravdaua</li>
+<li><b>Helendzhyk: civilian event</b> / Helendzhyk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Helendzhyk，主类型 civilian，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Helendzhyk，主类型 civilian，信源 unian</li>
+<li><b>Kerch: civilian event</b> / Kerch: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kerch，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kerch，主类型 civilian，信源 nv</li>
+<li><b>Kharkiv: civilian event</b> / Kharkiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kharkiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kharkiv，主类型 civilian，信源 nv</li>
+<li><b>Pryluky: civilian event</b> / Pryluky: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Pryluky，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Pryluky，主类型 civilian，信源 liga</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li><b>Khmelnytskyy: civilian event</b> / Khmelnytskyy: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Khmelnytskyy，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Khmelnytskyy，主类型 civilian，信源 liga</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kherson，主类型 civilian，信源 liga, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kherson，主类型 civilian，信源 liga, nv</li>
+<li><b>Helendzhyk: civilian event</b> / Helendzhyk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Helendzhyk，主类型 civilian，信源 meduza</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Helendzhyk，主类型 civilian，信源 meduza</li>
+<li><b>Simferopol: civilian event</b> / Simferopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Simferopol，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Simferopol，主类型 civilian，信源 militarnyy</li>
+<li><b>Sevastopol: civilian event</b> / Sevastopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Sevastopol，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Sevastopol，主类型 civilian，信源 militarnyy</li>
+<li><b>Mykolayiv: civilian event</b> / Mykolayiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Mykolayiv，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Mykolayiv，主类型 civilian，信源 militarnyy</li>
+<li><b>Sotsmisto: civilian event</b> / Sotsmisto: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Sotsmisto，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Sotsmisto，主类型 civilian，信源 nv</li>
+<li><b>Novgorodskoye: civilian event</b> / Novgorodskoye: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Novgorodskoye，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Novgorodskoye，主类型 civilian，信源 nv</li>
+<li><b>Lviv: civilian event</b> / Lviv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Odessa，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Odessa，主类型 civilian，信源 nv</li>
+<li><b>Chernihiv: civilian event</b> / Chernihiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Chernihiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Chernihiv，主类型 civilian，信源 nv</li>
+<li><b>Sumy: civilian event</b> / Sumy: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Sumy，主类型 civilian，信源 nv, liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Sumy，主类型 civilian，信源 nv, liga</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Dnipro，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Dnipro，主类型 civilian，信源 nv</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li><b>Kharkiv: civilian event</b> / Kharkiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kharkiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kharkiv，主类型 civilian，信源 nv</li>
+<li><b>Bilka: civilian event</b> / Bilka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Bilka，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Bilka，主类型 civilian，信源 pravdaua</li>
+<li><b>Voronyne: civilian event</b> / Voronyne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li><b>Chorna Dolyna: civilian event</b> / Chorna Dolyna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Chorna Dolyna，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Chorna Dolyna，主类型 civilian，信源 pravdaua</li>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Volovytsia，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Volovytsia，主类型 civilian，信源 pravdaua</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Deremezna，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Deremezna，主类型 civilian，信源 pravdaua</li>
+<li><b>Novobelyanka: civilian event</b> / Novobelyanka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Novobelyanka，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Novobelyanka，主类型 civilian，信源 pravdaua</li>
+<li><b>Ruttschenkowo: civilian event</b> / Ruttschenkowo: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Ruttschenkowo，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Ruttschenkowo，主类型 civilian，信源 pravdaua</li>
+<li><b>Uzhgorod: civilian event</b> / Uzhgorod: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Uzhgorod，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Uzhgorod，主类型 civilian，信源 pravdaua</li>
+<li><b>Selyshche: civilian event</b> / Selyshche: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Selyshche，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Selyshche，主类型 civilian，信源 pravdaua</li>
+<li><b>Berdyansk: civilian event</b> / Berdyansk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Berdyansk，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Berdyansk，主类型 civilian，信源 nv</li>
+<li><b>Kremenchuk: civilian event</b> / Kremenchuk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kremenchuk，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kremenchuk，主类型 civilian，信源 nv</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Dnipro，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Dnipro，主类型 civilian，信源 liga</li>
+<li><b>Sotsmisto: civilian event</b> / Sotsmisto: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Sotsmisto，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Sotsmisto，主类型 civilian，信源 liga</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kyiv，主类型 civilian，信源 liga, nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kyiv，主类型 civilian，信源 liga, nv, pravdaua</li>
+<li><b>Demiyevka: civilian event</b> / Demiyevka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Demiyevka，主类型 civilian，信源 meduza, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Demiyevka，主类型 civilian，信源 meduza, nv</li>
+<li><b>Volna: civilian event</b> / Volna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Volna，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Volna，主类型 civilian，信源 militarnyy</li>
+<li><b>Selyshche: civilian event</b> / Selyshche: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Selyshche，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Selyshche，主类型 civilian，信源 nv</li>
+<li><b>Obolon: civilian event</b> / Obolon: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Obolon，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Obolon，主类型 civilian，信源 nv</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li><b>Brovary: civilian event</b> / Brovary: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Brovary，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Brovary，主类型 civilian，信源 nv</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Odessa，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Odessa，主类型 civilian，信源 nv</li>
+<li><b>Chaika: civilian event</b> / Chaika: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Chaika，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Chaika，主类型 civilian，信源 nv</li>
+<li><b>Chorna Dolyna: civilian event</b> / Chorna Dolyna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Chorna Dolyna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Chorna Dolyna，主类型 civilian，信源 nv</li>
+<li><b>Lviv: civilian event</b> / Lviv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li><b>Olenivka: civilian event</b> / Olenivka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Olenivka，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Olenivka，主类型 civilian，信源 nv</li>
+<li><b>Kharkiv: civilian event</b> / Kharkiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kharkiv，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kharkiv，主类型 civilian，信源 pravdaua</li>
+<li><b>Bilka: civilian event</b> / Bilka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Bilka，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Bilka，主类型 civilian，信源 pravdaua</li>
+<li><b>Voronyne: civilian event</b> / Voronyne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li><b>Posich: civilian event</b> / Posich: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Posich，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Posich，主类型 civilian，信源 pravdaua</li>
+<li><b>Kryvorizhzhya: civilian event</b> / Kryvorizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kryvorizhzhya，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kryvorizhzhya，主类型 civilian，信源 pravdaua</li>
+<li><b>Kryvyy Rih: civilian event</b> / Kryvyy Rih: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kryvyy Rih，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kryvyy Rih，主类型 civilian，信源 pravdaua</li>
+<li><b>Novyi: civilian event</b> / Novyi: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Novyi，主类型 civilian，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Novyi，主类型 civilian，信源 unian</li>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Volovytsia，主类型 civilian，信源 liga</li>
+<li><b>Volnovakha: civilian event</b> / Volnovakha: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Volnovakha，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Volnovakha，主类型 civilian，信源 liga</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Dnipro，主类型 civilian，信源 liga, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Dnipro，主类型 civilian，信源 liga, nv</li>
+<li><b>Pavlohrad: civilian event</b> / Pavlohrad: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Pavlohrad，主类型 civilian，信源 liga, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Pavlohrad，主类型 civilian，信源 liga, nv</li>
+<li><b>Slobozhans'ke: civilian event</b> / Slobozhans'ke: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Slobozhans'ke，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Slobozhans'ke，主类型 civilian，信源 nv</li>
+<li><b>Balakliia: civilian event</b> / Balakliia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Balakliia，主类型 civilian，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Balakliia，主类型 civilian，信源 nv, pravdaua</li>
+<li><b>Lozova: civilian event</b> / Lozova: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Lozova，主类型 civilian，信源 nv, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Lozova，主类型 civilian，信源 nv, unian</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kyiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kyiv，主类型 civilian，信源 nv</li>
+<li><b>Brovary: civilian event</b> / Brovary: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Brovary，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Brovary，主类型 civilian，信源 nv</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kherson，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kherson，主类型 civilian，信源 nv</li>
+<li><b>Peremoha: civilian event</b> / Peremoha: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Peremoha，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Peremoha，主类型 civilian，信源 nv</li>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Volovytsia，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Volovytsia，主类型 civilian，信源 nv</li>
+<li><b>Lviv: civilian event</b> / Lviv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Lviv，主类型 civilian，信源 nv</li>
+<li><b>Pokrovsk: civilian event</b> / Pokrovsk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Pokrovsk，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Pokrovsk，主类型 civilian，信源 pravdaua</li>
+<li><b>Marhanets: civilian event</b> / Marhanets: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Marhanets，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Marhanets，主类型 civilian，信源 pravdaua</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Odessa，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Odessa，主类型 civilian，信源 pravdaua</li>
+<li><b>Chorna Dolyna: civilian event</b> / Chorna Dolyna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Chorna Dolyna，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Chorna Dolyna，主类型 civilian，信源 pravdaua</li>
+<li><b>Pustomyty: civilian event</b> / Pustomyty: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Pustomyty，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Pustomyty，主类型 civilian，信源 pravdaua</li>
+<li><b>Posich: civilian event</b> / Posich: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Posich，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Posich，主类型 civilian，信源 pravdaua</li>
+<li><b>Sumy: civilian event</b> / Sumy: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Sumy，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Sumy，主类型 civilian，信源 liga</li>
+<li><b>Komyshany: civilian event</b> / Komyshany: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Komyshany，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Komyshany，主类型 civilian，信源 pravdaua</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Odessa，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Odessa，主类型 civilian，信源 liga</li>
+<li><b>Miskyi Ostriv: civilian event</b> / Miskyi Ostriv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Miskyi Ostriv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Miskyi Ostriv，主类型 civilian，信源 liga</li>
+<li><b>Posich: civilian event</b> / Posich: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Posich，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Posich，主类型 civilian，信源 liga</li>
+<li><b>Hvardiiske: civilian event</b> / Hvardiiske: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Hvardiiske，主类型 civilian，信源 militarnyy, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Hvardiiske，主类型 civilian，信源 militarnyy, pravdaua</li>
+<li><b>Simferopol: civilian event</b> / Simferopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Simferopol，主类型 civilian，信源 militarnyy, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Simferopol，主类型 civilian，信源 militarnyy, pravdaua</li>
+<li><b>n/a: civilian event</b> / n/a: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 n/a，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 n/a，主类型 civilian，信源 militarnyy</li>
+<li><b>Zakumske: civilian event</b> / Zakumske: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Zakumske，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Zakumske，主类型 civilian，信源 nv</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 civilian，信源 nv</li>
+<li><b>Yalta: civilian event</b> / Yalta: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Yalta，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Yalta，主类型 civilian，信源 nv</li>
+<li><b>Podil: civilian event</b> / Podil: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Podil，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Podil，主类型 civilian，信源 nv</li>
+<li><b>Obolon: civilian event</b> / Obolon: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Obolon，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Obolon，主类型 civilian，信源 nv</li>
+<li><b>Slobozhans'ke: civilian event</b> / Slobozhans'ke: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Slobozhans'ke，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Slobozhans'ke，主类型 civilian，信源 nv</li>
+<li><b>Chorna Dolyna: civilian event</b> / Chorna Dolyna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Chorna Dolyna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Chorna Dolyna，主类型 civilian，信源 nv</li>
+<li><b>Voloshky: civilian event</b> / Voloshky: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Voloshky，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Voloshky，主类型 civilian，信源 nv</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kherson，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kherson，主类型 civilian，信源 nv</li>
+<li><b>Voronyne: civilian event</b> / Voronyne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Zaporizhzhya，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Zaporizhzhya，主类型 civilian，信源 pravdaua</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Deremezna，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Deremezna，主类型 civilian，信源 pravdaua</li>
+<li><b>Mariupol: civilian event</b> / Mariupol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Mariupol，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Mariupol，主类型 civilian，信源 pravdaua</li>
+<li><b>Izium: civilian event</b> / Izium: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Izium，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Izium，主类型 civilian，信源 pravdaua</li>
+<li><b>Novovolynsk: civilian event</b> / Novovolynsk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Novovolynsk，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Novovolynsk，主类型 civilian，信源 pravdaua</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li><b>Marianivka: civilian event</b> / Marianivka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Marianivka，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Marianivka，主类型 civilian，信源 pravdaua</li>
+<li><b>Kobleve: civilian event</b> / Kobleve: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kobleve，主类型 civilian，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kobleve，主类型 civilian，信源 unian</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kyiv，主类型 civilian，信源 liga</li>
+<li><b>Helendzhyk: civilian event</b> / Helendzhyk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Helendzhyk，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Helendzhyk，主类型 civilian，信源 militarnyy</li>
+<li><b>Volna: civilian event</b> / Volna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Volna，主类型 civilian，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Volna，主类型 civilian，信源 militarnyy</li>
+<li><b>Sumy: civilian event</b> / Sumy: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Sumy，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Sumy，主类型 civilian，信源 nv</li>
+<li><b>Obolon: civilian event</b> / Obolon: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Obolon，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Obolon，主类型 civilian，信源 nv</li>
+<li><b>Demiyevka: civilian event</b> / Demiyevka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Demiyevka，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Demiyevka，主类型 civilian，信源 nv</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li><b>Chaika: civilian event</b> / Chaika: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Chaika，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Chaika，主类型 civilian，信源 nv</li>
+<li><b>Chernivtsi: civilian event</b> / Chernivtsi: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Chernivtsi，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Chernivtsi，主类型 civilian，信源 nv</li>
+<li><b>Zakumske: civilian event</b> / Zakumske: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Zakumske，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Zakumske，主类型 civilian，信源 nv</li>
+<li><b>Nikopol: civilian event</b> / Nikopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Nikopol，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Nikopol，主类型 civilian，信源 nv</li>
+<li><b>Pavlohrad: civilian event</b> / Pavlohrad: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Pavlohrad，主类型 civilian，信源 nv, pravdaua, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Pavlohrad，主类型 civilian，信源 nv, pravdaua, unian</li>
+<li><b>Izium: civilian event</b> / Izium: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Izium，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Izium，主类型 civilian，信源 nv</li>
+<li><b>Volovytsia: civilian event</b> / Volovytsia: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Volovytsia，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Volovytsia，主类型 civilian，信源 pravdaua</li>
+<li><b>Voronyne: civilian event</b> / Voronyne: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Voronyne，主类型 civilian，信源 pravdaua</li>
+<li><b>Mariupol: civilian event</b> / Mariupol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Mariupol，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Mariupol，主类型 civilian，信源 pravdaua</li>
+<li><b>Voloshky: civilian event</b> / Voloshky: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Voloshky，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Voloshky，主类型 civilian，信源 pravdaua</li>
+<li><b>Ukrainka: civilian event</b> / Ukrainka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Ukrainka，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Ukrainka，主类型 civilian，信源 pravdaua</li>
+<li><b>Danylivka: civilian event</b> / Danylivka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Danylivka，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Danylivka，主类型 civilian，信源 liga</li>
+<li><b>Odessa: civilian event</b> / Odessa: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Odessa，主类型 civilian，信源 liga, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Odessa，主类型 civilian，信源 liga, nv</li>
+<li><b>Kharkiv: civilian event</b> / Kharkiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kharkiv，主类型 civilian，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kharkiv，主类型 civilian，信源 liga</li>
+<li><b>Helendzhyk: civilian event</b> / Helendzhyk: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Helendzhyk，主类型 civilian，信源 nv, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Helendzhyk，主类型 civilian，信源 nv, unian</li>
+<li><b>Bilka: civilian event</b> / Bilka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Bilka，主类型 civilian，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Bilka，主类型 civilian，信源 nv, pravdaua</li>
+<li><b>Maiaky: civilian event</b> / Maiaky: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Maiaky，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Maiaky，主类型 civilian，信源 nv</li>
+<li><b>Posich: civilian event</b> / Posich: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Posich，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Posich，主类型 civilian，信源 nv</li>
+<li><b>Zhytomyr: civilian event</b> / Zhytomyr: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Zhytomyr，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Zhytomyr，主类型 civilian，信源 nv</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Zaporizhzhya，主类型 civilian，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Zaporizhzhya，主类型 civilian，信源 nv, pravdaua</li>
+<li><b>Deremezna: civilian event</b> / Deremezna: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Deremezna，主类型 civilian，信源 nv</li>
+<li><b>Reni: civilian event</b> / Reni: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Reni，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Reni，主类型 civilian，信源 pravdaua</li>
+<li><b>Dnipro: civilian event</b> / Dnipro: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Dnipro，主类型 civilian，信源 pravdaua</li>
+<li><b>Nikopol: civilian event</b> / Nikopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Nikopol，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Nikopol，主类型 civilian，信源 pravdaua</li>
+<li><b>Kyiv: civilian event</b> / Kyiv: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kyiv，主类型 civilian，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kyiv，主类型 civilian，信源 unian</li>
+<li><b>n/a: civilian event</b> / n/a: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 n/a，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 n/a，主类型 civilian，信源 nv</li>
+<li><b>Imeni Kirova: civilian event</b> / Imeni Kirova: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Imeni Kirova，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Imeni Kirova，主类型 civilian，信源 nv</li>
+<li><b>Kryvorizhzhya: civilian event</b> / Kryvorizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kryvorizhzhya，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kryvorizhzhya，主类型 civilian，信源 pravdaua</li>
+<li><b>Kherson: civilian event</b> / Kherson: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kherson，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kherson，主类型 civilian，信源 pravdaua</li>
+<li><b>Zaporizhzhya: civilian event</b> / Zaporizhzhya: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Zaporizhzhya，主类型 civilian，信源 nv</li>
+<li><b>Sumy: civilian event</b> / Sumy: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Sumy，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Sumy，主类型 civilian，信源 nv</li>
+<li><b>Simferopol: civilian event</b> / Simferopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Simferopol，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Simferopol，主类型 civilian，信源 nv</li>
+<li><b>Sevastopol: civilian event</b> / Sevastopol: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Sevastopol，主类型 civilian，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Sevastopol，主类型 civilian，信源 nv</li>
+<li><b>Bilka: civilian event</b> / Bilka: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Bilka，主类型 civilian，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Bilka，主类型 civilian，信源 pravdaua</li>
+<li><b>Ruttschenkowo: civilian event</b> / Ruttschenkowo: civilian event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Ruttschenkowo，主类型 civilian，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Ruttschenkowo，主类型 civilian，信源 unian</li>
+</ul>
+<h2>外部势力言行 / External Actors</h2>
+<ul>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Lviv，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Lviv，主类型 external，信源 liga</li>
+<li><b>Posich: external event</b> / Posich: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Posich，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Posich，主类型 external，信源 liga</li>
+<li><b>Artek: external event</b> / Artek: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Artek，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Artek，主类型 external，信源 liga</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kyiv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kyiv，主类型 external，信源 nv</li>
+<li><b>Novyi: external event</b> / Novyi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Novyi，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Novyi，主类型 external，信源 nv</li>
+<li><b>Karpaty: external event</b> / Karpaty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Karpaty，主类型 external，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Karpaty，主类型 external，信源 nv, pravdaua</li>
+<li><b>Kharkiv: external event</b> / Kharkiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kharkiv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kharkiv，主类型 external，信源 nv</li>
+<li><b>Charivne: external event</b> / Charivne: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Charivne，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Charivne，主类型 external，信源 unian</li>
+<li><b>Kozerohy: external event</b> / Kozerohy: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-01）：地点 Kozerohy，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-01）：地点 Kozerohy，主类型 external，信源 unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li><b>Simferopol: external event</b> / Simferopol: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Simferopol，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Simferopol，主类型 external，信源 liga</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Lviv，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Lviv，主类型 external，信源 liga</li>
+<li><b>Zhytomyr: external event</b> / Zhytomyr: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Zhytomyr，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Zhytomyr，主类型 external，信源 nv</li>
+<li><b>Danylivka: external event</b> / Danylivka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Danylivka，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Danylivka，主类型 external，信源 pravdaua</li>
+<li><b>Obolon: external event</b> / Obolon: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Obolon，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Obolon，主类型 external，信源 pravdaua</li>
+<li><b>Kozerohy: external event</b> / Kozerohy: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kozerohy，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kozerohy，主类型 external，信源 unian</li>
+<li><b>Bilka: external event</b> / Bilka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Bilka，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Bilka，主类型 external，信源 unian</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-02）：地点 Kyiv，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-02）：地点 Kyiv，主类型 external，信源 unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 external，信源 liga, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Kyiv，主类型 external，信源 liga, unian</li>
+<li><b>Podil: external event</b> / Podil: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Podil，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Podil，主类型 external，信源 liga</li>
+<li><b>Simferopol: external event</b> / Simferopol: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Simferopol，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Simferopol，主类型 external，信源 nv</li>
+<li><b>Mars: external event</b> / Mars: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Mars，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Mars，主类型 external，信源 nv</li>
+<li><b>Danylivka: external event</b> / Danylivka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Danylivka，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Danylivka，主类型 external，信源 nv</li>
+<li><b>Novyi: external event</b> / Novyi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Novyi，主类型 external，信源 nv, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Novyi，主类型 external，信源 nv, unian</li>
+<li><b>Chumatske: external event</b> / Chumatske: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chumatske，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chumatske，主类型 external，信源 nv</li>
+<li><b>Slobozhans'ke: external event</b> / Slobozhans'ke: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Slobozhans'ke，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Slobozhans'ke，主类型 external，信源 nv</li>
+<li><b>Chernihiv: external event</b> / Chernihiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chernihiv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chernihiv，主类型 external，信源 nv</li>
+<li><b>Bereza: external event</b> / Bereza: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Bereza，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Bereza，主类型 external，信源 pravdaua</li>
+<li><b>Chahor: external event</b> / Chahor: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Chahor，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Chahor，主类型 external，信源 pravdaua</li>
+<li><b>Nakonechnoye: external event</b> / Nakonechnoye: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Nakonechnoye，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Nakonechnoye，主类型 external，信源 pravdaua</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-03）：地点 Lviv，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-03）：地点 Lviv，主类型 external，信源 liga</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Pustomyty，主类型 external，信源 liga, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Pustomyty，主类型 external，信源 liga, unian</li>
+<li><b>Simferopol: external event</b> / Simferopol: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Simferopol，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Simferopol，主类型 external，信源 liga</li>
+<li><b>Kalinovka: external event</b> / Kalinovka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kalinovka，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kalinovka，主类型 external，信源 nv</li>
+<li><b>Vinnytsya: external event</b> / Vinnytsya: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Vinnytsya，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Vinnytsya，主类型 external，信源 nv</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Lviv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Lviv，主类型 external，信源 nv</li>
+<li><b>Novyi: external event</b> / Novyi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Novyi，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Novyi，主类型 external，信源 nv</li>
+<li><b>Mena: external event</b> / Mena: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Mena，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Mena，主类型 external，信源 nv</li>
+<li><b>Karpaty: external event</b> / Karpaty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Karpaty，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Karpaty，主类型 external，信源 pravdaua</li>
+<li><b>Deremezna: external event</b> / Deremezna: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Deremezna，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Deremezna，主类型 external，信源 pravdaua</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kyiv，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kyiv，主类型 external，信源 pravdaua</li>
+<li><b>Petropavlivka: external event</b> / Petropavlivka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Petropavlivka，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Petropavlivka，主类型 external，信源 pravdaua</li>
+<li><b>Kherson: external event</b> / Kherson: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Kherson，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Kherson，主类型 external，信源 unian</li>
+<li><b>Odessa: external event</b> / Odessa: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Odessa，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Odessa，主类型 external，信源 unian</li>
+<li><b>Nadiia: external event</b> / Nadiia: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-04）：地点 Nadiia，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-04）：地点 Nadiia，主类型 external，信源 unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li><b>Voronyne: external event</b> / Voronyne: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Voronyne，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Voronyne，主类型 external，信源 nv</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Kyiv，主类型 external，信源 nv, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Kyiv，主类型 external，信源 nv, unian</li>
+<li><b>Deremezna: external event</b> / Deremezna: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Deremezna，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Deremezna，主类型 external，信源 nv</li>
+<li><b>Zoria: external event</b> / Zoria: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Zoria，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Zoria，主类型 external，信源 nv</li>
+<li><b>Mena: external event</b> / Mena: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Mena，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Mena，主类型 external，信源 nv</li>
+<li><b>Sotsmisto: external event</b> / Sotsmisto: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Sotsmisto，主类型 external，信源 nv, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Sotsmisto，主类型 external，信源 nv, pravdaua</li>
+<li><b>Slobozhans'ke: external event</b> / Slobozhans'ke: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Slobozhans'ke，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Slobozhans'ke，主类型 external，信源 pravdaua</li>
+<li><b>Ukrainsk: external event</b> / Ukrainsk: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Ukrainsk，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Ukrainsk，主类型 external，信源 pravdaua</li>
+<li><b>Artek: external event</b> / Artek: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Artek，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Artek，主类型 external，信源 pravdaua</li>
+<li><b>Pushcha-Vodytsya: external event</b> / Pushcha-Vodytsya: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Pushcha-Vodytsya，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Pushcha-Vodytsya，主类型 external，信源 pravdaua</li>
+<li><b>Ruttschenkowo: external event</b> / Ruttschenkowo: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Ruttschenkowo，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Ruttschenkowo，主类型 external，信源 pravdaua</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Lviv，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Lviv，主类型 external，信源 unian</li>
+<li><b>Mars: external event</b> / Mars: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Mars，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Mars，主类型 external，信源 unian</li>
+<li><b>Novyi: external event</b> / Novyi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Novyi，主类型 external，信源 unian, nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Novyi，主类型 external，信源 unian, nv</li>
+<li><b>Bilka: external event</b> / Bilka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Bilka，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Bilka，主类型 external，信源 unian</li>
+<li><b>Prybirsk: external event</b> / Prybirsk: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-05）：地点 Prybirsk，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-05）：地点 Prybirsk，主类型 external，信源 unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li><b>Odessa: external event</b> / Odessa: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Odessa，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Odessa，主类型 external，信源 nv</li>
+<li><b>Brovary: external event</b> / Brovary: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Brovary，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Brovary，主类型 external，信源 liga</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kyiv，主类型 external，信源 militarnyy</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kyiv，主类型 external，信源 militarnyy</li>
+<li><b>Novyi: external event</b> / Novyi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Novyi，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Novyi，主类型 external，信源 nv</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Lviv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Lviv，主类型 external，信源 nv</li>
+<li><b>Prybirsk: external event</b> / Prybirsk: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Prybirsk，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Prybirsk，主类型 external，信源 nv</li>
+<li><b>Marhanets: external event</b> / Marhanets: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Marhanets，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Marhanets，主类型 external，信源 nv</li>
+<li><b>Sotsmisto: external event</b> / Sotsmisto: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Sotsmisto，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Sotsmisto，主类型 external，信源 pravdaua</li>
+<li><b>Poltava: external event</b> / Poltava: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Poltava，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Poltava，主类型 external，信源 pravdaua</li>
+<li><b>Petropavlivka: external event</b> / Petropavlivka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Petropavlivka，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Petropavlivka，主类型 external，信源 pravdaua</li>
+<li><b>Mar'yevka: external event</b> / Mar'yevka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Mar'yevka，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Mar'yevka，主类型 external，信源 pravdaua</li>
+<li><b>Kropyvnytskyy: external event</b> / Kropyvnytskyy: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-06）：地点 Kropyvnytskyy，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-06）：地点 Kropyvnytskyy，主类型 external，信源 unian</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 external，信源 liga, nv, pravdaua, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kyiv，主类型 external，信源 liga, nv, pravdaua, unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Pustomyty，主类型 external，信源 liga, pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Pustomyty，主类型 external，信源 liga, pravdaua</li>
+<li><b>Posich: external event</b> / Posich: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Posich，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Posich，主类型 external，信源 nv</li>
+<li><b>Mena: external event</b> / Mena: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Mena，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Mena，主类型 external，信源 nv</li>
+<li><b>Chernivtsi: external event</b> / Chernivtsi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Chernivtsi，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Chernivtsi，主类型 external，信源 nv</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Lviv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Lviv，主类型 external，信源 nv</li>
+<li><b>Karpaty: external event</b> / Karpaty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Karpaty，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Karpaty，主类型 external，信源 nv</li>
+<li><b>Ukrainka: external event</b> / Ukrainka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Ukrainka，主类型 external，信源 pravdaua, unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Ukrainka，主类型 external，信源 pravdaua, unian</li>
+<li><b>Kharkiv: external event</b> / Kharkiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Kharkiv，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Kharkiv，主类型 external，信源 pravdaua</li>
+<li><b>Deremezna: external event</b> / Deremezna: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Deremezna，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Deremezna，主类型 external，信源 pravdaua</li>
+<li><b>Odessa: external event</b> / Odessa: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Odessa，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Odessa，主类型 external，信源 pravdaua</li>
+<li><b>Podil: external event</b> / Podil: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Podil，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Podil，主类型 external，信源 pravdaua</li>
+<li><b>Okno: external event</b> / Okno: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-07）：地点 Okno，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-07）：地点 Okno，主类型 external，信源 unian</li>
+<li><b>Posich: external event</b> / Posich: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Posich，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Posich，主类型 external，信源 liga</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kyiv，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kyiv，主类型 external，信源 nv</li>
+<li><b>Davydivka: external event</b> / Davydivka: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Davydivka，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Davydivka，主类型 external，信源 nv</li>
+<li><b>Marhanets: external event</b> / Marhanets: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Marhanets，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Marhanets，主类型 external，信源 nv</li>
+<li><b>Odessa: external event</b> / Odessa: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Odessa，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Odessa，主类型 external，信源 nv</li>
+<li><b>Lviv: external event</b> / Lviv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Lviv，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Lviv，主类型 external，信源 pravdaua</li>
+<li><b>Deremezna: external event</b> / Deremezna: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Deremezna，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Deremezna，主类型 external，信源 pravdaua</li>
+<li><b>Perebrody: external event</b> / Perebrody: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Perebrody，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Perebrody，主类型 external，信源 pravdaua</li>
+<li><b>Kharkiv: external event</b> / Kharkiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kharkiv，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kharkiv，主类型 external，信源 pravdaua</li>
+<li><b>Brovary: external event</b> / Brovary: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Brovary，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Brovary，主类型 external，信源 pravdaua</li>
+<li><b>Obolon: external event</b> / Obolon: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Obolon，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Obolon，主类型 external，信源 pravdaua</li>
+<li><b>Kozerohy: external event</b> / Kozerohy: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Kozerohy，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Kozerohy，主类型 external，信源 unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Pustomyty，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Pustomyty，主类型 external，信源 unian</li>
+<li><b>Sumy: external event</b> / Sumy: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Sumy，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Sumy，主类型 external，信源 unian</li>
+<li><b>Simferopol: external event</b> / Simferopol: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Simferopol，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Simferopol，主类型 external，信源 unian</li>
+<li><b>Soniachne: external event</b> / Soniachne: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-08）：地点 Soniachne，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-08）：地点 Soniachne，主类型 external，信源 unian</li>
+<li><b>Podil: external event</b> / Podil: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Podil，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Podil，主类型 external，信源 nv</li>
+<li><b>Kryvorizhzhya: external event</b> / Kryvorizhzhya: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kryvorizhzhya，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kryvorizhzhya，主类型 external，信源 nv</li>
+<li><b>Mariupol: external event</b> / Mariupol: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Mariupol，主类型 external，信源 pravdaua</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Mariupol，主类型 external，信源 pravdaua</li>
+<li><b>Kyiv: external event</b> / Kyiv: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Kyiv，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Kyiv，主类型 external，信源 unian</li>
+<li><b>Novyi: external event</b> / Novyi: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Novyi，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Novyi，主类型 external，信源 unian</li>
+<li><b>Novgorodskoye: external event</b> / Novgorodskoye: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Novgorodskoye，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Novgorodskoye，主类型 external，信源 unian</li>
+<li><b>Karpaty: external event</b> / Karpaty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Karpaty，主类型 external，信源 unian</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Karpaty，主类型 external，信源 unian</li>
+<li><b>Pustomyty: external event</b> / Pustomyty: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Pustomyty，主类型 external，信源 liga</li>
+<li><b>Volovytsia: external event</b> / Volovytsia: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-09）：地点 Volovytsia，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-09）：地点 Volovytsia，主类型 external，信源 nv</li>
+<li><b>Kyslytsya: external event</b> / Kyslytsya: external event  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：VIINA 事件（2026-08-10）：地点 Kyslytsya，主类型 external，信源 nv</li>
+<li style="margin-left:1em">EN：VIINA 事件（2026-08-10）：地点 Kyslytsya，主类型 external，信源 nv</li>
+<li><b>Zelensky announces unique operation by Defense Forces to strike naval base in Novorossiysk</b> / Zelensky announces unique operation by Defense Forces to strike naval base in Novorossiysk  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky announces unique operation by Defense Forces to strike naval base in Novorossiysk</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky announces unique operation by Defense Forces to strike naval base in Novorossiysk</li>
+<li><b>Russian drones attack State Emergency Service unit in Kherson overnight</b> / Russian drones attack State Emergency Service unit in Kherson overnight  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian drones attack State Emergency Service unit in Kherson overnight</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian drones attack State Emergency Service unit in Kherson overnight</li>
+<li><b>One person injured and damage reported in Balakliia following repeated Russian shelling</b> / One person injured and damage reported in Balakliia following repeated Russian shelling  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：One person injured and damage reported in Balakliia following repeated Russian shelling</li>
+<li style="margin-left:1em">EN：Ukrinform headline: One person injured and damage reported in Balakliia following repeated Russian shelling</li>
+<li><b>Three people injured in Chernihiv region due to Russian attacks</b> / Three people injured in Chernihiv region due to Russian attacks  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Three people injured in Chernihiv region due to Russian attacks</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Three people injured in Chernihiv region due to Russian attacks</li>
+<li><b>Fire extinguished at Epicentr shopping center in Zaporizhzhia after Russian drone attack</b> / Fire extinguished at Epicentr shopping center in Zaporizhzhia after Russian drone attack  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Fire extinguished at Epicentr shopping center in Zaporizhzhia after Russian drone attack</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Fire extinguished at Epicentr shopping center in Zaporizhzhia after Russian drone attack</li>
+<li><b>Warehouses on fire in Kyiv region following drone attack, one person injured</b> / Warehouses on fire in Kyiv region following drone attack, one person injured  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Warehouses on fire in Kyiv region following drone attack, one person injured</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Warehouses on fire in Kyiv region following drone attack, one person injured</li>
+<li><b>Ukrenergo: Russian attacks cause new power outages in five regions</b> / Ukrenergo: Russian attacks cause new power outages in five regions  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrenergo: Russian attacks cause new power outages in five regions</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrenergo: Russian attacks cause new power outages in five regions</li>
+<li><b>Russian military base in Crimea catches fire, Sevastopol attacked by drones</b> / Russian military base in Crimea catches fire, Sevastopol attacked by drones  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian military base in Crimea catches fire, Sevastopol attacked by drones</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian military base in Crimea catches fire, Sevastopol attacked by drones</li>
+<li><b>Air Defense Forces shoot down 112 of 138 Russian drones</b> / Air Defense Forces shoot down 112 of 138 Russian drones  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Air Defense Forces shoot down 112 of 138 Russian drones</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Air Defense Forces shoot down 112 of 138 Russian drones</li>
+<li><b>Russian forces attack bus in Zaporizhzhia region, one person injured</b> / Russian forces attack bus in Zaporizhzhia region, one person injured  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian forces attack bus in Zaporizhzhia region, one person injured</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian forces attack bus in Zaporizhzhia region, one person injured</li>
+<li><b>5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</b> / 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li><b>В Раде назвали уровень подготовки Киева к зиме худшим среди регионов</b> / В Раде назвали уровень подготовки Киева к зиме худшим среди регионов  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Раде назвали уровень подготовки Киева к зиме худшим среди регионов</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Раде назвали уровень подготовки Киева к зиме худшим среди регионов</li>
+<li><b>"Не готовы". В Европе предупредили о скором серьезном кризисе из-за Украины</b> / "Не готовы". В Европе предупредили о скором серьезном кризисе из-за Украины  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条："Не готовы". В Европе предупредили о скором серьезном кризисе из-за Украины</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: "Не готовы". В Европе предупредили о скором серьезном кризисе из-за Украины</li>
+<li><b>В Киеве прогремели новые взрывы</b> / В Киеве прогремели новые взрывы  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Киеве прогремели новые взрывы</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Киеве прогремели новые взрывы</li>
+<li><b>Армения в гонениях на церковь следует украинскому сценарию, считает адвокат</b> / Армения в гонениях на церковь следует украинскому сценарию, считает адвокат  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Армения в гонениях на церковь следует украинскому сценарию, считает адвокат</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Армения в гонениях на церковь следует украинскому сценарию, считает адвокат</li>
+<li><b>Полиция Луизианы изъяла рекордную партию метамфетамина у россиянина</b> / Полиция Луизианы изъяла рекордную партию метамфетамина у россиянина  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Полиция Луизианы изъяла рекордную партию метамфетамина у россиянина</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Полиция Луизианы изъяла рекордную партию метамфетамина у россиянина</li>
+<li><b>Украина запросила у НАТО оборудование для разминирования и взрывных работ</b> / Украина запросила у НАТО оборудование для разминирования и взрывных работ  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Украина запросила у НАТО оборудование для разминирования и взрывных работ</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Украина запросила у НАТО оборудование для разминирования и взрывных работ</li>
+<li><b>На Западе назвали событие, которое кардинально изменит конфликт на Украине</b> / На Западе назвали событие, которое кардинально изменит конфликт на Украине  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：На Западе назвали событие, которое кардинально изменит конфликт на Украине</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: На Западе назвали событие, которое кардинально изменит конфликт на Украине</li>
+<li><b>В подконтрольном ВСУ городе Запорожье прогремел взрыв</b> / В подконтрольном ВСУ городе Запорожье прогремел взрыв  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В подконтрольном ВСУ городе Запорожье прогремел взрыв</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В подконтрольном ВСУ городе Запорожье прогремел взрыв</li>
+<li><b>Ukrainian Defense Forces strike Russian ground relay station in Crimea to control combat drones</b> / Ukrainian Defense Forces strike Russian ground relay station in Crimea to control combat drones  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian Defense Forces strike Russian ground relay station in Crimea to control combat drones</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian Defense Forces strike Russian ground relay station in Crimea to control combat drones</li>
+<li><b>ЕС не планирует следить за отказами в защите военнообязанным украинцам</b> / ЕС не планирует следить за отказами в защите военнообязанным украинцам  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：ЕС не планирует следить за отказами в защите военнообязанным украинцам</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: ЕС не планирует следить за отказами в защите военнообязанным украинцам</li>
+<li><b>Russian Ministry of Defense reports capture of nonexistent village in Kharkiv region</b> / Russian Ministry of Defense reports capture of nonexistent village in Kharkiv region  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian Ministry of Defense reports capture of nonexistent village in Kharkiv region</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian Ministry of Defense reports capture of nonexistent village in Kharkiv region</li>
+<li><b>Non-residential building damaged in Kyiv’s Darnytskyi district after Russian drone crash</b> / Non-residential building damaged in Kyiv’s Darnytskyi district after Russian drone crash  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Non-residential building damaged in Kyiv’s Darnytskyi district after Russian drone crash</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Non-residential building damaged in Kyiv’s Darnytskyi district after Russian drone crash</li>
+<li><b>Air defense systems activated in Kyiv</b> / Air defense systems activated in Kyiv  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Air defense systems activated in Kyiv</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Air defense systems activated in Kyiv</li>
+<li><b>Сенатор назвал освобождение американца Гилмана жестом доброй воли России</b> / Сенатор назвал освобождение американца Гилмана жестом доброй воли России  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Сенатор назвал освобождение американца Гилмана жестом доброй воли России</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Сенатор назвал освобождение американца Гилмана жестом доброй воли России</li>
+<li><b>Премьер Грузии: разногласия не должны стать основой для вражды с Россией</b> / Премьер Грузии: разногласия не должны стать основой для вражды с Россией  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Премьер Грузии: разногласия не должны стать основой для вражды с Россией</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Премьер Грузии: разногласия не должны стать основой для вражды с Россией</li>
+<li><b>Россия хочет, чтобы Британия сделала первый шаг в восстановлении контактов</b> / Россия хочет, чтобы Британия сделала первый шаг в восстановлении контактов  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Россия хочет, чтобы Британия сделала первый шаг в восстановлении контактов</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Россия хочет, чтобы Британия сделала первый шаг в восстановлении контактов</li>
+<li><b>Россия получает от Британии сигналы о желании возобновить военные контакты</b> / Россия получает от Британии сигналы о желании возобновить военные контакты  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Россия получает от Британии сигналы о желании возобновить военные контакты</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Россия получает от Британии сигналы о желании возобновить военные контакты</li>
+<li><b>В Германии хотели быстрого поражения Украины, заявил Джонсон</b> / В Германии хотели быстрого поражения Украины, заявил Джонсон  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Германии хотели быстрого поражения Украины, заявил Джонсон</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Германии хотели быстрого поражения Украины, заявил Джонсон</li>
+<li><b>Allies still have Patriot missile stocks that could be supplied to Ukraine – German expert</b> / Allies still have Patriot missile stocks that could be supplied to Ukraine – German expert  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Allies still have Patriot missile stocks that could be supplied to Ukraine – German expert</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Allies still have Patriot missile stocks that could be supplied to Ukraine – German expert</li>
+<li><b>Киев унаследовал идеологию и методы основателей ОУН<i>, заявила Захарова</b> / Киев унаследовал идеологию и методы основателей ОУН</i>, заявила Захарова  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Киев унаследовал идеологию и методы основателей ОУН*, заявила Захарова</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Киев унаследовал идеологию и методы основателей ОУН*, заявила Захарова</li>
+<li><b>Джонсон признал успехи российских войск в зоне СВО</b> / Джонсон признал успехи российских войск в зоне СВО  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Джонсон признал успехи российских войск в зоне СВО</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Джонсон признал успехи российских войск в зоне СВО</li>
+<li><b>В ЛНР агента Киева приговорили к 16 годам за шпионаж</b> / В ЛНР агента Киева приговорили к 16 годам за шпионаж  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В ЛНР агента Киева приговорили к 16 годам за шпионаж</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В ЛНР агента Киева приговорили к 16 годам за шпионаж</li>
+<li><b>В Абхазии задержали инструктора погибшего в горах российского подростка</b> / В Абхазии задержали инструктора погибшего в горах российского подростка  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Абхазии задержали инструктора погибшего в горах российского подростка</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Абхазии задержали инструктора погибшего в горах российского подростка</li>
+<li><b>Лантратова рассказала о трудностях при обмене пленными с Украиной</b> / Лантратова рассказала о трудностях при обмене пленными с Украиной  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Лантратова рассказала о трудностях при обмене пленными с Украиной</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Лантратова рассказала о трудностях при обмене пленными с Украиной</li>
+<li><b>Лантратова: Киеву предлагали три списка на обмен, но Украина отказалась</b> / Лантратова: Киеву предлагали три списка на обмен, но Украина отказалась  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Лантратова: Киеву предлагали три списка на обмен, но Украина отказалась</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Лантратова: Киеву предлагали три списка на обмен, но Украина отказалась</li>
+<li><b>"Гиря на ногах Европы". Слуцкий оценил шансы Киева попасть в Евросоюз</b> / "Гиря на ногах Европы". Слуцкий оценил шансы Киева попасть в Евросоюз  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条："Гиря на ногах Европы". Слуцкий оценил шансы Киева попасть в Евросоюз</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: "Гиря на ногах Европы". Слуцкий оценил шансы Киева попасть в Евросоюз</li>
+<li><b>Уровень бедности на Украине вырос вдвое за четыре года</b> / Уровень бедности на Украине вырос вдвое за четыре года  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Уровень бедности на Украине вырос вдвое за четыре года</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Уровень бедности на Украине вырос вдвое за четыре года</li>
+<li><b>Мендель сделала неприятное для украинцев заявление о будущем</b> / Мендель сделала неприятное для украинцев заявление о будущем  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Мендель сделала неприятное для украинцев заявление о будущем</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Мендель сделала неприятное для украинцев заявление о будущем</li>
+<li><b>Ukrainian forces inflict heaviest Russian casualties since January 2025 in July</b> / Ukrainian forces inflict heaviest Russian casualties since January 2025 in July  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian forces inflict heaviest Russian casualties since January 2025 in July</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian forces inflict heaviest Russian casualties since January 2025 in July</li>
+<li><b>Американский самолет-заправщик второй день летает у российской границы</b> / Американский самолет-заправщик второй день летает у российской границы  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Американский самолет-заправщик второй день летает у российской границы</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Американский самолет-заправщик второй день летает у российской границы</li>
+<li><b>СМИ: на Украине у половины сотрудников прокуратуры отменили инвалидность</b> / СМИ: на Украине у половины сотрудников прокуратуры отменили инвалидность  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：СМИ: на Украине у половины сотрудников прокуратуры отменили инвалидность</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: СМИ: на Украине у половины сотрудников прокуратуры отменили инвалидность</li>
+<li><b>Russian forces launch double-tap strike on rescuers in Kramatorsk</b> / Russian forces launch double-tap strike on rescuers in Kramatorsk  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian forces launch double-tap strike on rescuers in Kramatorsk</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian forces launch double-tap strike on rescuers in Kramatorsk</li>
+<li><b>Бобры из стран НАТО оккупировали российский регион, сообщили СМИ</b> / Бобры из стран НАТО оккупировали российский регион, сообщили СМИ  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Бобры из стран НАТО оккупировали российский регион, сообщили СМИ</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Бобры из стран НАТО оккупировали российский регион, сообщили СМИ</li>
+<li><b>Армения не осадила Зеленского, когда он угрожал параду 9 мая, напомнил МИД</b> / Армения не осадила Зеленского, когда он угрожал параду 9 мая, напомнил МИД  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Армения не осадила Зеленского, когда он угрожал параду 9 мая, напомнил МИД</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Армения не осадила Зеленского, когда он угрожал параду 9 мая, напомнил МИД</li>
+<li><b>МИД назвал планы Армении допросить ветерана ВОВ итогом братания с Киевом</b> / МИД назвал планы Армении допросить ветерана ВОВ итогом братания с Киевом  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：МИД назвал планы Армении допросить ветерана ВОВ итогом братания с Киевом</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: МИД назвал планы Армении допросить ветерана ВОВ итогом братания с Киевом</li>
+<li><b>Orsk oil refinery halts processing after Ukrainian drone attack – Reuters</b> / Orsk oil refinery halts processing after Ukrainian drone attack – Reuters  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Orsk oil refinery halts processing after Ukrainian drone attack – Reuters</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Orsk oil refinery halts processing after Ukrainian drone attack – Reuters</li>
+<li><b>ВС России продолжат работу по устранению угроз в Черном море, заявили в МИД</b> / ВС России продолжат работу по устранению угроз в Черном море, заявили в МИД  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：ВС России продолжат работу по устранению угроз в Черном море, заявили в МИД</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: ВС России продолжат работу по устранению угроз в Черном море, заявили в МИД</li>
+<li><b>МИД: Киев использует разведданные НАТО для атак на суда в Черном море</b> / МИД: Киев использует разведданные НАТО для атак на суда в Черном море  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：МИД: Киев использует разведданные НАТО для атак на суда в Черном море</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: МИД: Киев использует разведданные НАТО для атак на суда в Черном море</li>
+<li><b>Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky</b> / Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky</li>
+<li><b>Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters</b> / Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters</li>
+<li><b>Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine</b> / Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine</li>
+<li><b>Зеленскому сообщили плохие новости после признания Залужного</b> / Зеленскому сообщили плохие новости после признания Залужного  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Зеленскому сообщили плохие новости после признания Залужного</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Зеленскому сообщили плохие новости после признания Залужного</li>
+<li><b>В Абхазии усилили патрулирование после избиения российской туристки</b> / В Абхазии усилили патрулирование после избиения российской туристки  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Абхазии усилили патрулирование после избиения российской туристки</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Абхазии усилили патрулирование после избиения российской туристки</li>
+<li><b>Экс-посол Украины в США не внесла за себя залог в 134 тысячи долларов</b> / Экс-посол Украины в США не внесла за себя залог в 134 тысячи долларов  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Экс-посол Украины в США не внесла за себя залог в 134 тысячи долларов</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Экс-посол Украины в США не внесла за себя залог в 134 тысячи долларов</li>
+<li><b>СМИ: пожар на складе под Киевом грозит дефицитом товаров пяти крупным сетям</b> / СМИ: пожар на складе под Киевом грозит дефицитом товаров пяти крупным сетям  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：СМИ: пожар на складе под Киевом грозит дефицитом товаров пяти крупным сетям</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: СМИ: пожар на складе под Киевом грозит дефицитом товаров пяти крупным сетям</li>
+<li><b>Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack</b> / Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack</li>
+<li><b>Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets</b> / Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets</li>
+<li><b>Ombudsman: At least 375 Ukrainians died in Russian captivity</b> / Ombudsman: At least 375 Ukrainians died in Russian captivity  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ombudsman: At least 375 Ukrainians died in Russian captivity</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ombudsman: At least 375 Ukrainians died in Russian captivity</li>
+<li><b>ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ</b> / ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ</li>
+<li><b>Литва выкопает рвы на границе с Россией и Белоруссией</b> / Литва выкопает рвы на границе с Россией и Белоруссией  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Литва выкопает рвы на границе с Россией и Белоруссией</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Литва выкопает рвы на границе с Россией и Белоруссией</li>
+<li><b>Армения идет по пути прекращения отношений с Россией, заявил депутат</b> / Армения идет по пути прекращения отношений с Россией, заявил депутат  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Армения идет по пути прекращения отношений с Россией, заявил депутат</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Армения идет по пути прекращения отношений с Россией, заявил депутат</li>
+<li><b>В Словакии могут осудить похожего на Гитлера украинца</b> / В Словакии могут осудить похожего на Гитлера украинца  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Словакии могут осудить похожего на Гитлера украинца</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Словакии могут осудить похожего на Гитлера украинца</li>
+<li><b>Суд на Украине не разрешил Ермаку снять электронный браслет</b> / Суд на Украине не разрешил Ермаку снять электронный браслет  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Суд на Украине не разрешил Ермаку снять электронный браслет</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Суд на Украине не разрешил Ермаку снять электронный браслет</li>
+<li><b>Zelensky announces changes to National Multisubject Test</b> / Zelensky announces changes to National Multisubject Test  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky announces changes to National Multisubject Test</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky announces changes to National Multisubject Test</li>
+<li><b>Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack</b> / Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Rescuers extinguish fire in Kyiv region's Brovary district after Russian attack</li>
+<li><b>Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets</b> / Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russia attempts to create fake image of 'humane' captivity for Ukrainian soldiers — Lubinets</li>
+<li><b>Ombudsman: At least 375 Ukrainians died in Russian captivity</b> / Ombudsman: At least 375 Ukrainians died in Russian captivity  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ombudsman: At least 375 Ukrainians died in Russian captivity</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ombudsman: At least 375 Ukrainians died in Russian captivity</li>
+<li><b>Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky</b> / Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian forces liberate 26 villages during offensive on Oleksandrivka axis – Zelensky</li>
+<li><b>Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters</b> / Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Two grain terminals in Novorossiysk halt operations after Ukrainian attack – Reuters</li>
+<li><b>Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine</b> / Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Retired Bundeswehr general says Nord Stream pipelines could have been legitimate target for Ukraine</li>
+<li><b>Orsk oil refinery halts processing after Ukrainian drone attack – Reuters</b> / Orsk oil refinery halts processing after Ukrainian drone attack – Reuters  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Orsk oil refinery halts processing after Ukrainian drone attack – Reuters</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Orsk oil refinery halts processing after Ukrainian drone attack – Reuters</li>
+<li><b>Russian forces launch double-tap strike on rescuers in Kramatorsk</b> / Russian forces launch double-tap strike on rescuers in Kramatorsk  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian forces launch double-tap strike on rescuers in Kramatorsk</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian forces launch double-tap strike on rescuers in Kramatorsk</li>
+<li><b>Ukrainian forces inflict heaviest Russian casualties since January 2025 in July</b> / Ukrainian forces inflict heaviest Russian casualties since January 2025 in July  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian forces inflict heaviest Russian casualties since January 2025 in July</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian forces inflict heaviest Russian casualties since January 2025 in July</li>
+<li><b>5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</b> / 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li><b>ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ</b> / ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: ФРГ допустила причастность Киева к инциденту с БПЛА в Лейпциге, пишут СМИ</li>
+<li><b>Литва выкопает рвы на границе с Россией и Белоруссией</b> / Литва выкопает рвы на границе с Россией и Белоруссией  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Литва выкопает рвы на границе с Россией и Белоруссией</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Литва выкопает рвы на границе с Россией и Белоруссией</li>
+<li><b>Армения идет по пути прекращения отношений с Россией, заявил депутат</b> / Армения идет по пути прекращения отношений с Россией, заявил депутат  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Армения идет по пути прекращения отношений с Россией, заявил депутат</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Армения идет по пути прекращения отношений с Россией, заявил депутат</li>
+<li><b>В Словакии могут осудить похожего на Гитлера украинца</b> / В Словакии могут осудить похожего на Гитлера украинца  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Словакии могут осудить похожего на Гитлера украинца</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Словакии могут осудить похожего на Гитлера украинца</li>
+<li><b>Суд на Украине не разрешил Ермаку снять электронный браслет</b> / Суд на Украине не разрешил Ермаку снять электронный браслет  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Суд на Украине не разрешил Ермаку снять электронный браслет</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Суд на Украине не разрешил Ермаку снять электронный браслет</li>
+<li><b>Зеленскому сообщили плохие новости после признания Залужного</b> / Зеленскому сообщили плохие новости после признания Залужного  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Зеленскому сообщили плохие новости после признания Залужного</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Зеленскому сообщили плохие новости после признания Залужного</li>
+<li><b>Shmyhal discusses further support for energy sector with Japan’s ambassador</b> / Shmyhal discusses further support for energy sector with Japan’s ambassador  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Shmyhal discusses further support for energy sector with Japan’s ambassador</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Shmyhal discusses further support for energy sector with Japan’s ambassador</li>
+<li><b>Russian special services step up collection of data on Ukrainian prisoners of war — Coordination Headquarters</b> / Russian special services step up collection of data on Ukrainian prisoners of war — Coordination Headquarters  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian special services step up collection of data on Ukrainian prisoners of war — Coordination Headquarters</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian special services step up collection of data on Ukrainian prisoners of war — Coordination Headquarters</li>
+<li><b>Ukrainian intelligence confirms Russia is forming battalions from Ukrainian POWs</b> / Ukrainian intelligence confirms Russia is forming battalions from Ukrainian POWs  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian intelligence confirms Russia is forming battalions from Ukrainian POWs</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian intelligence confirms Russia is forming battalions from Ukrainian POWs</li>
+<li><b>Around 6,000 Ukrainian civilians may remain in occupied parts of Kherson region – Lubinets</b> / Around 6,000 Ukrainian civilians may remain in occupied parts of Kherson region – Lubinets  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Around 6,000 Ukrainian civilians may remain in occupied parts of Kherson region – Lubinets</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Around 6,000 Ukrainian civilians may remain in occupied parts of Kherson region – Lubinets</li>
+<li><b>Around 700 vessels carrying Russian oil are under sanctions – Vlasiuk</b> / Around 700 vessels carrying Russian oil are under sanctions – Vlasiuk  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Around 700 vessels carrying Russian oil are under sanctions – Vlasiuk</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Around 700 vessels carrying Russian oil are under sanctions – Vlasiuk</li>
+<li><b>North Macedonia supplies power transformers to energy companies in Kharkiv, Zaporizhzhia regions</b> / North Macedonia supplies power transformers to energy companies in Kharkiv, Zaporizhzhia regions  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：North Macedonia supplies power transformers to energy companies in Kharkiv, Zaporizhzhia regions</li>
+<li style="margin-left:1em">EN：Ukrinform headline: North Macedonia supplies power transformers to energy companies in Kharkiv, Zaporizhzhia regions</li>
+<li><b>Lubinets to propose working group to new defense minister to reform Ukraine's mobilization system</b> / Lubinets to propose working group to new defense minister to reform Ukraine's mobilization system  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Lubinets to propose working group to new defense minister to reform Ukraine's mobilization system</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Lubinets to propose working group to new defense minister to reform Ukraine's mobilization system</li>
+<li><b>Zelensky says Russia can and must end war after Ukrainian operation in Novorossiysk</b> / Zelensky says Russia can and must end war after Ukrainian operation in Novorossiysk  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky says Russia can and must end war after Ukrainian operation in Novorossiysk</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky says Russia can and must end war after Ukrainian operation in Novorossiysk</li>
+<li><b>Estonia provides Ukraine with EUR 340,000 to prepare for winter</b> / Estonia provides Ukraine with EUR 340,000 to prepare for winter  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Estonia provides Ukraine with EUR 340,000 to prepare for winter</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Estonia provides Ukraine with EUR 340,000 to prepare for winter</li>
+<li><b>Zelensky, Pashinyan discuss priority areas for Ukraine-Armenia cooperation</b> / Zelensky, Pashinyan discuss priority areas for Ukraine-Armenia cooperation  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky, Pashinyan discuss priority areas for Ukraine-Armenia cooperation</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky, Pashinyan discuss priority areas for Ukraine-Armenia cooperation</li>
+<li><b>Россия готова обсуждать предложения спецпосланников США, заявили в Совфеде</b> / Россия готова обсуждать предложения спецпосланников США, заявили в Совфеде  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Россия готова обсуждать предложения спецпосланников США, заявили в Совфеде</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Россия готова обсуждать предложения спецпосланников США, заявили в Совфеде</li>
+<li><b>Рассмотрение дела задержанной в аэропорту США россиянки затягивается</b> / Рассмотрение дела задержанной в аэропорту США россиянки затягивается  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Рассмотрение дела задержанной в аэропорту США россиянки затягивается</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Рассмотрение дела задержанной в аэропорту США россиянки затягивается</li>
+<li><b>В посольстве рассказали о повышенном интересе россиян в переезде из Канады</b> / В посольстве рассказали о повышенном интересе россиян в переезде из Канады  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В посольстве рассказали о повышенном интересе россиян в переезде из Канады</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В посольстве рассказали о повышенном интересе россиян в переезде из Канады</li>
+<li><b>В Техасе потерпел крушение ударный вертолет вооруженных сил США</b> / В Техасе потерпел крушение ударный вертолет вооруженных сил США  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В Техасе потерпел крушение ударный вертолет вооруженных сил США</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В Техасе потерпел крушение ударный вертолет вооруженных сил США</li>
+<li><b>"Противостоять медведю". Экс-генсек НАТО неожиданно высказался о России</b> / "Противостоять медведю". Экс-генсек НАТО неожиданно высказался о России  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条："Противостоять медведю". Экс-генсек НАТО неожиданно высказался о России</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: "Противостоять медведю". Экс-генсек НАТО неожиданно высказался о России</li>
+<li><b>"Дела плохи". Заявление Путина о Курилах поразило японцев</b> / "Дела плохи". Заявление Путина о Курилах поразило японцев  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条："Дела плохи". Заявление Путина о Курилах поразило японцев</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: "Дела плохи". Заявление Путина о Курилах поразило японцев</li>
+</ul>
+<h2>军事援助与武器交付 / Military Aid & Arms Deliveries</h2>
+<ul>
+<li><b>美国宣布新一批对乌军事援助包</b> / US announces new military aid package to Ukraine  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：美方宣布包含防空系统与前装弹药的援助包，金额待国会确认。</li>
+<li style="margin-left:1em">EN：The US announced an aid package including air-defense systems and munitions; amount pending congressional confirmation.</li>
+</ul>
+<h2>能源与关键基础设施 / Energy & Critical Infrastructure</h2>
+<ul>
+<li><b>俄军无人机袭击中部电网致多地停电</b> / RU drone strike on central grid causes blackouts  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：乌克兰方面称俄军一夜之间发射多架无人机袭击变电站，五州限电。</li>
+<li style="margin-left:1em">EN：Ukraine reports RU drones struck substations overnight, causing outages in five regions.</li>
+</ul>
+<h2>法律与战争罪 / Law of Armed Conflict / War Crimes</h2>
+<ul>
+<li><b>国际刑事法院就战争罪调查发布进展</b> / ICC publishes update on war-crimes investigations  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：ICC 更新对冲突中涉嫌战争罪行的调查进展，涉及多起基础设施与平民目标袭击。</li>
+<li style="margin-left:1em">EN：The ICC updated investigations into alleged war crimes, including strikes on civilian infrastructure.</li>
+</ul>
+<h2>人道与难民 / Humanitarian & Refugees</h2>
+<ul>
+<li><b>联合国更新乌克兰境内流离失所人数</b> / UN updates Ukraine IDP figures  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：UNHCR 更新数据显示境内流离失所人数较上月上升，重建进度缓慢。</li>
+<li style="margin-left:1em">EN：UNHCR data shows internally displaced persons up from last month; reconstruction lags.</li>
+</ul>
+<h2>信源对照 / Source Cross-check</h2>
+<table><tr><th>维度</th><th>乌方 UA</th><th>俄方 RU</th><th>第三方 THIRD</th><th>分歧点</th></tr><tr><td>顿涅茨克方向战线推进说法不一</td><td>乌克兰总参</td><td>俄罗斯国防部</td><td><a href="https://www.ukrinform.net/">https://www.ukrinform.net/</a></td><td>乌方称击退、俄方称占领，控制线表述相互矛盾；以 DeepState/ISW 独立地图为准。</td></tr><tr><td>Zelensky announces unique operation by Defense For</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian drones attack State Emergency Service unit</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>One person injured and damage reported in Balaklii</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Three people injured in Chernihiv region due to Ru</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Fire extinguished at Epicentr shopping center in Z</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Warehouses on fire in Kyiv region following drone</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Ukrenergo: Russian attacks cause new power outages</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian military base in Crimea catches fire, Seva</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Air Defense Forces shoot down 112 of 138 Russian d</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian forces attack bus in Zaporizhzhia region,</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>俄军无人机袭击中部电网致多地停电</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Ukrainian Defense Forces strike Russian ground rel</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr></table>
+<h2>AI 深度解析 / AI Deep Analysis</h2>
+<p><i>以下由维护者或 AI 基于上方数据撰写；流水线每次重生成都会<b>保留本段</b>，不会被覆盖。</i><br><i>写作提纲与可直接粘贴的提示词见 <code>templates/monthly.md</code>。</i></p></div></div>
+<footer class="wrap" style="padding:16px 0 0;border-top:1px solid var(--bd)">
+  非官方、开源、中立汇编，仅供参考。<a href="../../../index.html">返回首页</a>
+</footer>
+</div>
+</body>
+</html>
