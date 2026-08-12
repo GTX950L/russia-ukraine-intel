@@ -385,7 +385,7 @@ INDEX_HEAD = """<!doctype html>
   <section class="sec" id="map">
     <div class="sec-h">
       <h2>🗺 战场态势</h2>
-      <span class="muted">俄控区 / 前一日对比线 / 当日事件热区（点击地图可开关图层）</span>
+      <span class="muted">红色=俄方控制区 ｜ 其余乌克兰领土=乌方控制 ｜ 红圈=事件密度（点击地图可开关图层）</span>
       <span class="sp"></span>
       <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
     </div>
@@ -924,18 +924,23 @@ MAP_HTML = """<!doctype html>
   <h3>图例</h3>
   <div class="hint">点击条目可开关图层</div>
   <div class="lg-grp">控制区</div>
-  <div class="lg on" data-layer="control"><span class="sw" style="background:#e24b4a;opacity:.45"></span>俄控区（当日）</div>
-  <div class="lg on" data-layer="prev"><span class="swl" style="border-top:2px dashed #7f77dd"></span>前一日控制线</div>
+  <div class="lg on" data-layer="control"><span class="sw" style="background:#d32f2f;opacity:.8"></span>俄方控制（红色填充）</div>
+  <div class="lg on" data-layer="prev"><span class="swl" style="border-top:2px dashed #8b83e0"></span>前一日控制线</div>
   <div class="lg-grp">交通</div>
   <div class="lg on" data-layer="roads"><span class="swl" style="background:#8a93a6"></span>主要道路</div>
   <div class="lg on" data-layer="rail"><span class="swl" style="background:#333;border-top:2px solid #333"></span>铁路</div>
   <div class="lg-grp">地标</div>
   <div class="lg on" data-layer="cities"><span class="dot" style="background:#1a5fb4"></span>城市</div>
-  <div class="lg on" data-layer="strongholds"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇</div>
-  <div class="lg on" data-layer="hubs"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽</div>
+  <div class="lg on" data-layer="strongholds"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇（默认关）</div>
+  <div class="lg on" data-layer="hubs"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽（默认关）</div>
   <div class="lg" data-layer="villages"><span class="dot" style="background:#b4b2a9"></span>村庄（缩放 9 级+）</div>
   <div class="lg-grp">事件</div>
-  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>当日事件热区</div>
+  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>战区热区（事件密度）</div>
+  <div class="lg" data-layer="points"><span class="dot" style="background:#ff7043;border:2px solid #fff"></span>精确地点（默认关闭）</div>
+  <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd);color:var(--mut);font-size:11px;line-height:1.6">
+    图例：<span style="color:#d32f2f;font-weight:700">■</span> 俄方控制区<br>
+    其余乌克兰领土 = <span style="color:#1a5fb4;font-weight:700">■</span> 乌方控制（未填充）
+  </div>
 </div>
 <div id="meta" class="panel">
   数据：DeepState 每日快照 + OSM(ODbL) + 情报标注<br>
@@ -969,18 +974,18 @@ function eventsList(evs, head){
     +'<div class="m">'+e.title_en+'</div></div>').join('')+'</div>';
 }
 
-/* 图层注册表 + 显隐状态（undefined=默认开） */
+/* 图层注册表 + 显隐状态（默认全开；密集标注层 strongholds/hubs 与精确地点 points 默认关闭，避免视觉噪音） */
 const L = {};
-const STATE = {};
+const STATE = { points: false, strongholds: false, hubs: false };
 
 /* 前一日对比线 */
 if (prev && prev.polygons.length) {
-  L.prev = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: '#7f77dd', showBorder: true, borderColor: '#7f77dd', borderWidth: 2, showBorderDash: true, borderDash: [6,4] }) },
+  L.prev = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: '#8b83e0', showBorder: true, borderColor: '#8b83e0', borderWidth: 2, showBorderDash: true, borderDash: [6,4] }) },
     geometries: prev.polygons.map((ring, i) => ({ id: 'pp'+i, styleId: 'p', paths: [ring.map(LL)] })) });
 }
-/* 当日俄控区 */
+/* 当日俄方控制区（高饱和红填充 + 红实线边界；未填充的乌克兰领土即乌方控制） */
 if (ctl && ctl.polygons.length) {
-  L.control = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: 'rgba(226,75,74,0.35)', showBorder: true, borderColor: '#a32d2d', borderWidth: 2 }) },
+  L.control = new TMap.MultiPolygon({ map, styles: { p: new TMap.PolygonStyle({ color: 'rgba(211,47,47,0.5)', showBorder: true, borderColor: '#b71c1c', borderWidth: 2.5 }) },
     geometries: ctl.polygons.map((ring, i) => ({ id: 'c'+i, styleId: 'p', paths: [ring.map(LL)] })) });
 }
 /* 城市分级：大城市(所有缩放) + 小城镇(zoom>=8)，避免低缩放满屏点 */
@@ -1003,10 +1008,12 @@ if (MAP_DATA.cities && MAP_DATA.cities.length) {
     L.towns.setVisible(false);
   }
 }
-/* 重镇 / 枢纽（拆两个图层，便于图例分别开关） */
+/* 重镇 / 枢纽：用 svgPath 形状（重镇=五角星、枢纽=菱形）避免显示成密集红点 */
 if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
-  const sh = new TMap.MarkerStyle({ width: 13, height: 13, anchor: { x: 6.5, y: 6.5 }, color: '#a32d2d' });
-  const hu = new TMap.MarkerStyle({ width: 11, height: 11, anchor: { x: 5.5, y: 5.5 }, color: '#d85a30' });
+  const starPath = 'M9,1 L11.4,6.5 L17,7 L12.7,10.8 L14.2,16.5 L9,13.5 L3.8,16.5 L5.3,10.8 L1,7 L6.6,6.5 Z';
+  const hubPath = 'M8,1 L15,8 L8,15 L1,8 Z';
+  const sh = new TMap.MarkerStyle({ svgPath: starPath, color: '#a32d2d', strokeColor: '#fff', strokeWidth: 1, width: 16, height: 16, anchor: { x: 8, y: 8 } });
+  const hu = new TMap.MarkerStyle({ svgPath: hubPath, color: '#d85a30', strokeColor: '#fff', strokeWidth: 1, width: 14, height: 14, anchor: { x: 7, y: 7 } });
   const mk = (s, i) => ({ id: 's'+i, styleId: s.type === 'stronghold' ? 'sh' : 'hu',
     position: new TMap.LatLng(s.lat, s.lon),
     extra: '<b>'+s.n+'</b> <span style="color:#777">'+s.en+'</span><br>'+s.note });
@@ -1014,10 +1021,11 @@ if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
   const hubs = MAP_DATA.strongholds.filter(s => s.type !== 'stronghold').map((s, i) => mk(s, i));
   L.strongholds = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: shs });
   L.strongholds.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  L.strongholds.setVisible(false);  // 默认关，避免密集红点
   L.hubs = new TMap.MultiMarker({ map, styles: { sh, hu }, geometries: hubs });
   L.hubs.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
-}
-/* 当日事件：战区热区 + 精确地点合并为一层；点击弹事件明细 */
+  L.hubs.setVisible(false);  // 默认关
+/* 事件图层拆分：战区热区（默认开）+ 精确地点（默认关，减少红点噪音） */
 {
   const geoms = [];
   const styles = {};
@@ -1030,9 +1038,17 @@ if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
         extra: '<b>'+a.zh+'</b>：当日 '+a.count+' 条事件<br><br>'+eventsList(evs, a.zh) });
     });
   }
+  if (geoms.length) {
+    L.events = new TMap.MultiMarker({ map, styles, geometries: geoms });
+    L.events.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+  }
+}
+{
+  const geoms = [];
+  const styles = {};
   if (MAP_DATA.event_points && MAP_DATA.event_points.length) {
     MAP_DATA.event_points.forEach((p, i) => {
-      styles['p'+i] = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff5722', borderWidth: 2, borderColor: '#fff' });
+      styles['p'+i] = new TMap.MarkerStyle({ width: 12, height: 12, anchor: { x: 6, y: 6 }, color: '#ff7043', borderWidth: 2, borderColor: '#fff' });
       const names = p.names || [];
       const evs = EVENTS.filter(e => names.some(n => n && (e.title_zh.indexOf(n) !== -1 || e.title_en.toLowerCase().indexOf(n.toLowerCase()) !== -1))).slice(0, 8);
       geoms.push({ id: 'p'+i, styleId: 'p'+i, position: new TMap.LatLng(p.lat, p.lon),
@@ -1040,8 +1056,9 @@ if (MAP_DATA.strongholds && MAP_DATA.strongholds.length) {
     });
   }
   if (geoms.length) {
-    L.events = new TMap.MultiMarker({ map, styles, geometries: geoms });
-    L.events.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+    L.points = new TMap.MultiMarker({ map, styles, geometries: geoms });
+    L.points.on('click', (e) => showInfo(e.geometry.extra, e.geometry.position));
+    L.points.setVisible(false);  // 默认关闭
   }
 }
 /* 道路 + 铁路（zoom>=7 按需加载一次） */
@@ -1104,9 +1121,10 @@ function applyState() {
   if (L.rail) L.rail.setVisible(STATE.rail !== false);
   if (L.cities) L.cities.setVisible(STATE.cities !== false);
   if (L.towns) L.towns.setVisible(map.getZoom() >= 8 && STATE.cities !== false);
-  if (L.strongholds) L.strongholds.setVisible(STATE.strongholds !== false);
-  if (L.hubs) L.hubs.setVisible(STATE.hubs !== false);
+  if (L.strongholds) L.strongholds.setVisible(STATE.strongholds === true);
+  if (L.hubs) L.hubs.setVisible(STATE.hubs === true);
   if (L.events) L.events.setVisible(STATE.events !== false);
+  if (L.points) L.points.setVisible(STATE.points === true);
   if (L.villages) L.villages.setVisible(map.getZoom() >= 9 && STATE.villages !== false);
 }
 document.querySelectorAll('#legend .lg[data-layer]').forEach(el => {
