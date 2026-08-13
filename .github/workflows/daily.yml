@@ -47,14 +47,11 @@ jobs:
         run: |
           python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)"
           python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --week
-          if [ "$(TZ=Asia/Shanghai date +%d)" = "01" ]; then
-            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
-          fi
-          if [ "$(TZ=Asia/Shanghai date +%m-%d)" = "01-01" ]; then
-            python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
-          fi
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
+          python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
 
       - name: ⑤ Render Pages
+        # 地图用 Leaflet + 公共瓦片（CARTO/OSM/Esri），无需任何地图 API key，GitHub Pages 直接可用
         run: python scripts/render_pages.py
 
       - name: ④ Validate (CI quality gate)
