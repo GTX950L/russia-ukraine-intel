@@ -385,7 +385,7 @@ INDEX_HEAD = """<!doctype html>
   <section class="sec" id="map">
     <div class="sec-h">
       <h2>🗺 战场态势</h2>
-      <span class="muted">红色=俄方控制区 ｜ 其余乌克兰领土=乌方控制 ｜ 红圈=事件密度（点击地图可开关图层）</span>
+      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度（点击地图可开关图层）</span>
       <span class="sp"></span>
       <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
     </div>
@@ -921,24 +921,17 @@ MAP_HTML = """<!doctype html>
 <div id="legend" class="panel">
   <h3>图例</h3>
   <div class="hint">点击条目可开关图层</div>
-  <div class="lg-grp">控制区</div>
-  <div class="lg on" data-layer="control"><span class="sw" style="background:#d32f2f;opacity:.8"></span>俄方控制（红色填充）</div>
-  <div class="lg on" data-layer="prev"><span class="swl" style="border-top:2px dashed #8b83e0"></span>前一日控制线</div>
-  <div class="lg-grp">交通</div>
-  <div class="lg on" data-layer="roads"><span class="swl" style="background:#8a93a6"></span>主要道路</div>
-  <div class="lg on" data-layer="rail"><span class="swl" style="background:#333;border-top:2px solid #333"></span>铁路</div>
-  <div class="lg-grp">地标</div>
-  <div class="lg on" data-layer="cities"><span class="dot" style="background:#1a5fb4"></span>城市</div>
-  <div class="lg off" data-layer="strongholds"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇（默认关）</div>
-  <div class="lg off" data-layer="hubs"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽（默认关）</div>
-  <div class="lg off" data-layer="villages"><span class="dot" style="background:#b4b2a9"></span>村庄（缩放 9 级+）</div>
-  <div class="lg-grp">事件</div>
-  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;border:2px solid #fff"></span>战区热区（事件密度）</div>
-  <div class="lg off" data-layer="points"><span class="dot" style="background:#ff7043;border:2px solid #fff"></span>精确地点（默认关闭）</div>
-  <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd);color:var(--mut);font-size:11px;line-height:1.6">
-    图例：<span style="color:#d32f2f;font-weight:700">■</span> 俄方控制区<br>
-    其余乌克兰领土 = <span style="color:#1a5fb4;font-weight:700">■</span> 乌方控制（未填充）
-  </div>
+  <div class="lg-grp">控制态势</div>
+  <div class="lg on" data-layer="control"><span class="sw" style="background:#d32f2f;opacity:.85"></span>俄控区</div>
+  <div class="lg on" data-layer="prev"><span class="swl" style="border-top:2px dashed #8b83e0"></span>前一日范围</div>
+  <div class="lg-grp">要点</div>
+  <div class="lg on" data-layer="cities"><span class="dot" style="background:#1a5fb4"></span>居民点（城市／城镇）</div>
+  <div class="lg off" data-layer="strongholds"><span class="dot" style="background:#a32d2d;width:11px;height:11px;clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)"></span>防御重镇</div>
+  <div class="lg off" data-layer="hubs"><span class="dot" style="background:#d85a30;width:10px;height:10px;transform:rotate(45deg)"></span>交通枢纽</div>
+  <div class="lg-grp">动态 / 交通</div>
+  <div class="lg on" data-layer="events"><span class="dot" style="background:#e24b4a;width:7px;height:7px"></span><span class="dot" style="background:#e24b4a;width:11px;height:11px"></span><span class="dot" style="background:#e24b4a;width:15px;height:15px"></span>战区热区（圆越大＝事件越多）</div>
+  <div class="lg off" data-layer="points"><span class="dot" style="background:#7b3fa0"></span>精确地点</div>
+  <div class="lg on" data-layer="transport"><span class="swl" style="background:#8a93a6"></span><span class="swl" style="background:#333"></span>铁路 / 公路</div>
 </div>
 <div id="meta" class="panel">
   数据：DeepState 每日快照 + OSM(ODbL) + 情报标注<br>
@@ -1005,7 +998,7 @@ function buildEventPoints() {
   MAP_DATA.event_points.forEach((p) => {
     const names = p.names || [];
     const evs = EVENTS.filter(e => names.some(n => n && (e.title_zh.indexOf(n) !== -1 || e.title_en.toLowerCase().indexOf(n.toLowerCase()) !== -1))).slice(0, 8);
-    geoms.push(L.circleMarker([p.lat, p.lon], { radius:6, color:'#fff', weight:2, fillColor:'#ff7043', fillOpacity:1 }).bindPopup('<b>事件地点：'+names.join(' / ')+'</b>（关联 '+p.count+' 条）<br><br>'+eventsList(evs)));
+    geoms.push(L.circleMarker([p.lat, p.lon], { radius:6, color:'#fff', weight:2, fillColor:'#7b3fa0', fillOpacity:1 }).bindPopup('<b>事件地点：'+names.join(' / ')+'</b>（关联 '+p.count+' 条）<br><br>'+eventsList(evs)));
   });
   L2.points = L.layerGroup(geoms);
 }
@@ -1051,7 +1044,8 @@ function toggleLayer(name) {
   const willBeOn = el.classList.contains('off');
   el.classList.toggle('off', !willBeOn);
   STATE[name] = willBeOn;
-  if (name === 'roads' && willBeOn && !roadsLoaded) { loadRoads(); return; }
+  if (name === 'transport') { STATE.roads = willBeOn; STATE.rail = willBeOn; }
+  if ((name === 'roads' || name === 'transport') && willBeOn && !roadsLoaded) { loadRoads(); return; }
   if (willBeOn) { if ((name === 'strongholds' || name === 'hubs') && !L2.strongholds) buildStrongholdMarkers(); if (name === 'points' && !L2.points) buildEventPoints(); }
   applyState();
 }
