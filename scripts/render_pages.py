@@ -336,6 +336,12 @@ table.ev td.et .sum { display:block; color:var(--fg-soft); font-size:11.5px; mar
 footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:26px;
   padding-top:16px; line-height:1.85; }
 @media (prefers-reduced-motion:reduce){ * { transition:none !important; scroll-behavior:auto !important; } }
+  /* ---------- 数据分析图表 ---------- */
+  .charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+  .chart-card { border:1px solid var(--bd); border-radius:12px; padding:12px 14px 14px; background:var(--card-2); }
+  .chart-card h3 { margin:0 0 6px; font-size:12.5px; color:var(--mut); font-weight:500; }
+  .chart-box { position:relative; height:210px; }
+  @media (max-width:720px){ .chart-box { height:180px; } }
 """
 
 
@@ -470,6 +476,7 @@ INDEX_HEAD = """<!doctype html>
     <h1>⚔️ 俄乌战争<span class="dot">·</span>每日情报</h1>
     <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：__UPDATED__</div>
     <nav>
+      <a href="#analytics">📈 数据分析</a>
       <a href="#map">🗺 态势地图</a>
       <a href="#today">📌 今日要点</a>
       <a href="#events">📊 事件检索</a>
@@ -483,6 +490,23 @@ INDEX_HEAD = """<!doctype html>
   <div class="stats">
     __STATS__
   </div>
+
+  <section class="sec" id="analytics">
+    <div class="sec-h">
+      <h2>📈 数据分析</h2>
+      <span class="muted">近 30 天事件频次 · 类型/战区分布 · 装备损失快照（自动生成）</span>
+      <span class="sp"></span>
+      <a class="btn" href="#events">查看全部事件</a>
+    </div>
+    <div class="sec-b">
+      <div class="charts-grid">
+        <div class="chart-card"><h3>近 30 天事件频次</h3><div class="chart-box"><canvas id="cFreq"></canvas></div></div>
+        <div class="chart-card"><h3>事件类型分布（TOP 10）</h3><div class="chart-box"><canvas id="cType"></canvas></div></div>
+        <div class="chart-card"><h3>战区分布（TOP 8）</h3><div class="chart-box"><canvas id="cTheater"></canvas></div></div>
+        <div class="chart-card"><h3>俄方装备损失快照（最新）</h3><div class="chart-box"><canvas id="cEq"></canvas></div></div>
+      </div>
+    </div>
+  </section>
 
   <section class="sec" id="map">
     <div class="sec-h">
@@ -536,6 +560,7 @@ INDEX_HEAD = """<!doctype html>
     ｜ 方法论：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">references/</a>
   </footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
 const TYPE_ZH = __TYPE_ZH__;
 const THEATER_ZH = __THEATER_ZH__;
@@ -554,6 +579,7 @@ fetch('events.json').then(r=>r.json()).then(data=>{
   uniq(EVENTS.map(e=>e.event_type)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(TYPE_ZH[t]||t); fType.appendChild(o); });
   uniq(EVENTS.map(e=>e.theater)).forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=(THEATER_ZH[t]||t); fTheater.appendChild(o); });
   render();
+  initCharts();
 }).catch(()=>{ cntEl.textContent = '数据加载失败'; });
 function filtered(){
   const kw=q.value.trim().toLowerCase(), ft=fType.value, fth=fTheater.value;
@@ -582,8 +608,47 @@ fType.addEventListener('change', render);
 fTheater.addEventListener('change', render);
 moreBtn.addEventListener('click', () => { cur += PAGE; render(); });
 render();
+var __charts=[];
+function __css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function initCharts(){
+  __charts.forEach(function(c){try{c.destroy();}catch(e){}});__charts=[];
+  if(typeof Chart==='undefined'||!EVENTS.length)return;
+  Chart.defaults.color=__css('--mut');Chart.defaults.borderColor=__css('--bd');
+  var acc=__css('--acc'),purple=__css('--purple'),red=__css('--red'),green=__css('--green'),amber=__css('--amber');
+  var base={responsive:true,maintainAspectRatio:false};
+  var lab=[],fr=[];var now=new Date();
+  for(var i=29;i>=0;i--){var d=new Date(now);d.setDate(d.getDate()-i);var s=d.toISOString().slice(0,10);lab.push(s.slice(5));fr.push(EVENTS.filter(function(e){return (e.date||'')===s;}).length);}
+  var c1=document.getElementById('cFreq');
+  if(c1)__charts.push(new Chart(c1,{type:'line',data:{labels:lab,datasets:[{label:'事件数',data:fr,borderColor:acc,backgroundColor:acc+'22',fill:true,tension:.25,pointRadius:1.5}]},options:Object.assign({},base,{plugins:{legend:{display:false}},scales:{x:{ticks:{maxTicksLimit:10}},y:{beginAtZero:true,ticks:{precision:0}}}})}));
+  var tc={};EVENTS.forEach(function(e){var t=TYPE_ZH[e.event_type]||e.event_type||'未知';tc[t]=(tc[t]||0)+1;});
+  var te=Object.entries(tc).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+  var c2=document.getElementById('cType');
+  if(c2)__charts.push(new Chart(c2,{type:'bar',data:{labels:te.map(function(x){return x[0];}),datasets:[{data:te.map(function(x){return x[1];}),backgroundColor:acc,borderRadius:4}]},options:Object.assign({},base,{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0}}}})}));
+  var hc={};EVENTS.forEach(function(e){var t=THEATER_ZH[e.theater]||e.theater||'未知';hc[t]=(hc[t]||0)+1;});
+  var th=Object.entries(hc).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+  var c3=document.getElementById('cTheater');
+  if(c3)__charts.push(new Chart(c3,{type:'bar',data:{labels:th.map(function(x){return x[0];}),datasets:[{data:th.map(function(x){return x[1];}),backgroundColor:purple,borderRadius:4}]},options:Object.assign({},base,{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0}}}})}));
+  function parseKV(s,k){var i=s.toLowerCase().indexOf(k.toLowerCase());if(i<0)return null;var j=s.indexOf('=',i);if(j<0)return null;var m=s.slice(j+1,j+24).match(/[0-9][0-9,]*/);return m?parseInt(m[0].replace(/,/g,''),10):null;}
+  var eqK=['tank','APC','field artillery','drone','aircraft','MRL'];
+  var eqL={tank:'坦克',APC:'装甲车','field artillery':'火炮',drone:'无人机',aircraft:'战机',MRL:'火箭炮'};
+  var eqV={};var eqAny=false;
+  EVENTS.filter(function(e){return e.event_type==='equipment';}).forEach(function(e){
+    var s=(e.summary_zh||'')+';'+(e.title_zh||'');
+    eqK.forEach(function(k){var v=parseKV(s,k);if(v!=null){eqV[k]=v;eqAny=true;}});
+  });
+  var c4=document.getElementById('cEq');
+  if(c4){
+    var shown=eqK.filter(function(k){return eqV[k]!=null;});
+    if(shown.length){
+      __charts.push(new Chart(c4,{type:'bar',data:{labels:shown.map(function(k){return eqL[k]||k;}),datasets:[{data:shown.map(function(k){return eqV[k];}),backgroundColor:[red,amber,green,acc,purple,'#e0932e'],borderRadius:4}]},options:Object.assign({},base,{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e4?(v/1e4).toFixed(1)+'万':String(v);}}}}})}));
+    } else {
+      c4.outerHTML='<p class="empty" style="padding:70px 0">暂无装备损失快照数据</p>';
+    }
+  }
+}
+window.__themeReload=initCharts;
 </script>
-<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
+<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}if(window.__themeReload){try{window.__themeReload();}catch(e){}}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
 </body>
 </html>
 """
@@ -610,7 +675,7 @@ BRIEFING_PAGE = """<!doctype html>
   非官方、开源、中立汇编，仅供参考。<a href="__ROOT__index.html">返回首页</a>
 </footer>
 </div>
-<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
+<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}if(window.__themeReload){try{window.__themeReload();}catch(e){}}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
 </body>
 </html>
 """
@@ -633,7 +698,7 @@ ARCHIVE_PAGE = """<!doctype html>
   </div>
 </div>
 <div class="wrap"><div class="archive">__BODY__</div></div>
-<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
+<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}if(window.__themeReload){try{window.__themeReload();}catch(e){}}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
 </body>
 </html>
 """
