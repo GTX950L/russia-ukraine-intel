@@ -5,6 +5,7 @@ on:
     - cron: "0 22 * * *"     # 每日 22:00 UTC 触发（= 北京时间 06:00，保证 7 点前出情报）
   workflow_dispatch:         # 允许手动运行
   push:
+    branches: [main]
     paths:
       - "scripts/**"
       - "config.yaml"

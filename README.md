@@ -1,5 +1,20 @@
 # 俄乌战争每日情报 / Russia-Ukraine War Daily Intelligence
 
+<p align="center">
+  <img src="https://img.shields.io/badge/部署-GitHub%20Pages-1a5fb4?style=flat-square&logo=githubpages&logoColor=white" alt="GitHub Pages"/>
+  <img src="https://img.shields.io/badge/OSINT-俄乌情报-7f77dd?style=flat-square" alt="OSINT"/>
+  <img src="https://img.shields.io/badge/更新-每日自动-1e7d4f?style=flat-square" alt="每日自动更新"/>
+  <img src="https://img.shields.io/badge/许可-CC%20BY%204.0%20%2F%20MIT-667085?style=flat-square" alt="许可证"/>
+  <img src="https://img.shields.io/badge/语言-Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python"/>
+</p>
+
+<p align="center">
+  <a href="https://gtx950l.github.io/russia-ukraine-intel/"><b>📰 在线站点（最新每日简报）</b></a> ·
+  <a href="https://gtx950l.github.io/russia-ukraine-intel/briefings.html">🗂 简报归档</a> ·
+  <a href="https://gtx950l.github.io/russia-ukraine-intel/map.html">🗺 战场态势地图</a> ·
+  <a href="https://gtx950l.github.io/russia-ukraine-intel/events.json">📊 原始数据</a>
+</p>
+
 > 中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 · 全自动流水线
 
 一个面向长期维护的开放情报（OSINT）跟踪项目：按时间轴记录俄乌战争的战线、兵力、装备、领导人言行、平民、外部势力、外交谈判、经济制裁、网络认知战、战略威慑，以及军事援助与武器交付、能源与关键基础设施、法律与战争罪、人道与难民，并对未来做有依据的推测。
