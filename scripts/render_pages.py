@@ -292,8 +292,14 @@ table.ev th { background:var(--th-bg); position:sticky; top:0; font-weight:600; 
   font-size:11.5px; white-space:nowrap; z-index:1; }
 table.ev tbody tr { transition:background .12s; }
 table.ev tbody tr:hover { background:var(--tr-hover); }
+table.ev tbody tr.ev-row { cursor:pointer; }
+table.ev tbody tr.ev-row.open td { background:var(--hover); }
+table.ev tbody tr.ev-row.open td:first-child { box-shadow:inset 3px 0 0 var(--acc); }
+table.ev td.sm { white-space:nowrap; font-size:11.5px; color:var(--mut); }
+table.ev td.et b { display:block; font-size:12.5px; }
 table.ev td.et .en { display:block; color:var(--mut); font-size:11.5px; margin-top:1px; }
-table.ev td.et .sum { display:block; color:var(--fg-soft); font-size:11.5px; margin-top:3px; }
+table.ev td.et .sum { display:block; color:var(--fg-soft); font-size:11.5px; margin-top:6px; padding-top:6px; border-top:1px dashed var(--bd-soft); }
+table.ev .sum-zh { display:block; margin-top:2px; }
 .tag { display:inline-block; background:var(--acc-soft); color:var(--acc); border-radius:6px;
   padding:1px 7px; font-size:10.5px; margin:2px 4px 0 0; font-weight:500; }
 .disc { color:var(--red); font-weight:700; font-size:11.5px; }
@@ -551,7 +557,7 @@ INDEX_HEAD = """<!doctype html>
     </div>
     <div style="overflow-x:auto">
       <table class="ev">
-        <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（中 / EN）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
+        <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（点击行展开 EN / 摘要）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
@@ -603,14 +609,22 @@ function render(){
   tbody.innerHTML = rows.slice(0, cur).map(e=>{
     const disc=(e.disagreement_flag||'').toLowerCase().startsWith('y');
     const tags=(e.tags||'').split(';').filter(Boolean).map(t=>'<span class="tag">'+t+'</span>').join('');
-    return '<tr><td style="white-space:nowrap">'+(e.date||'')+'</td><td>'+(THEATER_ZH[e.theater]||e.theater||'')+'</td><td>'+(TYPE_ZH[e.event_type]||e.event_type||'')+'</td>'
-      +'<td class="et"><b>'+(e.title_zh||'')+'</b><span class="en">'+(e.title_en||'')+'</span><span class="sum">'+(e.summary_zh||'')+'</span> '+tags+'</td>'
-      +'<td><span class="rel rel-'+(e.reliability||'x')+'">'+(e.reliability||'')+'</span></td><td>'+(e.confidence||'')+'</td>'
-      +'<td>'+(disc?'<span class="disc">⚠ 分歧</span>':(e.source_side||''))+'</td></tr>';
+    return '<tr class="ev-row" onclick="toggleEv(this)">'
+      +'<td style="white-space:nowrap">'+(e.date||'')+'</td><td class="sm">'+(THEATER_ZH[e.theater]||e.theater||'')+'</td>'
+      +'<td class="sm"><span class="tag">'+(TYPE_ZH[e.event_type]||e.event_type||'')+'</span></td>'
+      +'<td class="et"><b>'+(e.title_zh||'')+'</b>'
+      +'<span class="sum" hidden><span class="en">'+(e.title_en||'')+'</span>'
+      +'<span class="sum-zh">'+(e.summary_zh||'')+'</span>'
+      +(e.summary_en?'<span class="en">'+(e.summary_en||'')+'</span>':'')
+      +' '+tags+'</span></td>'
+      +'<td class="sm"><span class="rel rel-'+(e.reliability||'x')+'">'+(e.reliability||'')+'</span></td>'
+      +'<td class="sm">'+(e.confidence||'')+'</td>'
+      +'<td class="sm">'+(disc?'<span class="disc">⚠</span>':(e.source_side||''))+'</td></tr>';
   }).join('') || '<tr><td colspan="7" class="empty">无匹配事件</td></tr>';
   cntEl.textContent = rows.length + ' / ' + EVENTS.length;
   moreBtn.style.display = rows.length > cur ? 'inline-block' : 'none';
 }
+function toggleEv(tr){ var s=tr.querySelector('.sum'); if(s) s.toggleAttribute('hidden'); tr.classList.toggle('open'); }
 q.addEventListener('input', render);
 fType.addEventListener('change', render);
 fTheater.addEventListener('change', render);
