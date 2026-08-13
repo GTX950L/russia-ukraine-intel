@@ -334,7 +334,12 @@ table.ev td.et .sum { display:block; color:var(--fg-soft); font-size:11.5px; mar
 .archive li a { text-decoration:none; font-weight:500; }
 .archive .d { color:var(--mut); font-size:11.5px; margin-left:auto; white-space:nowrap; }
 footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:26px;
-  padding-top:16px; line-height:1.85; }
+  padding-top:16px; line-height:1.85; display:flex; flex-direction:column; gap:3px; }
+.f-meta { }
+.f-links { display:flex; flex-wrap:wrap; gap:9px; align-items:center; }
+.f-links a { color:var(--mut); }
+.f-links a:hover { color:var(--acc); text-decoration:none; }
+.f-dot { opacity:.45; }
 @media (prefers-reduced-motion:reduce){ * { transition:none !important; scroll-behavior:auto !important; } }
   /* ---------- 数据分析图表 ---------- */
   .charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
@@ -554,10 +559,13 @@ INDEX_HEAD = """<!doctype html>
   </section>
 
   <footer>
-    非官方、开源、中立汇编，数据可能滞后或有误，仅供参考。原始数据：<a href="events.json">events.json</a>
-    ｜ 简报：<a href="briefings.html">全部简报</a> ｜ 今日最新：<a href="__LATEST_REL__">最新简报</a>
-    ｜ 态势地图：<a href="map.html">战场地图</a>
-    ｜ 方法论：<a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">references/</a>
+    <div class="f-meta">非官方 · 开源 · 中立汇编，数据可能滞后或有误，仅供参考</div>
+    <div class="f-links">
+      <a href="events.json">原始数据</a><span class="f-dot">·</span>
+      <a href="briefings.html">全部简报</a><span class="f-dot">·</span>
+      <a href="map.html">战场地图</a><span class="f-dot">·</span>
+      <a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">方法论</a>
+    </div>
   </footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
