@@ -487,9 +487,9 @@ INDEX_HEAD = """<!doctype html>
     <h1>⚔️ 俄乌战争<span class="dot">·</span>每日情报</h1>
     <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：__UPDATED__</div>
     <nav>
-      <a href="#analytics">📈 数据分析</a>
       <a href="#map">🗺 态势地图</a>
       <a href="#today">📌 今日要点</a>
+      <a href="#analytics">📈 数据分析</a>
       <a href="#events">📊 事件检索</a>
       <a href="briefings.html">🗂 全部简报</a>
       <a href="map.html" target="_blank">⛶ 全屏地图</a>
@@ -501,23 +501,6 @@ INDEX_HEAD = """<!doctype html>
   <div class="stats">
     __STATS__
   </div>
-
-  <section class="sec" id="analytics">
-    <div class="sec-h">
-      <h2>📈 数据分析</h2>
-      <span class="muted">近 30 天事件频次 · 类型/战区分布 · 装备损失快照（自动生成）</span>
-      <span class="sp"></span>
-      <a class="btn" href="#events">查看全部事件</a>
-    </div>
-    <div class="sec-b">
-      <div class="charts-grid">
-        <div class="chart-card"><h3>近 30 天事件频次</h3><div class="chart-box"><canvas id="cFreq"></canvas></div></div>
-        <div class="chart-card"><h3>事件类型分布（TOP 10）</h3><div class="chart-box"><canvas id="cType"></canvas></div></div>
-        <div class="chart-card"><h3>战区分布（TOP 8）</h3><div class="chart-box"><canvas id="cTheater"></canvas></div></div>
-        <div class="chart-card"><h3>俄方装备损失快照（最新）</h3><div class="chart-box"><canvas id="cEq"></canvas></div></div>
-      </div>
-    </div>
-  </section>
 
   <section class="sec" id="map">
     <div class="sec-h">
@@ -541,6 +524,23 @@ INDEX_HEAD = """<!doctype html>
     <div class="sec-b">
       __LATEST_BLOCK__
       __CROSSCHECK__
+    </div>
+  </section>
+
+  <section class="sec" id="analytics">
+    <div class="sec-h">
+      <h2>📈 数据分析</h2>
+      <span class="muted">近 30 天事件频次 · 类型/战区分布 · 装备损失快照（自动生成）</span>
+      <span class="sp"></span>
+      <a class="btn" href="#events">查看全部事件</a>
+    </div>
+    <div class="sec-b">
+      <div class="charts-grid">
+        <div class="chart-card"><h3>近 30 天事件频次</h3><div class="chart-box"><canvas id="cFreq"></canvas></div></div>
+        <div class="chart-card"><h3>事件类型分布（TOP 10）</h3><div class="chart-box"><canvas id="cType"></canvas></div></div>
+        <div class="chart-card"><h3>战区分布（TOP 8）</h3><div class="chart-box"><canvas id="cTheater"></canvas></div></div>
+        <div class="chart-card"><h3>俄方装备损失快照（最新）</h3><div class="chart-box"><canvas id="cEq"></canvas></div></div>
+      </div>
     </div>
   </section>
 
