@@ -69,6 +69,48 @@ def fmt_row(r: dict) -> str:
     return title + f"\n  - 中：{s_zh}\n  - EN：{s_en}"
 
 
+# 装备损失类别 → 中文标签（对应 Oryx 数值键）
+_EQUIP_KEYS = [
+    ("tank", "坦克"), ("APC", "装甲车"), ("field artillery", "火炮"),
+    ("MRL", "火箭炮"), ("anti-aircraft warfare", "防空系统"),
+    ("ground robotic systems", "地面机器人"), ("drone", "无人机"),
+    ("cruise missiles", "巡航导弹"), ("aircraft", "战机"), ("helicopter", "直升机"),
+]
+
+
+def _equipment_delta_block(rows: list[dict]) -> str:
+    """周/月/年简报自动板块：Oryx 装备累计损失在周期内的增量（周初 vs 周末）。"""
+    snap: dict[str, dict] = {}
+    for r in rows:
+        if "装备损失" not in (r.get("title_zh") or ""):
+            continue
+        s = (r.get("summary_zh") or "") + ";" + (r.get("summary_en") or "")
+        vals = {}
+        for k, _ in _EQUIP_KEYS:
+            m = re.search(k + r"=(\d+)", s)
+            if m:
+                vals[k] = int(m.group(1))
+        if vals:
+            snap[r.get("date", "")] = vals
+    if len(snap) < 2:
+        return ""
+    d0, d1 = min(snap), max(snap)
+    a, b = snap[d0], snap[d1]
+    rows_html = []
+    for k, zh in _EQUIP_KEYS:
+        if k in a and k in b:
+            d = b[k] - a[k]
+            sign = "+" if d >= 0 else ""
+            rows_html.append(f"| {zh} / {k} | {a[k]:,} | {b[k]:,} | **{sign}{d:,}** |")
+    if not rows_html:
+        return ""
+    return (
+        "\n## 装备损失周增量 / Equipment Loss Delta（自动计算）\n"
+        f"| 类别 | {d0} | {d1} | 增量 |\n"
+        "|------|------|------|------|\n" + "\n".join(rows_html) + "\n"
+    )
+
+
 # 深度解析插槽的哨兵标题：流水线在重生成数据层时，会保留该标题之后的全部内容。
 ANALYSIS_SENTINEL = "## AI 深度解析"
 
@@ -110,6 +152,10 @@ def build_range(rows_all, start: str, end: str, out_path, header_lines: list[str
                 parts.append(
                     f"| {r.get('title_zh', '')[:50]} | {src} | {other} | "
                     f"{r.get('source_third', '')} | （{side}方叙事，待交叉核验） |\n")
+    if period in ("weekly", "monthly", "yearly"):
+        eq = _equipment_delta_block(rows)
+        if eq:
+            parts.append(eq)
     if analysis_slot:
         # 保留人工/AI 撰写的深度解析层，不被自动重生成覆盖
         kept = ""

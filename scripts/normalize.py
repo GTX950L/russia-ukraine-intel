@@ -284,20 +284,38 @@ def parse_isw_html(path: Path) -> list[dict]:
                 date = dm.group(1)
         if not date:
             date = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+        # 尝试抓取正文前几段作摘要（ISW 有 WAF，失败自动回退标题模式）
+        body_zh = body_en = ""
+        try:
+            import requests as _req
+            _r = _req.get(href, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+            if _r.ok and "text/html" in _r.headers.get("Content-Type", ""):
+                _bs = BeautifulSoup(_r.text, "html.parser")
+                _paras = [p.get_text(" ", strip=True) for p in _bs.find_all("p")]
+                _paras = [p for p in _paras if len(p) > 120][:3]
+                if _paras:
+                    body_zh = "；".join(p[:200] for p in _paras)[:600]
+                    body_en = body_zh  # 自动抽取，中英同源，建议人工复核
+        except Exception:  # noqa: BLE001
+            body_zh = body_en = ""
+        _excerpt_tag = "summary-extracted" if body_zh else "summary-only"
         out.append({
             "date": date, "theater": "political", "event_type": "external",
             "title_zh": f"ISW 每日战报：{txt[:80]}",
             "title_en": f"ISW daily assessment: {txt[:80]}",
             "summary_zh": (f"ISW 发布《俄罗斯攻势战役评估》（{date}）。原文：{href}"
-                           f"（自动抽取标题，正文分析建议人工/AI 复核）"),
+                           + (f" 评估摘要（自动抽取）：{body_zh}。建议人工复核。" if body_zh
+                              else "（自动抽取标题，正文分析建议人工/AI 复核）")),
             "summary_en": (f"ISW published Russian Offensive Campaign Assessment ({date}). "
-                           f"URL: {href} (title auto-extracted; full analysis needs review)."),
+                           f"URL: {href} "
+                           + (f"Excerpt: {body_en}. Review advised." if body_en
+                              else "(title auto-extracted; full analysis needs review).")),
             "source_side": "third", "source_ua": "", "source_ru": "", "source_third": "ISW",
             "url_ua": "", "url_ru": "", "url_third": href,
             "reliability": "A", "confidence": "3",
             "disagreement_flag": "no", "disagreement_note_zh": "",
             "forecast_related": "no",
-            "tags": "isw;daily-report;summary-only;manual-verify", "editor": "pipeline",
+            "tags": "isw;daily-report;" + _excerpt_tag + ";manual-verify", "editor": "pipeline",
         })
     except Exception as e:  # noqa: BLE001
         log(f"isw parse failed: {e}")
