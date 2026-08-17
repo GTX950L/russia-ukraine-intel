@@ -7,20 +7,66 @@
 from __future__ import annotations
 
 import argparse
+import re
 from calendar import monthrange
 from datetime import datetime, timedelta, timezone
 
 from utils import BRIEF, MASTER, TYPE_LABELS, read_events, load_config, log
 
 
+# VIINA 占位事件特征："地点: <type> event" 且中英标题完全相同；或摘要为 "VIINA 事件（…）"
+_PLACEHOLDER_RE = re.compile(
+    r"^[^:]+:\s*(frontline|troops|equipment|civilian|external|leadership|diplomacy|"
+    r"economy|cyber|deterrence|aid|energy|law|humanitarian|forecast)\s*event$",
+    re.I)
+
+
+def _is_placeholder(r: dict) -> bool:
+    zh = (r.get("title_zh") or "").strip()
+    en = (r.get("title_en") or "").strip()
+    if zh and zh == en and _PLACEHOLDER_RE.match(zh):
+        return True
+    if (r.get("summary_zh") or "").startswith("VIINA 事件") and \
+            (r.get("summary_en") or "").startswith("VIINA 事件"):
+        return True
+    return False
+
+
+def _agg_placeholder(grp: list[dict], label_zh: str, label_en: str) -> str:
+    """周/月/年简报：把 VIINA 占位事件聚合为一条汇总，避免超长列表。"""
+    ph = [r for r in grp if _is_placeholder(r)]
+    real = [r for r in grp if not _is_placeholder(r)]
+    if not ph:
+        return "".join(fmt_row(r) + "\n" for r in grp)
+    locs: list[str] = []
+    for r in ph:
+        m = re.match(r"^(.+?):\s*", (r.get("title_zh") or "").strip())
+        if m and m.group(1).strip():
+            locs.append(m.group(1).strip())
+    uniq = list(dict.fromkeys(locs))[:12]
+    n = len(ph)
+    loc_cn = "、".join(uniq) if uniq else "（地点未记录）"
+    loc_en = ", ".join(uniq) if uniq else "(locations not recorded)"
+    out = [
+        f"- **VIINA 批量{label_zh}报告（{n} 起，占位条目）** / VIINA bulk {label_en} reports ({n}, placeholder)  "
+        f"｜ 可靠B 置信3 来源方:third",
+        f"  - 中：VIINA 批量报告 {n} 起{label_zh}事件（占位条目，无细节）。主要地点：{loc_cn}",
+        f"  - EN：VIINA bulk reports of {n} {label_en} events (placeholder, no detail). Main locations: {loc_en}",
+    ]
+    return "\n".join(out) + "\n"
+
+
 def fmt_row(r: dict) -> str:
     rel = r.get("reliability", "")
     conf = r.get("confidence", "")
     disc = " ⚠分歧" if str(r.get("disagreement_flag", "")).lower().startswith("y") else ""
-    return (f"- **{r.get('title_zh', '')}** / {r.get('title_en', '')}  "
-            f"｜ 可靠{rel} 置信{conf} 来源方:{r.get('source_side', '')}{disc}\n"
-            f"  - 中：{r.get('summary_zh', '')}\n"
-            f"  - EN：{r.get('summary_en', '')}")
+    title = (f"- **{r.get('title_zh', '')}** / {r.get('title_en', '')}  "
+             f"｜ 可靠{rel} 置信{conf} 来源方:{r.get('source_side', '')}{disc}")
+    s_zh = r.get("summary_zh", "")
+    s_en = r.get("summary_en", "")
+    if s_zh and s_zh == s_en:
+        return title + f"\n  - 中/EN：{s_zh}"
+    return title + f"\n  - 中：{s_zh}\n  - EN：{s_en}"
 
 
 # 深度解析插槽的哨兵标题：流水线在重生成数据层时，会保留该标题之后的全部内容。
@@ -36,8 +82,12 @@ def build_range(rows_all, start: str, end: str, out_path, header_lines: list[str
         if not grp:
             continue
         parts.append(f"\n## {zh} / {en}\n")
-        for r in grp:
-            parts.append(fmt_row(r) + "\n")
+        if period in ("weekly", "monthly", "yearly"):
+            # 周/月/年深度复盘：VIINA 占位事件聚合为汇总行，避免战线等板块超长
+            parts.append(_agg_placeholder(grp, zh, en))
+        else:
+            for r in grp:
+                parts.append(fmt_row(r) + "\n")
     disc = [r for r in rows if str(r.get("disagreement_flag", "")).lower().startswith("y")]
     ua_rows = [r for r in rows if r.get("source_side") == "ua"]
     ru_rows = [r for r in rows if r.get("source_side") == "ru"]
