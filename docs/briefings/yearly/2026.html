@@ -74,7 +74,7 @@ a:hover { text-decoration:underline; }
   box-shadow:0 1px 0 rgba(0,0,0,.02); position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2); }
 .topbar-in { max-width:1200px; margin:0 auto; padding:16px 22px 12px;
   display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
-.topbar h1 { margin:0; font-size:20px; letter-spacing:.2px;
+.topbar h1 { margin:0; font-size:22px; letter-spacing:.2px;
   background:linear-gradient(92deg,var(--fg),var(--acc)); -webkit-background-clip:text;
   background-clip:text; -webkit-text-fill-color:transparent; }
 .topbar h1 .dot { color:var(--red); -webkit-text-fill-color:var(--red); }
@@ -94,19 +94,15 @@ nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decorati
   transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
 .card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
   background:linear-gradient(var(--acc),var(--acc-strong)); opacity:.0; transition:opacity .2s; }
-.card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(16,24,40,.10), 0 14px 36px rgba(16,24,40,.08);
+.card:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08), 0 10px 26px rgba(16,24,40,.06);
   border-color:var(--bd); }
-.card.acc::before { opacity:.9; }
-.card.red::before { background:linear-gradient(var(--red),#b91c1c); opacity:.9; }
-.card.green::before { background:linear-gradient(var(--green),#0f6b30); opacity:.9; }
-.card.amber::before { background:linear-gradient(var(--amber),#8a3d07); opacity:.9; }
-.card .ico { font-size:16px; }
+.card.acc::before, .card.red::before, .card.green::before, .card.amber::before { opacity:.9; }
+
 .card .num { font-size:24px; font-weight:760; color:var(--fg); line-height:1.1;
   letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
 .card .num small { font-size:13px; color:var(--mut); font-weight:500; }
 .card .lbl { font-size:12px; color:var(--mut); margin-top:5px; display:flex; align-items:center; gap:6px; }
-.card.acc .num { color:var(--acc); } .card.red .num { color:var(--red); }
-.card.green .num { color:var(--green); } .card.amber .num { color:var(--amber); }
+.card .num { color:var(--fg); }
 /* ---------- 通用区块卡 ---------- */
 .sec { background:var(--card); border:1px solid var(--bd); border-radius:16px;
   box-shadow:var(--shadow); margin:0 0 18px; overflow:hidden;
@@ -114,8 +110,9 @@ nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decorati
 .sec:hover { border-color:var(--bd); }
 .sec-h { display:flex; align-items:center; gap:10px; padding:14px 18px;
   border-bottom:1px solid var(--bd); flex-wrap:wrap; background:var(--sec-h-bg); }
-.sec-h h2 { margin:0; font-size:15.5px; display:flex; align-items:center; gap:7px; }
-.sec-h .muted { color:var(--mut); font-size:12px; }
+.sec-h h2 { margin:0; font-size:16.5px; font-weight:700; display:flex; align-items:center; gap:8px; letter-spacing:.2px; }
+  .sec-h h2::before { content:""; width:4px; height:15px; border-radius:2px; background:linear-gradient(var(--acc),var(--acc-strong)); flex:none; }
+.sec-h .muted { color:var(--mut); font-size:12.5px; }
 .sec-h .sp { flex:1; }
 .btn { font-size:12px; border:1px solid var(--bd); border-radius:9px; padding:5px 12px;
   color:var(--acc); background:var(--card-2); text-decoration:none;
@@ -136,9 +133,9 @@ nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decorati
 .pt { border:1px solid var(--bd); border-left:3px solid var(--acc); border-radius:11px;
   padding:9px 13px; margin:0 0 8px; cursor:pointer;
   transition:background .14s, transform .12s, box-shadow .14s, border-color .14s; }
-.pt:hover { background:var(--hover); transform:translateX(2px); box-shadow:var(--shadow-sm); border-color:var(--bd); }
+.pt:hover { background:var(--hover); box-shadow:var(--shadow-sm); border-color:var(--bd); }
 .pt .row1 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.pt .zh { font-weight:640; font-size:13.5px; }
+.pt .zh { font-weight:650; font-size:14px; }
 .pt .en { color:var(--mut); font-size:12px; margin-top:2px; }
 .pt .sum { color:var(--fg-soft); font-size:12.5px; margin-top:6px; padding-top:7px;
   border-top:1px dashed var(--bd-soft); line-height:1.65; }
@@ -192,7 +189,7 @@ table.ev .sum-zh { display:block; margin-top:2px; }
 /* ---------- 简报页正文 ---------- */
 .lb { font-size:14px; line-height:1.8; }
 .lb h1 { font-size:21px; margin:6px 0 14px; letter-spacing:-.3px; }
-.lb h2 { font-size:16.5px; margin:24px 0 9px; padding-bottom:7px; border-bottom:2px solid var(--acc-soft); }
+.lb h2 { font-size:16.5px; margin:26px 0 10px; padding:2px 0 8px 10px; border-left:3px solid var(--acc); border-bottom:1px solid var(--bd); }
 .lb h3 { font-size:14.5px; margin:16px 0 6px; }
 .lb blockquote { margin:10px 0; padding:10px 15px; background:var(--card-2);
   border-left:3px solid var(--acc); color:var(--mut); font-size:13px; border-radius:0 9px 9px 0; }
@@ -202,8 +199,9 @@ table.ev .sum-zh { display:block; margin-top:2px; }
 .lb hr { border:none; border-top:1px dashed var(--bd); margin:18px 0; }
 .lb code { background:var(--code-bg); border-radius:5px; padding:1px 5px; font-size:12.5px; }
 .lb a { word-break:break-all; }
-.lb p { margin:10px 0; }
-.lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 8px; text-align:left; }
+.lb p { margin:12px 0; line-height:1.9; }
+.lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 9px; text-align:left; }
+  .lb tbody tr:nth-child(even) { background:var(--bd-soft); }
 .lb th { background:var(--th-bg); }
 /* ---------- 归档页 ---------- */
 .archive { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
@@ -255,7 +253,7 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 <body>
 <div class="topbar">
   <div class="topbar-in">
-    <h1>📄 俄乌战争年度评估 · 2026</h1>
+    <h1>俄乌战争年度评估 · 2026</h1>
     <div class="sub"><a href="../../../index.html">← 返回首页</a> ｜ <a href="../../../briefings.html">全部简报</a> ｜ <a href="../../../map.html">🗺 态势地图</a></div>
   </div>
 </div>

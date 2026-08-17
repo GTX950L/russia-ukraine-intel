@@ -74,7 +74,7 @@ a:hover { text-decoration:underline; }
   box-shadow:0 1px 0 rgba(0,0,0,.02); position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2); }
 .topbar-in { max-width:1200px; margin:0 auto; padding:16px 22px 12px;
   display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
-.topbar h1 { margin:0; font-size:20px; letter-spacing:.2px;
+.topbar h1 { margin:0; font-size:22px; letter-spacing:.2px;
   background:linear-gradient(92deg,var(--fg),var(--acc)); -webkit-background-clip:text;
   background-clip:text; -webkit-text-fill-color:transparent; }
 .topbar h1 .dot { color:var(--red); -webkit-text-fill-color:var(--red); }
@@ -94,19 +94,15 @@ nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decorati
   transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
 .card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
   background:linear-gradient(var(--acc),var(--acc-strong)); opacity:.0; transition:opacity .2s; }
-.card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(16,24,40,.10), 0 14px 36px rgba(16,24,40,.08);
+.card:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08), 0 10px 26px rgba(16,24,40,.06);
   border-color:var(--bd); }
-.card.acc::before { opacity:.9; }
-.card.red::before { background:linear-gradient(var(--red),#b91c1c); opacity:.9; }
-.card.green::before { background:linear-gradient(var(--green),#0f6b30); opacity:.9; }
-.card.amber::before { background:linear-gradient(var(--amber),#8a3d07); opacity:.9; }
-.card .ico { font-size:16px; }
+.card.acc::before, .card.red::before, .card.green::before, .card.amber::before { opacity:.9; }
+
 .card .num { font-size:24px; font-weight:760; color:var(--fg); line-height:1.1;
   letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
 .card .num small { font-size:13px; color:var(--mut); font-weight:500; }
 .card .lbl { font-size:12px; color:var(--mut); margin-top:5px; display:flex; align-items:center; gap:6px; }
-.card.acc .num { color:var(--acc); } .card.red .num { color:var(--red); }
-.card.green .num { color:var(--green); } .card.amber .num { color:var(--amber); }
+.card .num { color:var(--fg); }
 /* ---------- 通用区块卡 ---------- */
 .sec { background:var(--card); border:1px solid var(--bd); border-radius:16px;
   box-shadow:var(--shadow); margin:0 0 18px; overflow:hidden;
@@ -114,8 +110,9 @@ nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decorati
 .sec:hover { border-color:var(--bd); }
 .sec-h { display:flex; align-items:center; gap:10px; padding:14px 18px;
   border-bottom:1px solid var(--bd); flex-wrap:wrap; background:var(--sec-h-bg); }
-.sec-h h2 { margin:0; font-size:15.5px; display:flex; align-items:center; gap:7px; }
-.sec-h .muted { color:var(--mut); font-size:12px; }
+.sec-h h2 { margin:0; font-size:16.5px; font-weight:700; display:flex; align-items:center; gap:8px; letter-spacing:.2px; }
+  .sec-h h2::before { content:""; width:4px; height:15px; border-radius:2px; background:linear-gradient(var(--acc),var(--acc-strong)); flex:none; }
+.sec-h .muted { color:var(--mut); font-size:12.5px; }
 .sec-h .sp { flex:1; }
 .btn { font-size:12px; border:1px solid var(--bd); border-radius:9px; padding:5px 12px;
   color:var(--acc); background:var(--card-2); text-decoration:none;
@@ -136,9 +133,9 @@ nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decorati
 .pt { border:1px solid var(--bd); border-left:3px solid var(--acc); border-radius:11px;
   padding:9px 13px; margin:0 0 8px; cursor:pointer;
   transition:background .14s, transform .12s, box-shadow .14s, border-color .14s; }
-.pt:hover { background:var(--hover); transform:translateX(2px); box-shadow:var(--shadow-sm); border-color:var(--bd); }
+.pt:hover { background:var(--hover); box-shadow:var(--shadow-sm); border-color:var(--bd); }
 .pt .row1 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.pt .zh { font-weight:640; font-size:13.5px; }
+.pt .zh { font-weight:650; font-size:14px; }
 .pt .en { color:var(--mut); font-size:12px; margin-top:2px; }
 .pt .sum { color:var(--fg-soft); font-size:12.5px; margin-top:6px; padding-top:7px;
   border-top:1px dashed var(--bd-soft); line-height:1.65; }
@@ -192,7 +189,7 @@ table.ev .sum-zh { display:block; margin-top:2px; }
 /* ---------- 简报页正文 ---------- */
 .lb { font-size:14px; line-height:1.8; }
 .lb h1 { font-size:21px; margin:6px 0 14px; letter-spacing:-.3px; }
-.lb h2 { font-size:16.5px; margin:24px 0 9px; padding-bottom:7px; border-bottom:2px solid var(--acc-soft); }
+.lb h2 { font-size:16.5px; margin:26px 0 10px; padding:2px 0 8px 10px; border-left:3px solid var(--acc); border-bottom:1px solid var(--bd); }
 .lb h3 { font-size:14.5px; margin:16px 0 6px; }
 .lb blockquote { margin:10px 0; padding:10px 15px; background:var(--card-2);
   border-left:3px solid var(--acc); color:var(--mut); font-size:13px; border-radius:0 9px 9px 0; }
@@ -202,8 +199,9 @@ table.ev .sum-zh { display:block; margin-top:2px; }
 .lb hr { border:none; border-top:1px dashed var(--bd); margin:18px 0; }
 .lb code { background:var(--code-bg); border-radius:5px; padding:1px 5px; font-size:12.5px; }
 .lb a { word-break:break-all; }
-.lb p { margin:10px 0; }
-.lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 8px; text-align:left; }
+.lb p { margin:12px 0; line-height:1.9; }
+.lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 9px; text-align:left; }
+  .lb tbody tr:nth-child(even) { background:var(--bd-soft); }
 .lb th { background:var(--th-bg); }
 /* ---------- 归档页 ---------- */
 .archive { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
@@ -255,42 +253,28 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 <body>
 <div class="topbar">
   <div class="topbar-in">
-    <h1>⚔️ 俄乌战争<span class="dot">·</span>每日情报</h1>
-    <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：2026-08-17 18:33 +08:00</div>
+    <h1>俄乌战争<span class="dot">·</span>每日情报</h1>
+    <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：2026-08-17 18:48 +08:00</div>
     <nav>
-      <a href="#map">🗺 态势地图</a>
-      <a href="#today">📌 今日要点</a>
-      <a href="#deep">📈 每周复盘</a>
-      <a href="#analytics">📊 数据分析</a>
-      <a href="#events">📊 事件检索</a>
-      <a href="briefings.html">🗂 全部简报</a>
-      <a href="map.html" target="_blank">⛶ 全屏地图</a>
+      <a href="#map">态势地图</a>
+      <a href="#today">今日要点</a>
+      <a href="#deep">每周复盘</a>
+      <a href="#analytics">数据分析</a>
+      <a href="#events">事件检索</a>
+      <a href="briefings.html">全部简报</a>
+      <a href="map.html" target="_blank">全屏地图 ↗</a>
         <a id="themeBtn" class="theme-btn" href="javascript:void(0)" onclick="toggleTheme()" title="切换明暗主题">🌙</a>
     </nav>
   </div>
 </div>
 <div class="wrap">
   <div class="stats">
-    <div class="card acc"><div class="ico">📊</div><div class="num">2033</div><div class="lbl">事件总数</div></div><div class="card red"><div class="ico">🔥</div><div class="num">38</div><div class="lbl">今日事件（2026-08-17）</div></div><div class="card amber"><div class="ico">⚔️</div><div class="num">1</div><div class="lbl">分歧事件</div></div><div class="card green"><div class="ico">🗂</div><div class="num">9</div><div class="lbl">维度覆盖</div></div><div class="card"><div class="ico">📍</div><div class="num">9</div><div class="lbl">战区覆盖</div></div><div class="card"><div class="ico">📚</div><div class="num">11</div><div class="lbl">简报份数</div></div>
+    <div class="card acc"><div class="num">2033</div><div class="lbl">事件总数</div></div><div class="card red"><div class="num">38</div><div class="lbl">今日事件（2026-08-17）</div></div><div class="card amber"><div class="num">1</div><div class="lbl">分歧事件</div></div><div class="card green"><div class="num">9</div><div class="lbl">维度覆盖</div></div><div class="card"><div class="num">9</div><div class="lbl">战区覆盖</div></div><div class="card"><div class="num">11</div><div class="lbl">简报份数</div></div>
   </div>
-
-  <section class="sec" id="map">
-    <div class="sec-h">
-      <h2>🗺 战场态势</h2>
-      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度</span>
-      <span class="sp"></span>
-      <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
-    </div>
-    <details class="map-fold">
-      <summary>展开战场地图（默认收起，减少首屏占用）</summary>
-      <iframe class="map-frame" src="map.html" loading="lazy"
-        title="战场态势地图" referrerpolicy="no-referrer"></iframe>
-    </details>
-  </section>
 
   <section class="sec" id="today">
     <div class="sec-h">
-      <h2>📌 今日要点</h2>
+      <h2>今日要点</h2>
       <span class="muted">2026-08-17 ｜ 点击条目展开详情</span>
       <span class="sp"></span>
       <a class="btn" href="briefings/daily/2026-08-17.html">查看完整简报 ↗</a>
@@ -316,19 +300,33 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 
   <section class="sec" id="deep">
     <div class="sec-h">
-      <h2>📈 每周复盘 · 深度分析</h2>
+      <h2>每周复盘 · 深度分析</h2>
       <span class="muted">周/月/年复盘 + AI 解析 · 人工维护，非自动生成</span>
       <span class="sp"></span>
       <a class="btn" href="briefings.html">全部简报</a>
     </div>
     <div class="sec-b">
-      <div class="deep-grid"><a class="deep-card todo" href="briefings/weekly/2026-W34.html"><div class="deep-top">📈 每周复盘<span class="deep-id">2026-W34</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争周复盘 · 2026 第 34 周</div></a><a class="deep-card" href="briefings/weekly/2026-W33.html"><div class="deep-top">📈 每周复盘<span class="deep-id">2026-W33</span><span class="deep-ok">✓ 已解析</span></div><div class="deep-title">俄乌战争周复盘 · 2026 第 33 周</div></a><a class="deep-card todo" href="briefings/monthly/2026-08.html"><div class="deep-top">📚 每月深度<span class="deep-id">2026-08</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争月度深度 · 2026-08</div></a><a class="deep-card todo" href="briefings/yearly/2026.html"><div class="deep-top">🧭 每年评估<span class="deep-id">2026</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争年度评估 · 2026</div></a></div>
+      <div class="deep-grid"><a class="deep-card todo" href="briefings/weekly/2026-W34.html"><div class="deep-top">每周复盘<span class="deep-id">2026-W34</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争周复盘 · 2026 第 34 周</div></a><a class="deep-card" href="briefings/weekly/2026-W33.html"><div class="deep-top">每周复盘<span class="deep-id">2026-W33</span><span class="deep-ok">✓ 已解析</span></div><div class="deep-title">俄乌战争周复盘 · 2026 第 33 周</div></a><a class="deep-card todo" href="briefings/monthly/2026-08.html"><div class="deep-top">每月深度<span class="deep-id">2026-08</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争月度深度 · 2026-08</div></a><a class="deep-card todo" href="briefings/yearly/2026.html"><div class="deep-top">每年评估<span class="deep-id">2026</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争年度评估 · 2026</div></a></div>
     </div>
+  </section>
+
+  <section class="sec" id="map">
+    <div class="sec-h">
+      <h2>战场态势</h2>
+      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度</span>
+      <span class="sp"></span>
+      <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
+    </div>
+    <details class="map-fold">
+      <summary>展开战场地图（默认收起，减少首屏占用）</summary>
+      <iframe class="map-frame" src="map.html" loading="lazy"
+        title="战场态势地图" referrerpolicy="no-referrer"></iframe>
+    </details>
   </section>
 
   <section class="sec" id="analytics">
     <div class="sec-h">
-      <h2>📈 数据分析</h2>
+      <h2>数据分析</h2>
       <span class="muted">近 30 天事件频次 · 类型/战区分布 · 装备损失快照（自动生成）</span>
       <span class="sp"></span>
       <a class="btn" href="#events">查看全部事件</a>
@@ -345,29 +343,32 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 
   <section class="sec" id="events">
     <div class="sec-h">
-      <h2>📊 全部事件检索</h2>
+      <h2>全部事件检索</h2>
       <span class="muted">共 <b id="cnt">0</b> 条匹配</span>
       <span class="sp"></span>
+      <a class="btn" id="eventsToggle" href="javascript:void(0)" onclick="toggleEvents()">展开检索 ▾</a>
+    </div>
+    <div class="sec-b" id="eventsBody" hidden>
       <div class="filters">
         <input id="q" placeholder="搜索关键词 / search...">
         <select id="fType"><option value="">全部维度</option></select>
         <select id="fTheater"><option value="">全部战区</option></select>
       </div>
+      <div style="overflow-x:auto">
+        <table class="ev">
+          <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（点击行展开 EN / 摘要）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="morebar"><button id="more">加载更多 ↓</button></div>
     </div>
-    <div style="overflow-x:auto">
-      <table class="ev">
-        <thead><tr><th>日期</th><th>战区</th><th>维度</th><th>事件（点击行展开 EN / 摘要）</th><th>可靠</th><th>置信</th><th>来源方</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-    <div class="morebar"><button id="more">加载更多 ↓</button></div>
   </section>
 
   <footer>
     <div class="f-meta">非官方 · 开源 · 中立汇编，数据可能滞后或有误，仅供参考</div>
     <div class="f-links">
       <a href="events.json">原始数据</a><span class="f-dot">·</span>
-      <a href="#deep">📈 每周复盘</a><span class="f-dot">·</span>
+      <a href="#deep">每周复盘</a><span class="f-dot">·</span>
       <a href="briefings.html">全部简报</a><span class="f-dot">·</span>
       <a href="map.html">战场地图</a><span class="f-dot">·</span>
       <a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">方法论</a>
@@ -425,6 +426,7 @@ function render(){
   moreBtn.style.display = rows.length > cur ? 'inline-block' : 'none';
 }
 function toggleEv(tr){ var s=tr.querySelector('.sum'); if(s) s.toggleAttribute('hidden'); tr.classList.toggle('open'); }
+function toggleEvents(){ var b=document.getElementById('eventsBody'), t=document.getElementById('eventsToggle'); if(!b||!t) return; var o=b.hidden; b.hidden=!o; t.textContent=o?'收起检索 ▴':'展开检索 ▾'; }
 q.addEventListener('input', render);
 fType.addEventListener('change', render);
 fTheater.addEventListener('change', render);
