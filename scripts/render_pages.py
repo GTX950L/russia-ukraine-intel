@@ -353,6 +353,22 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
   .chart-card h3 { margin:0 0 6px; font-size:12.5px; color:var(--mut); font-weight:500; }
   .chart-box { position:relative; height:210px; }
   @media (max-width:720px){ .chart-box { height:180px; } }
+  /* ---------- 深度分析卡片 ---------- */
+  .deep-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .deep-card { display:block; background:var(--card-2); border:1px solid var(--bd); border-radius:12px; padding:12px 14px; text-decoration:none; color:var(--fg); transition:border-color .15s, transform .12s, box-shadow .15s; }
+  .deep-card:hover { border-color:var(--acc); transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08); }
+  .deep-card .deep-top { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--mut); margin-bottom:6px; }
+  .deep-card .deep-id { font-size:11px; opacity:.85; }
+  .deep-card .deep-title { font-size:13.5px; font-weight:650; line-height:1.45; }
+  .deep-ok { margin-left:auto; color:var(--green); font-weight:650; font-size:11.5px; }
+  .deep-todo { margin-left:auto; color:var(--amber); font-weight:650; font-size:11.5px; }
+  .deep-card.todo { opacity:.7; }
+  /* ---------- 地图折叠 ---------- */
+  details.map-fold summary { cursor:pointer; padding:12px 18px; font-size:13px; color:var(--mut); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.map-fold summary::-webkit-details-marker { display:none; }
+  details.map-fold summary::before { content:"▸"; color:var(--acc); transition:transform .15s; font-weight:700; }
+  details.map-fold[open] summary::before { transform:rotate(90deg); }
+  details.map-fold .map-frame { border-radius:0 0 16px 16px; }
 """
 
 
@@ -414,7 +430,7 @@ def parse_daily_points(md: str) -> list[dict]:
     return [g for g in groups if g["items"]]
 
 
-def points_block(md: str, limit: int = 14) -> str:
+def points_block(md: str, limit: int = 8) -> str:
     """今日要点卡片 HTML（每组至多 limit 条，超出折叠在"完整简报"里）。"""
     groups = parse_daily_points(md)
     if not groups:
@@ -489,6 +505,7 @@ INDEX_HEAD = """<!doctype html>
     <nav>
       <a href="#map">🗺 态势地图</a>
       <a href="#today">📌 今日要点</a>
+      <a href="#deep">🧠 深度分析</a>
       <a href="#analytics">📈 数据分析</a>
       <a href="#events">📊 事件检索</a>
       <a href="briefings.html">🗂 全部简报</a>
@@ -505,12 +522,15 @@ INDEX_HEAD = """<!doctype html>
   <section class="sec" id="map">
     <div class="sec-h">
       <h2>🗺 战场态势</h2>
-      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度（点击地图可开关图层）</span>
+      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度</span>
       <span class="sp"></span>
       <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
     </div>
-    <iframe class="map-frame" src="map.html" loading="lazy"
-      title="战场态势地图" referrerpolicy="no-referrer"></iframe>
+    <details class="map-fold">
+      <summary>展开战场地图（默认收起，减少首屏占用）</summary>
+      <iframe class="map-frame" src="map.html" loading="lazy"
+        title="战场态势地图" referrerpolicy="no-referrer"></iframe>
+    </details>
   </section>
 
   <section class="sec" id="today">
@@ -524,6 +544,18 @@ INDEX_HEAD = """<!doctype html>
     <div class="sec-b">
       __LATEST_BLOCK__
       __CROSSCHECK__
+    </div>
+  </section>
+
+  <section class="sec" id="deep">
+    <div class="sec-h">
+      <h2>🧠 深度分析</h2>
+      <span class="muted">周/月/年复盘中的 AI 解析 · 人工与 AI 维护，非自动生成</span>
+      <span class="sp"></span>
+      <a class="btn" href="briefings.html">全部简报</a>
+    </div>
+    <div class="sec-b">
+      __DEEP_BLOCK__
     </div>
   </section>
 
@@ -568,6 +600,7 @@ INDEX_HEAD = """<!doctype html>
     <div class="f-meta">非官方 · 开源 · 中立汇编，数据可能滞后或有误，仅供参考</div>
     <div class="f-links">
       <a href="events.json">原始数据</a><span class="f-dot">·</span>
+      <a href="#deep">🧠 深度分析</a><span class="f-dot">·</span>
       <a href="briefings.html">全部简报</a><span class="f-dot">·</span>
       <a href="map.html">战场地图</a><span class="f-dot">·</span>
       <a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">方法论</a>
@@ -798,6 +831,40 @@ def build_latest_block(items: list[dict]) -> tuple[str, str]:
     return pts, rel
 
 
+def _has_deep_analysis(md: str) -> bool:
+    """判断简报是否已有实质 AI 解析（## AI 深度解析 标题之下除占位说明外有正文）。"""
+    m = re.search(r"##\s*AI\s*深度解析[^\n]*\n(.*)\Z", md, flags=re.S)
+    if not m:
+        return False
+    body = m.group(1)
+    # 剔除"由维护者或 AI 撰写"占位说明两行（斜体行以 。_ 结尾）后仍有非空白内容 = 已解析
+    body = re.sub(r"_以下由维护者.*?。_", "", body, flags=re.S)
+    body = re.sub(r"_写作提纲.*?。_", "", body, flags=re.S)
+    return len(re.sub(r"\s+", "", body)) > 0
+
+
+def build_deep_analysis_block(items: list[dict]) -> str:
+    """首页"深度分析"区块：周/月/年简报的 AI 解析入口卡片（已解析/待更新分色）。"""
+    cards: list[str] = []
+    for group in GROUP_ORDER:
+        if group == "daily":
+            continue
+        g_items = [i for i in items if i["group"] == group]
+        for it in g_items[:3]:  # 每组至多最近 3 份
+            ok = _has_deep_analysis(it["md"])
+            status = '<span class="deep-ok">✓ 已解析</span>' if ok else '<span class="deep-todo">待更新</span>'
+            cards.append(
+                f'<a class="deep-card{" todo" if not ok else ""}" '
+                f'href="briefings/{group}/{it["stem"]}.html">'
+                f'<div class="deep-top">{GROUP_LABELS[group]}'
+                f'<span class="deep-id">{it["stem"]}</span>{status}</div>'
+                f'<div class="deep-title">{it["title"]}</div></a>'
+            )
+    if not cards:
+        return '<p class="empty">暂无深度分析（周/月/年复盘尚未生成解析）</p>'
+    return f'<div class="deep-grid">{"".join(cards)}</div>'
+
+
 def main() -> None:
     rows = read_events()
     cfg = load_config()
@@ -814,6 +881,7 @@ def main() -> None:
     items = scan_briefings()
     latest_block, latest_rel = build_latest_block(items)
     cross = crosscheck_block(_latest_md(items))
+    deep_block = build_deep_analysis_block(items)
     render_briefing_pages(items)
 
     stats = (
@@ -837,6 +905,7 @@ def main() -> None:
          .replace("__STATS__", stats)
          .replace("__LATEST_BLOCK__", latest_block or '<p style="color:#98a2b3">暂无简报</p>')
          .replace("__CROSSCHECK__", cross)
+         .replace("__DEEP_BLOCK__", deep_block)
          .replace("__LATEST_DATE__", latest_date)
          .replace("__LATEST_REL__", latest_rel or "briefings.html")
          .replace("__TYPE_ZH__", json.dumps(type_zh, ensure_ascii=False))

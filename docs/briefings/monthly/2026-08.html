@@ -233,6 +233,22 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
   .chart-card h3 { margin:0 0 6px; font-size:12.5px; color:var(--mut); font-weight:500; }
   .chart-box { position:relative; height:210px; }
   @media (max-width:720px){ .chart-box { height:180px; } }
+  /* ---------- 深度分析卡片 ---------- */
+  .deep-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .deep-card { display:block; background:var(--card-2); border:1px solid var(--bd); border-radius:12px; padding:12px 14px; text-decoration:none; color:var(--fg); transition:border-color .15s, transform .12s, box-shadow .15s; }
+  .deep-card:hover { border-color:var(--acc); transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08); }
+  .deep-card .deep-top { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--mut); margin-bottom:6px; }
+  .deep-card .deep-id { font-size:11px; opacity:.85; }
+  .deep-card .deep-title { font-size:13.5px; font-weight:650; line-height:1.45; }
+  .deep-ok { margin-left:auto; color:var(--green); font-weight:650; font-size:11.5px; }
+  .deep-todo { margin-left:auto; color:var(--amber); font-weight:650; font-size:11.5px; }
+  .deep-card.todo { opacity:.7; }
+  /* ---------- 地图折叠 ---------- */
+  details.map-fold summary { cursor:pointer; padding:12px 18px; font-size:13px; color:var(--mut); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.map-fold summary::-webkit-details-marker { display:none; }
+  details.map-fold summary::before { content:"▸"; color:var(--acc); transition:transform .15s; font-weight:700; }
+  details.map-fold[open] summary::before { transform:rotate(90deg); }
+  details.map-fold .map-frame { border-radius:0 0 16px 16px; }
 </style>
 <script>try{var _t=localStorage.getItem("rui-theme");if(!_t){_t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
 </head>

@@ -233,6 +233,22 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
   .chart-card h3 { margin:0 0 6px; font-size:12.5px; color:var(--mut); font-weight:500; }
   .chart-box { position:relative; height:210px; }
   @media (max-width:720px){ .chart-box { height:180px; } }
+  /* ---------- 深度分析卡片 ---------- */
+  .deep-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .deep-card { display:block; background:var(--card-2); border:1px solid var(--bd); border-radius:12px; padding:12px 14px; text-decoration:none; color:var(--fg); transition:border-color .15s, transform .12s, box-shadow .15s; }
+  .deep-card:hover { border-color:var(--acc); transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08); }
+  .deep-card .deep-top { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--mut); margin-bottom:6px; }
+  .deep-card .deep-id { font-size:11px; opacity:.85; }
+  .deep-card .deep-title { font-size:13.5px; font-weight:650; line-height:1.45; }
+  .deep-ok { margin-left:auto; color:var(--green); font-weight:650; font-size:11.5px; }
+  .deep-todo { margin-left:auto; color:var(--amber); font-weight:650; font-size:11.5px; }
+  .deep-card.todo { opacity:.7; }
+  /* ---------- 地图折叠 ---------- */
+  details.map-fold summary { cursor:pointer; padding:12px 18px; font-size:13px; color:var(--mut); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.map-fold summary::-webkit-details-marker { display:none; }
+  details.map-fold summary::before { content:"▸"; color:var(--acc); transition:transform .15s; font-weight:700; }
+  details.map-fold[open] summary::before { transform:rotate(90deg); }
+  details.map-fold .map-frame { border-radius:0 0 16px 16px; }
 </style>
 <script>try{var _t=localStorage.getItem("rui-theme");if(!_t){_t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
 </head>
@@ -1772,7 +1788,41 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 <h2>信源对照 / Source Cross-check</h2>
 <table><tr><th>维度</th><th>乌方 UA</th><th>俄方 RU</th><th>第三方 THIRD</th><th>分歧点</th></tr><tr><td>顿涅茨克方向战线推进说法不一</td><td>乌克兰总参</td><td>俄罗斯国防部</td><td><a href="https://www.ukrinform.net/">https://www.ukrinform.net/</a></td><td>乌方称击退、俄方称占领，控制线表述相互矛盾；以 DeepState/ISW 独立地图为准。</td></tr><tr><td>Zelensky announces unique operation by Defense For</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian drones attack State Emergency Service unit</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>One person injured and damage reported in Balaklii</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Three people injured in Chernihiv region due to Ru</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Fire extinguished at Epicentr shopping center in Z</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Warehouses on fire in Kyiv region following drone</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Ukrenergo: Russian attacks cause new power outages</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian military base in Crimea catches fire, Seva</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Air Defense Forces shoot down 112 of 138 Russian d</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian forces attack bus in Zaporizhzhia region,</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>俄军无人机袭击中部电网致多地停电</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Ukrainian Defense Forces strike Russian ground rel</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr></table>
 <h2>AI 深度解析 / AI Deep Analysis</h2>
-<p><i>以下由维护者或 AI 基于上方数据撰写；流水线每次重生成都会<b>保留本段</b>，不会被覆盖。</i><br><i>写作提纲与可直接粘贴的提示词见 <code>templates/weekly.md</code>。</i></p></div></div>
+<p><i>以下由维护者或 AI 基于上方数据撰写；流水线每次重生成都会<b>保留本段</b>，不会被覆盖。</i><br><i>写作提纲与可直接粘贴的提示词见 <code>templates/weekly.md</code>。</i></p>
+<h3>1. 本周态势综述 / Weekly Overview</h3>
+<p><b>中</b>：本周（2026-08-10 ~ 08-16）入库 501 条事件，但<b>日均分布极不均衡</b>：8/10-11 约 55 条/日，与 7/20-8/9 基线（日均约 55）持平；8/12-14 骤增至 127/114/101（三日 342 条、占全周 68%），增量主要来自 VIINA 批量回填的占位条目；8/15-16 又骤降至 30/18——<b>低于 7 月以来任何单日</b>。这一波动与战场无对应关系，两个信号（峰值=批量回填、低谷=采集收缩）均指向采集层而非战局：<b>本周事件量的"变化"不构成战局信号</b>（可信度：高）。三条主线：① 数据构成以新闻头条为主，硬数据集中于 DeepState 快照（<code>2026-08-12-1394</code> 等）与 Oryx 装备损失序列（<code>2026-08-12-1393</code> 等）；② 顿涅茨克方向分歧是 <b>7/20 以来唯一被标注的分歧</b>（<code>2026-08-11-1418</code>）；③ 乌方叙事在 8/12 同日密集出现"对克里米亚/塞瓦斯托波尔打击"主题。全周 501 条置信度均为 3（单方/单源"可能"级），<b>无任何已确认（<=2）事实</b>（可信度：高）。</p>
+<p><b>EN</b>：501 events for Aug 10-16, but daily distribution is highly uneven: ~55/day on 8/10-11 (on par with the 7/20-8/9 baseline of ~55), a spike to 127/114/101 on 8/12-14 (342 events, 68% of the week, driven by VIINA batch backfill of placeholder rows), then a drop to 30/18 on 8/15-16 — below any single day since early July. Both signals (spike = batch backfill; trough = coverage contraction) point to the collection layer, not the battlefield: <b>the week's volume "changes" carry no tactical signal</b> (high). Three threads: (1) headline-dominated data with hard data limited to DeepState snapshots (<code>2026-08-12-1394</code> etc.) and the Oryx RU-loss series (<code>2026-08-12-1393</code> etc.); (2) the Donetsk disagreement is the <b>only flagged one since 7/20</b> (<code>2026-08-11-1418</code>); (3) UA-side narratives on 8/12 cluster around strikes on Crimea/Sevastopol. All 501 events are confidence 3 — nothing confirmed (high).</p>
+<h3>2. 战线与装备要点 / Frontline & Equipment</h3>
+<p><b>中</b>：</p>
+<ul>
+<li><b>战线（数据边界）</b>：4 张 DeepState 快照（8/12-15）各含 1 个 MultiPolygon 要素，且 7 月下旬以来无任何前值可供对比——<b>控制线位移既无法量化、也无法与上月比较</b>，"战线趋势"类结论在本周数据能力之外（可信度：高，指该边界判断）。</li>
+<li><b>分歧（焦点信号）</b>：顿涅茨克分歧是 events.csv 中 <b>7/20 以来唯一</b> <code>disagreement_flag=yes</code> 条目。两种解释并列、数据无法区分：A) 该方向确为当前攻防焦点；B) 分歧标注机制近期才启用，7 月分歧未被记录（可信度：中）。</li>
+<li><b>装备（可检验的趋势）</b>：Oryx 序列自 <b>8/12 才启动</b>（7 月无任何前值，无法同比），5 天数据内坦克 +3/+2/+5/+1、APC +3/+11/+3/+7（平稳），但<b>火炮日损 51->46->62->75 逐日递增</b>。初步观察假设：俄方火炮在高强度消耗中可能加速损失；序列过短且单源，<b>只作观察不作结论</b>（可信度：中）。</li>
+</ul>
+<p><b>EN</b>：Frontline (data boundary): the four DeepState snapshots each hold a single element, and there is no prior value since late July — control-line movement is neither quantifiable nor comparable month-over-month; "frontline trend" claims exceed this week's data capability (high). Disagreement (focus signal): the Donetsk flag is the only <code>disagreement_flag=yes</code> row since 7/20. Two readings, indistinguishable from data: A) it is the current focal axis; B) the flagging mechanism was only recently enabled (medium). Equipment (testable trend): the Oryx series only starts 8/12 (no July baseline, no YoY); over five days tanks +3/+2/+5/+1 and APCs +3/+11/+3/+7 are flat, but <b>artillery daily losses rose 51->46->62->75</b>. Tentative hypothesis: RU artillery attrition may be accelerating; series too short and single-source — observation, not conclusion (medium).</p>
+<h3>3. 军政与外部动态 / Leadership & External</h3>
+<p><b>中</b>：</p>
+<ul>
+<li><b>信源行为（本身是情报）</b>：俄方 94 条全部来自单一信源 RIA Novosti，其中 38 条（40%）与战事弱相关/无关（节假日、域外缉毒、格鲁吉亚/亚美尼亚政治等）；乌方 98 条单一 Ukrinform；第三方 309 条中 VIINA 占 293。<b>三方各依赖一个主源，且俄方缺少独立战报/军事博客类信源</b>——数据层无法对任何一方的"战场主张"做独立核验，这是<b>方法论层缺口</b>，不是叙事层信号（可信度：高）。</li>
+<li><b>线索联动（假设，非结论）</b>：8/12 同一天出现三条互相关联的乌方叙事——塞瓦斯托波尔俄军基地起火、乌军打击克里米亚地面中继站（均 <code>source_side=ua</code>）、防空单夜拦截 112/138 架无人机；同日美国宣布新援助包（<code>2026-08-12-1414</code>）。可形成假设：<b>乌方正把打击资源向俄纵深/克里米亚方向倾斜</b>；反假设同样成立：这些是互不关联的战术行动。证据均为单方叙事（置信 3），需独立信源或后续通报检验（可信度：中）。</li>
+<li><b>多边进程（可追踪、无分歧）</b>：ICC 战争罪调查进展（<code>2026-08-12-1416</code>）、联合国更新乌境内流离失所者数字（<code>2026-08-12-1417</code>）。</li>
+</ul>
+<p><b>EN</b>：Source behavior (itself intelligence): all 94 RU rows come from RIA Novosti alone, 38 (40%) only weakly related to the war; all 98 UA rows from Ukrinform; 293 of 309 third-party rows from VIINA. Each side leans on one primary source and RU lacks independent combat-report/milblog-type sources — the layer cannot independently verify any side's battlefield claims; that is a <b>methodological gap, not a narrative signal</b> (high). Linked threads (hypothesis, not conclusion): on 8/12 alone, UA-side reporting clustered — a Russian base fire in Sevastopol, a strike on a Crimean ground relay station (both <code>source_side=ua</code>), 112/138 drones intercepted in one night — and the US announced a new package (<code>2026-08-12-1414</code>). Hypothesis: UA is shifting strike resources toward deep-Russia/Crimea targets; counter-hypothesis: these are disconnected tactical actions. All evidence is single-source (conf 3), pending independent corroboration (medium). Trackable multilateral items: ICC update (<code>2026-08-12-1416</code>), UN IDP figures (<code>2026-08-12-1417</code>).</p>
+<h3>4. 信源对照与关键分歧 / Cross-check & Disagreements</h3>
+<p><b>中</b>：唯一分歧（<code>2026-08-11-1418</code>）三方并列呈现：乌总参称击退进攻、俄国防部称占领若干据点、独立仲裁路径为 DeepState/ISW 地图。两点深层解读：① 若该方向确为 7/20 以来唯一分歧，则它是本周<b>单点情报密度最高</b>的议题；② 对照表其余行乌、俄双方均为单方头条、标注"待交叉核验"——三方交叉结构尚未形成，多数结论置信上限为"可能"（3 级）。方法论提示：本周分歧占比仅 0.2%，<b>可能反映标注机制覆盖不全，而非战局无争议</b>，低分歧率本身不应被解读为"低争议"（可信度：中）。</p>
+<p><b>EN</b>：The sole disagreement (<code>2026-08-11-1418</code>) is presented three-way: UA General Staff says assaults repelled, RU MoD says positions seized, arbitration deferred to DeepState/ISW maps. Two readings: (1) if it is truly the only flag since 7/20, it is the week's highest-density single point; (2) all other cross-check rows on both sides remain single-source "pending cross-check" — the tri-source structure does not yet exist, capping most conclusions at "possible" (3). Methodological note: a 0.2% disagreement rate may reflect incomplete flagging coverage rather than an uncontested battlefield; <b>low disagreement rate != low controversy</b> (medium).</p>
+<h3>5. 下周观察信号 / Watchlist（假设框架：若 X 则 Y）</h3>
+<p><b>中</b>：</p>
+<ul>
+<li><b>火炮日损序列</b>：若 8/17-23 连续 >=60/日 → 支持"高强度炮战持续/加速"假设；若回落至 <40 → 反证（触发：Oryx 更新）。</li>
+<li><b>顿涅茨克控制线</b>：若 DeepState 要素增多并出现位移 → 分歧 1418 获独立仲裁；若持续无变化 → 倾向"标注机制启用时间"解释（触发：快照更新）。</li>
+<li><b>事件量</b>：若 8/17-18 仍 <30/日 → 确认采集覆盖收缩（而非战线平静）；若恢复 ~55/日 → 采集恢复正常（触发：日简报事件数）。</li>
+<li><b>美国援助包清单</b>：若披露 → 可评估"纵深打击"假设的资源支撑（触发：五角大楼/国务院公告）。</li>
+<li><b>克里米亚/黑海打击频次</b>：若上升 → 支持"纵深倾斜"假设；若停滞 → 支持"分散战术"反假设（触发：乌方通报/俄方防空战报）。</li>
+</ul>
+<p><b>EN</b>：Artillery daily loss series: >=60/day through 8/17-23 → supports sustained/accelerating attrition; <40 → refutes it (trigger: Oryx update). Donetsk control line: more DeepState elements with movement → dispute 1418 arbitrated; persistently static → favors the "flagging mechanism timing" reading (trigger: snapshot update). Event volume: still <30/day on 8/17-18 → confirms collection contraction, not battlefield quiet; ~55/day → collection recovered (trigger: daily brief counts). US package contents: disclosure → enables assessing resource support for the deep-strike hypothesis (trigger: DoD/State announcement). Crimea/Black Sea strike frequency: rising → supports the deep-shift hypothesis; stalled → supports the dispersed-tactics counter-hypothesis (trigger: UA communiques / RU air-defense reports).</p>
+<h3>6. 数据快照 / Snapshot（含 7 月基线对比）</h3>
+<table><tr><th>指标 / Metric</th><th>本周 8/10-16</th><th>基线 7/20-8/9</th><th>解读 / Reading</th></tr><tr><td>事件总数 / Events</td><td>501</td><td>日均 ~55</td><td>总量失真：342 条集中于 3 天采集回填（68%）</td></tr><tr><td>去回填日均 / Adj. daily</td><td>~53</td><td>~55</td><td>剔除采集峰值后与基线相当</td></tr><tr><td>分歧 / Disagreements</td><td>1</td><td>0</td><td>7/20 以来唯一；低占比≠低争议</td></tr><tr><td>装备损失序列 / Loss series</td><td>8/12 启动，5 天</td><td>无</td><td>Oryx 适配器新启用，无同比</td></tr><tr><td>可靠度 / Reliability</td><td>A2 ｜ B307 ｜ C192</td><td>—</td><td>无已确认事实（置信度全部 3）</td></tr><tr><td>来源结构 / Source mix</td><td>乌=Ukrinform ｜ 俄=RIA ｜ 三=VIINA(293)</td><td>—</td><td>三方各单主源，俄方缺战报类信源</td></tr></table></div></div>
 <footer class="wrap" style="padding:16px 0 0;border-top:1px solid var(--bd)">
   非官方、开源、中立汇编，仅供参考。<a href="../../../index.html">返回首页</a>
 </footer>

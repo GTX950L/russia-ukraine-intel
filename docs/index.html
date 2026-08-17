@@ -233,6 +233,22 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
   .chart-card h3 { margin:0 0 6px; font-size:12.5px; color:var(--mut); font-weight:500; }
   .chart-box { position:relative; height:210px; }
   @media (max-width:720px){ .chart-box { height:180px; } }
+  /* ---------- 深度分析卡片 ---------- */
+  .deep-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .deep-card { display:block; background:var(--card-2); border:1px solid var(--bd); border-radius:12px; padding:12px 14px; text-decoration:none; color:var(--fg); transition:border-color .15s, transform .12s, box-shadow .15s; }
+  .deep-card:hover { border-color:var(--acc); transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08); }
+  .deep-card .deep-top { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--mut); margin-bottom:6px; }
+  .deep-card .deep-id { font-size:11px; opacity:.85; }
+  .deep-card .deep-title { font-size:13.5px; font-weight:650; line-height:1.45; }
+  .deep-ok { margin-left:auto; color:var(--green); font-weight:650; font-size:11.5px; }
+  .deep-todo { margin-left:auto; color:var(--amber); font-weight:650; font-size:11.5px; }
+  .deep-card.todo { opacity:.7; }
+  /* ---------- 地图折叠 ---------- */
+  details.map-fold summary { cursor:pointer; padding:12px 18px; font-size:13px; color:var(--mut); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.map-fold summary::-webkit-details-marker { display:none; }
+  details.map-fold summary::before { content:"▸"; color:var(--acc); transition:transform .15s; font-weight:700; }
+  details.map-fold[open] summary::before { transform:rotate(90deg); }
+  details.map-fold .map-frame { border-radius:0 0 16px 16px; }
 </style>
 <script>try{var _t=localStorage.getItem("rui-theme");if(!_t){_t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
 </head>
@@ -240,10 +256,11 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 <div class="topbar">
   <div class="topbar-in">
     <h1>⚔️ 俄乌战争<span class="dot">·</span>每日情报</h1>
-    <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：2026-08-17 06:08 +08:00</div>
+    <div class="sub">中英双语 · 乌俄与第三方信源交叉对照 · NATO 可信度分级 ｜ 更新：2026-08-17 17:10 +08:00</div>
     <nav>
       <a href="#map">🗺 态势地图</a>
       <a href="#today">📌 今日要点</a>
+      <a href="#deep">🧠 深度分析</a>
       <a href="#analytics">📈 数据分析</a>
       <a href="#events">📊 事件检索</a>
       <a href="briefings.html">🗂 全部简报</a>
@@ -260,12 +277,15 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
   <section class="sec" id="map">
     <div class="sec-h">
       <h2>🗺 战场态势</h2>
-      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度（点击地图可开关图层）</span>
+      <span class="muted">红色=俄方控制区 ｜ 红圈=事件密度</span>
       <span class="sp"></span>
       <a class="btn red" href="map.html" target="_blank">打开全屏地图 ↗</a>
     </div>
-    <iframe class="map-frame" src="map.html" loading="lazy"
-      title="战场态势地图" referrerpolicy="no-referrer"></iframe>
+    <details class="map-fold">
+      <summary>展开战场地图（默认收起，减少首屏占用）</summary>
+      <iframe class="map-frame" src="map.html" loading="lazy"
+        title="战场态势地图" referrerpolicy="no-referrer"></iframe>
+    </details>
   </section>
 
   <section class="sec" id="today">
@@ -289,14 +309,20 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
 <div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Enemy drone attack hits residential area in Zaporizhzhia</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Enemy drone attack hits residential area in Zaporizhzhia</div><div class="sum" hidden>Ukrinform 头条：Enemy drone attack hits residential area in Zaporizhzhia<br><span style="color:#98a2b3">Ukrinform headline: Enemy drone attack hits residential area in Zaporizhzhia</span></div></div>
 <div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Missile strike damages Ukrainian Greek Catholic Cathedral in Kharkiv</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Missile strike damages Ukrainian Greek Catholic Cathedral in Kharkiv</div><div class="sum" hidden>Ukrinform 头条：Missile strike damages Ukrainian Greek Catholic Cathedral in Kharkiv<br><span style="color:#98a2b3">Ukrinform headline: Missile strike damages Ukrainian Greek Catholic Cathedral in Kharkiv</span></div></div>
 <div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Zelensky attends opening of “Spiritual Treasures of the Nation” exhibition at Kyiv-Pechersk Lavra</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Zelensky attends opening of “Spiritual Treasures of the Nation” exhibition at Kyiv-Pechersk Lavra</div><div class="sum" hidden>Ukrinform 头条：Zelensky attends opening of “Spiritual Treasures of the Nation” exhibition at Kyiv-Pechersk Lavra<br><span style="color:#98a2b3">Ukrinform headline: Zelensky attends opening of “Spiritual Treasures of the Nation” exhibition at Kyiv-Pechersk Lavra</span></div></div>
-<div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Russian forces attacked high-rise building in Kherson; one person injured</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Russian forces attacked high-rise building in Kherson; one person injured</div><div class="sum" hidden>Ukrinform 头条：Russian forces attacked high-rise building in Kherson; one person injured<br><span style="color:#98a2b3">Ukrinform headline: Russian forces attacked high-rise building in Kherson; one person injured</span></div></div>
-<div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Zelensky signed decree on measures to protect Ukrainian national landmarks</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Zelensky signed decree on measures to protect Ukrainian national landmarks</div><div class="sum" hidden>Ukrinform 头条：Zelensky signed decree on measures to protect Ukrainian national landmarks<br><span style="color:#98a2b3">Ukrinform headline: Zelensky signed decree on measures to protect Ukrainian national landmarks</span></div></div>
-<div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">FM Sikorski advocates for creation of “European Legion” with participation of Ukrainians</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">FM Sikorski advocates for creation of “European Legion” with participation of Ukrainians</div><div class="sum" hidden>Ukrinform 头条：FM Sikorski advocates for creation of “European Legion” with participation of Ukrainians<br><span style="color:#98a2b3">Ukrinform headline: FM Sikorski advocates for creation of “European Legion” with participation of Ukrainians</span></div></div>
-<div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Enemy attacks wound 17 people in Dnipropetrovsk region</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Enemy attacks wound 17 people in Dnipropetrovsk region</div><div class="sum" hidden>Ukrinform 头条：Enemy attacks wound 17 people in Dnipropetrovsk region<br><span style="color:#98a2b3">Ukrinform headline: Enemy attacks wound 17 people in Dnipropetrovsk region</span></div></div>
-<div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">Five civilians injured in Russian shelling in Kherson region</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ua</span></div><div class="en">Five civilians injured in Russian shelling in Kherson region</div><div class="sum" hidden>Ukrinform 头条：Five civilians injured in Russian shelling in Kherson region<br><span style="color:#98a2b3">Ukrinform headline: Five civilians injured in Russian shelling in Kherson region</span></div></div>
-<div class="pt" onclick="this.querySelector('.sum')?.toggleAttribute('hidden')"><div class="row1"><span class="zh">5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</span><span class="rel rel-C">C</span><span class="conf">置信3</span><span class="src">来源方:ru</span></div><div class="en">5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</div><div class="sum" hidden>RIA Novosti 头条：5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00<br><span style="color:#98a2b3">RIA Novosti headline: 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</span></div></div>
 </div>
       <details class="cross"><summary>信源对照 / Source Cross-check（乌方 UA · 俄方 RU · 第三方 THIRD）</summary><div class="box"><table><tr><th>维度</th><th>乌方 UA</th><th>俄方 RU</th><th>第三方 THIRD</th><th>分歧点</th></tr><tr><td>Russia wants to create sovereign AI with 'correct</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russians strike farm in Zaporizhzhia region, wound</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Enemy drone attack hits residential area in Zapori</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Missile strike damages Ukrainian Greek Catholic Ca</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Zelensky attends opening of “Spiritual Treasures o</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian forces attacked high-rise building in Kher</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Zelensky signed decree on measures to protect Ukra</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>FM Sikorski advocates for creation of “European Le</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Enemy attacks wound 17 people in Dnipropetrovsk re</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Five civilians injured in Russian shelling in Kher</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Zaporizhzhia region to install 50 mobile shelters</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russians attack Izium with guided bombs, injuring</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr></table></div></details>
+    </div>
+  </section>
+
+  <section class="sec" id="deep">
+    <div class="sec-h">
+      <h2>🧠 深度分析</h2>
+      <span class="muted">周/月/年复盘中的 AI 解析 · 人工与 AI 维护，非自动生成</span>
+      <span class="sp"></span>
+      <a class="btn" href="briefings.html">全部简报</a>
+    </div>
+    <div class="sec-b">
+      <div class="deep-grid"><a class="deep-card todo" href="briefings/weekly/2026-W34.html"><div class="deep-top">📈 每周复盘<span class="deep-id">2026-W34</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争周复盘 · 2026 第 34 周</div></a><a class="deep-card" href="briefings/weekly/2026-W33.html"><div class="deep-top">📈 每周复盘<span class="deep-id">2026-W33</span><span class="deep-ok">✓ 已解析</span></div><div class="deep-title">俄乌战争周复盘 · 2026 第 33 周</div></a><a class="deep-card todo" href="briefings/monthly/2026-08.html"><div class="deep-top">📚 每月深度<span class="deep-id">2026-08</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争月度深度 · 2026-08</div></a><a class="deep-card todo" href="briefings/yearly/2026.html"><div class="deep-top">🧭 每年评估<span class="deep-id">2026</span><span class="deep-todo">待更新</span></div><div class="deep-title">俄乌战争年度评估 · 2026</div></a></div>
     </div>
   </section>
 
@@ -341,6 +367,7 @@ footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margi
     <div class="f-meta">非官方 · 开源 · 中立汇编，数据可能滞后或有误，仅供参考</div>
     <div class="f-links">
       <a href="events.json">原始数据</a><span class="f-dot">·</span>
+      <a href="#deep">🧠 深度分析</a><span class="f-dot">·</span>
       <a href="briefings.html">全部简报</a><span class="f-dot">·</span>
       <a href="map.html">战场地图</a><span class="f-dot">·</span>
       <a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">方法论</a>
