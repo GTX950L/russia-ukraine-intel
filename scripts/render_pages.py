@@ -608,7 +608,7 @@ INDEX_HEAD = """<!doctype html>
     </div>
   </footer>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="vendor/chart.umd.min.js"></script>
 <script>
 const TYPE_ZH = __TYPE_ZH__;
 const THEATER_ZH = __THEATER_ZH__;
