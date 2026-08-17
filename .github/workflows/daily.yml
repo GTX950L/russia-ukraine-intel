@@ -3,13 +3,7 @@ name: Daily Intelligence Pipeline
 on:
   schedule:
     - cron: "0 22 * * *"     # 每日 22:00 UTC 触发（= 北京时间 06:00，保证 7 点前出情报）
-  workflow_dispatch:         # 允许手动运行
-  push:
-    branches: [main]
-    paths:
-      - "scripts/**"
-      - "config.yaml"
-      - "data/vocab.yaml"
+  workflow_dispatch:         # 允许手动运行（改代码后需立即重生成时手动触发）
 
 permissions:
   contents: write
@@ -50,12 +44,12 @@ jobs:
           python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --month
           python scripts/build_briefing.py --date "$(TZ=Asia/Shanghai date +%Y-%m-%d)" --year
 
+      - name: ④ Validate (CI quality gate)
+        run: python scripts/validate.py
+
       - name: ⑤ Render Pages
         # 地图用 Leaflet + 公共瓦片（CARTO/OSM/Esri），无需任何地图 API key，GitHub Pages 直接可用
         run: python scripts/render_pages.py
-
-      - name: ④ Validate (CI quality gate)
-        run: python scripts/validate.py
 
       - name: Commit & push
         run: |
@@ -66,6 +60,8 @@ jobs:
             echo "no changes"
           else
             git commit -m "auto: $(TZ=Asia/Shanghai date +%Y-%m-%d) pipeline run"
+            # 拉取远程最新（维护者推送/并发实例），避免 push 被拒导致误报告警
+            git pull --rebase origin main
             git push
           fi
 

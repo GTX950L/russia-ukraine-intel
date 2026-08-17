@@ -288,7 +288,7 @@ def parse_isw_html(path: Path) -> list[dict]:
         body_zh = body_en = ""
         try:
             import requests as _req
-            _r = _req.get(href, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+            _r = _req.get(href, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
             if _r.ok and "text/html" in _r.headers.get("Content-Type", ""):
                 _bs = BeautifulSoup(_r.text, "html.parser")
                 _paras = [p.get_text(" ", strip=True) for p in _bs.find_all("p")]
