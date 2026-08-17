@@ -505,8 +505,8 @@ INDEX_HEAD = """<!doctype html>
     <nav>
       <a href="#map">🗺 态势地图</a>
       <a href="#today">📌 今日要点</a>
-      <a href="#deep">🧠 深度分析</a>
-      <a href="#analytics">📈 数据分析</a>
+      <a href="#deep">📈 每周复盘</a>
+      <a href="#analytics">📊 数据分析</a>
       <a href="#events">📊 事件检索</a>
       <a href="briefings.html">🗂 全部简报</a>
       <a href="map.html" target="_blank">⛶ 全屏地图</a>
@@ -549,8 +549,8 @@ INDEX_HEAD = """<!doctype html>
 
   <section class="sec" id="deep">
     <div class="sec-h">
-      <h2>🧠 深度分析</h2>
-      <span class="muted">周/月/年复盘中的 AI 解析 · 人工与 AI 维护，非自动生成</span>
+      <h2>📈 每周复盘 · 深度分析</h2>
+      <span class="muted">周/月/年复盘 + AI 解析 · 人工维护，非自动生成</span>
       <span class="sp"></span>
       <a class="btn" href="briefings.html">全部简报</a>
     </div>
@@ -600,7 +600,7 @@ INDEX_HEAD = """<!doctype html>
     <div class="f-meta">非官方 · 开源 · 中立汇编，数据可能滞后或有误，仅供参考</div>
     <div class="f-links">
       <a href="events.json">原始数据</a><span class="f-dot">·</span>
-      <a href="#deep">🧠 深度分析</a><span class="f-dot">·</span>
+      <a href="#deep">📈 每周复盘</a><span class="f-dot">·</span>
       <a href="briefings.html">全部简报</a><span class="f-dot">·</span>
       <a href="map.html">战场地图</a><span class="f-dot">·</span>
       <a href="https://github.com/GTX950L/russia-ukraine-intel/tree/main/references">方法论</a>
