@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>俄乌战争每日快讯 · 2026-08-26 ｜ 简报</title>
+<style>/* ==========================================================================
+   俄乌战争每日情报 · 视觉升级（明暗双主题）
+   设计要点：保留全部原有类名；颜色全部变量化；浅色默认，深色覆盖；
+   渐变顶栏 + 更精致卡片（柔和阴影/圆角/微抬升） + 顺滑过渡 + 主题切换。
+   ========================================================================== */
+:root {
+  /* 浅色主题 */
+  --bg:#f4f6fa; --fg:#1b2330; --fg-soft:#475467; --mut:#667085;
+  --bd:#e6eaf1; --bd-soft:#eef1f6; --hover:#f6f8fc;
+  --card:#ffffff; --card-2:#f8fafc;
+  --acc:#2563eb; --acc-strong:#1d4ed8; --acc-soft:#e8f0fe;
+  --red:#dc2626; --red-soft:#fdeceb; --red-bd:#f3c4c0;
+  --amber:#b45309; --amber-soft:#fdf2e3;
+  --green:#15803d; --green-soft:#e7f6ec;
+  --purple:#7c3aed; --purple-soft:#f1ebfe;
+  --gray:#6b7488;
+  --shadow-sm:0 1px 2px rgba(16,24,40,.04);
+  --shadow:0 1px 3px rgba(16,24,40,.05), 0 8px 24px rgba(16,24,40,.06);
+  --topbar:linear-gradient(180deg,#ffffff 0%,#fbfcfe 100%);
+  --topbar-bd:#e6eaf1;
+  --sec-h-bg:transparent;
+  --map-bg:#eef1f5;
+  --tr-hover:#f7f9fd;
+  --th-bg:#fafbfc;
+  --code-bg:#f1f3f7;
+  --sel:rgba(37,99,235,.18);
+}
+html[data-theme="dark"] {
+  /* 深色主题 · 情报作战室观感 */
+  --bg:#0e131b; --fg:#e7ecf4; --fg-soft:#8a97ab; --mut:#8a97ab;
+  --bd:#222c3a; --bd-soft:#1b2433; --hover:#1c2533;
+  --card:#151c27; --card-2:#1a2333;
+  --acc:#5b9bff; --acc-strong:#3b82f6; --acc-soft:#15243f;
+  --red:#f25b6e; --red-soft:#3a1d21; --red-bd:#5a2b30;
+  --amber:#f0b24b; --amber-soft:#34280f;
+  --green:#46c47c; --green-soft:#142a1d;
+  --purple:#b18cff; --purple-soft:#241a3a;
+  --gray:#7e8aa0;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+  --shadow:0 2px 10px rgba(0,0,0,.40), 0 12px 34px rgba(0,0,0,.32);
+  --topbar:linear-gradient(180deg,#19222f 0%,#141b26 100%);
+  --topbar-bd:#2a3545;
+  --sec-h-bg:rgba(255,255,255,.02);
+  --map-bg:#0c1118;
+  --tr-hover:#1a2333;
+  --th-bg:#161d29;
+  --code-bg:#1c2533;
+  --sel:rgba(91,155,255,.30);
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+  margin:0; color:var(--fg); background:var(--bg);
+  transition:background .25s ease, color .25s ease;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+::selection { background:var(--sel); }
+a { color:var(--acc); text-decoration:none; }
+a:hover { text-decoration:underline; }
+/* ---------- 滚动条 ---------- */
+* { scrollbar-width:thin; scrollbar-color:var(--bd) transparent; }
+*::-webkit-scrollbar { width:10px; height:10px; }
+*::-webkit-scrollbar-thumb { background:var(--bd); border-radius:8px; border:2px solid var(--bg); }
+*::-webkit-scrollbar-thumb:hover { background:var(--mut); }
+/* ---------- 顶栏 ---------- */
+.topbar { background:var(--topbar); border-bottom:1px solid var(--topbar-bd);
+  box-shadow:0 1px 0 rgba(0,0,0,.02); position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2); }
+.topbar-in { max-width:1200px; margin:0 auto; padding:16px 22px 12px;
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+.topbar h1 { margin:0; font-size:22px; letter-spacing:.2px;
+  background:linear-gradient(92deg,var(--fg),var(--acc)); -webkit-background-clip:text;
+  background-clip:text; -webkit-text-fill-color:transparent; }
+.topbar h1 .dot { color:var(--red); -webkit-text-fill-color:var(--red); }
+.sub { color:var(--mut); font-size:12.5px; }
+nav { margin:10px 0 0; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+nav a { font-size:12.5px; padding:4px 12px; border-radius:999px; border:1px solid var(--bd);
+  color:var(--fg); background:var(--card-2); transition:background .15s, border-color .15s, transform .12s; }
+nav a:hover { background:var(--acc-soft); border-color:var(--acc); text-decoration:none; transform:translateY(-1px); }
+.theme-btn { width:30px; padding:4px 0 !important; text-align:center; font-size:14px;
+  border-color:var(--bd) !important; }
+.theme-btn:hover { background:var(--acc-soft) !important; border-color:var(--acc) !important; }
+.wrap { max-width:1200px; margin:0 auto; padding:22px 22px 70px; }
+/* ---------- 统计卡 ---------- */
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:0 0 18px; }
+.card { position:relative; overflow:hidden; background:var(--card); border:1px solid var(--bd);
+  border-radius:16px; padding:15px 16px 14px; box-shadow:var(--shadow);
+  transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+.card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:linear-gradient(var(--acc),var(--acc-strong)); opacity:.0; transition:opacity .2s; }
+.card:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08), 0 10px 26px rgba(16,24,40,.06);
+  border-color:var(--bd); }
+.card.acc::before, .card.red::before, .card.green::before, .card.amber::before { opacity:.9; }
+
+.card .num { font-size:24px; font-weight:760; color:var(--fg); line-height:1.1;
+  letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+.card .num small { font-size:13px; color:var(--mut); font-weight:500; }
+.card .lbl { font-size:12px; color:var(--mut); margin-top:5px; display:flex; align-items:center; gap:6px; }
+.card .num { color:var(--fg); }
+/* ---------- 通用区块卡 ---------- */
+.sec { background:var(--card); border:1px solid var(--bd); border-radius:16px;
+  box-shadow:var(--shadow); margin:0 0 18px; overflow:hidden;
+  transition:border-color .16s ease, box-shadow .16s ease; }
+.sec:hover { border-color:var(--bd); }
+.sec-h { display:flex; align-items:center; gap:10px; padding:14px 18px;
+  border-bottom:1px solid var(--bd); flex-wrap:wrap; background:var(--sec-h-bg); }
+.sec-h h2 { margin:0; font-size:16.5px; font-weight:700; display:flex; align-items:center; gap:8px; letter-spacing:.2px; }
+  .sec-h h2::before { content:""; width:4px; height:15px; border-radius:2px; background:linear-gradient(var(--acc),var(--acc-strong)); flex:none; }
+.sec-h .muted { color:var(--mut); font-size:12.5px; }
+.sec-h .sp { flex:1; }
+.btn { font-size:12px; border:1px solid var(--bd); border-radius:9px; padding:5px 12px;
+  color:var(--acc); background:var(--card-2); text-decoration:none;
+  transition:background .15s, border-color .15s; }
+.btn:hover { background:var(--acc-soft); text-decoration:none; border-color:var(--acc); }
+.btn.red { color:var(--red); border-color:var(--red-bd); } .btn.red:hover { background:var(--red-soft); }
+.sec-b { padding:14px 18px; }
+/* ---------- 态势地图 ---------- */
+.map-frame { display:block; width:100%; height:520px; border:0; background:var(--map-bg);
+  border-radius:12px; }
+@media (max-width:720px){ .map-frame { height:60vh; min-height:340px; } }
+/* ---------- 今日要点 ---------- */
+.pts { display:flex; flex-direction:column; }
+.grp-t { font-size:12px; color:var(--acc); font-weight:700; margin:14px 0 7px;
+  display:flex; align-items:center; gap:8px; letter-spacing:.2px; }
+.grp-t:first-child { margin-top:0; }
+.grp-t::after { content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--bd),transparent); }
+.pt { border:1px solid var(--bd); border-left:3px solid var(--acc); border-radius:11px;
+  padding:9px 13px; margin:0 0 8px; cursor:pointer;
+  transition:background .14s, transform .12s, box-shadow .14s, border-color .14s; }
+.pt:hover { background:var(--hover); box-shadow:var(--shadow-sm); border-color:var(--bd); }
+.pt .row1 { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.pt .zh { font-weight:650; font-size:14px; }
+.pt .en { color:var(--mut); font-size:12px; margin-top:2px; }
+.pt .sum { color:var(--fg-soft); font-size:12.5px; margin-top:6px; padding-top:7px;
+  border-top:1px dashed var(--bd-soft); line-height:1.65; }
+.rel { display:inline-block; min-width:20px; text-align:center; font-size:10.5px; font-weight:800;
+  border-radius:6px; padding:1px 6px; color:#fff; letter-spacing:.3px; }
+.rel-A { background:var(--green); } .rel-B { background:var(--acc); } .rel-C { background:#e0932e; }
+.rel-D { background:var(--red); } .rel-E { background:#c0433a; } .rel-F { background:var(--gray); }
+.rel-x { background:var(--gray); }
+.conf { font-size:11px; color:var(--mut); border:1px solid var(--bd); border-radius:6px; padding:1px 6px; }
+.flag { font-size:11px; color:var(--red); background:var(--red-soft); border-radius:6px; padding:1px 6px; font-weight:700; }
+.src { font-size:11px; color:var(--mut); }
+/* ---------- 信源对照 ---------- */
+details.cross { border:1px solid var(--bd); border-radius:12px; margin:10px 0; overflow:hidden; background:var(--card-2); }
+details.cross summary { cursor:pointer; padding:11px 14px; font-size:13px; font-weight:600;
+  color:var(--fg); list-style:none; display:flex; align-items:center; gap:8px; }
+details.cross summary::before { content:"▸"; color:var(--acc); transition:transform .15s; font-weight:700; }
+details.cross[open] summary::before { transform:rotate(90deg); }
+details.cross .box { padding:0 14px 12px; }
+details.cross table { width:100%; border-collapse:collapse; font-size:12px; margin:4px 0; }
+details.cross th, details.cross td { text-align:left; padding:7px 9px; border-bottom:1px solid var(--bd); vertical-align:top; }
+details.cross th { background:var(--th-bg); color:var(--mut); font-weight:600; }
+/* ---------- 事件检索 ---------- */
+.filters { display:flex; gap:10px; flex-wrap:wrap; }
+input,select { padding:8px 11px; border:1px solid var(--bd); border-radius:10px; font-size:13px;
+  background:var(--card); color:var(--fg); transition:border-color .15s, box-shadow .15s; }
+input:focus,select:focus { outline:none; border-color:var(--acc); box-shadow:0 0 0 3px var(--acc-soft); }
+input { flex:1 1 260px; }
+table.ev { width:100%; border-collapse:collapse; font-size:12.5px; }
+table.ev th, table.ev td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--bd); vertical-align:top; }
+table.ev th { background:var(--th-bg); position:sticky; top:0; font-weight:600; color:var(--mut);
+  font-size:11.5px; white-space:nowrap; z-index:1; }
+table.ev tbody tr { transition:background .12s; }
+table.ev tbody tr:hover { background:var(--tr-hover); }
+table.ev tbody tr.ev-row { cursor:pointer; }
+table.ev tbody tr.ev-row.open td { background:var(--hover); }
+table.ev tbody tr.ev-row.open td:first-child { box-shadow:inset 3px 0 0 var(--acc); }
+table.ev td.sm { white-space:nowrap; font-size:11.5px; color:var(--mut); }
+table.ev td.et b { display:block; font-size:12.5px; }
+table.ev td.et .en { display:block; color:var(--mut); font-size:11.5px; margin-top:1px; }
+table.ev td.et .sum { display:block; color:var(--fg-soft); font-size:11.5px; margin-top:6px; padding-top:6px; border-top:1px dashed var(--bd-soft); }
+table.ev .sum-zh { display:block; margin-top:2px; }
+.tag { display:inline-block; background:var(--acc-soft); color:var(--acc); border-radius:6px;
+  padding:1px 7px; font-size:10.5px; margin:2px 4px 0 0; font-weight:500; }
+.disc { color:var(--red); font-weight:700; font-size:11.5px; }
+.empty { color:var(--mut); text-align:center; padding:26px 0 !important; }
+.morebar { text-align:center; padding:12px 0 4px; }
+.morebar button { border:1px solid var(--bd); background:var(--card); border-radius:10px;
+  padding:8px 22px; font-size:13px; color:var(--acc); cursor:pointer; transition:background .15s,border-color .15s; }
+.morebar button:hover { background:var(--acc-soft); border-color:var(--acc); }
+.cnt { font-size:12px; color:var(--mut); }
+/* ---------- 简报页正文 ---------- */
+.lb { font-size:14px; line-height:1.8; }
+.lb h1 { font-size:21px; margin:6px 0 14px; letter-spacing:-.3px; }
+.lb h2 { font-size:16.5px; margin:26px 0 10px; padding:2px 0 8px 10px; border-left:3px solid var(--acc); border-bottom:1px solid var(--bd); }
+.lb h3 { font-size:14.5px; margin:16px 0 6px; }
+.lb blockquote { margin:10px 0; padding:10px 15px; background:var(--card-2);
+  border-left:3px solid var(--acc); color:var(--mut); font-size:13px; border-radius:0 9px 9px 0; }
+.lb ul { margin:8px 0; padding-left:24px; }
+.lb li { margin:4px 0; }
+.lb table { font-size:12.5px; margin:10px 0; }
+.lb hr { border:none; border-top:1px dashed var(--bd); margin:18px 0; }
+.lb code { background:var(--code-bg); border-radius:5px; padding:1px 5px; font-size:12.5px; }
+.lb a { word-break:break-all; }
+.lb p { margin:12px 0; line-height:1.9; }
+.lb th, .lb td { border-bottom:1px solid var(--bd); padding:6px 9px; text-align:left; }
+  .lb tbody tr:nth-child(even) { background:var(--bd-soft); }
+.lb th { background:var(--th-bg); }
+/* ---------- 归档页 ---------- */
+.archive { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:14px; }
+.archive .ag { background:var(--card); border:1px solid var(--bd); border-radius:16px;
+  box-shadow:var(--shadow); overflow:hidden; transition:transform .16s, box-shadow .16s; }
+.archive .ag:hover { transform:translateY(-3px); box-shadow:0 8px 26px rgba(16,24,40,.10); }
+.archive .ag-h { padding:13px 16px; font-size:14.5px; font-weight:700;
+  border-bottom:1px solid var(--bd); background:linear-gradient(180deg,var(--card-2),var(--card)); }
+.archive ul { list-style:none; padding:0; margin:0; }
+.archive li { padding:9px 16px; border-bottom:1px dashed var(--bd-soft); font-size:13px;
+  display:flex; align-items:center; gap:10px; transition:background .12s; }
+.archive li:hover { background:var(--hover); }
+.archive li:last-child { border-bottom:none; }
+.archive li a { text-decoration:none; font-weight:500; }
+.archive .d { color:var(--mut); font-size:11.5px; margin-left:auto; white-space:nowrap; }
+footer { color:var(--mut); font-size:12px; border-top:1px solid var(--bd); margin-top:26px;
+  padding-top:16px; line-height:1.85; display:flex; flex-direction:column; gap:3px; }
+.f-meta { }
+.f-links { display:flex; flex-wrap:wrap; gap:9px; align-items:center; }
+.f-links a { color:var(--mut); }
+.f-links a:hover { color:var(--acc); text-decoration:none; }
+.f-dot { opacity:.45; }
+@media (prefers-reduced-motion:reduce){ * { transition:none !important; scroll-behavior:auto !important; } }
+  /* ---------- 数据分析图表 ---------- */
+  .charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+  .chart-card { border:1px solid var(--bd); border-radius:12px; padding:12px 14px 14px; background:var(--card-2); }
+  .chart-card h3 { margin:0 0 6px; font-size:12.5px; color:var(--mut); font-weight:500; }
+  .chart-box { position:relative; height:210px; }
+  @media (max-width:720px){ .chart-box { height:180px; } }
+  /* ---------- 深度分析卡片 ---------- */
+  .deep-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .deep-card { display:block; background:var(--card-2); border:1px solid var(--bd); border-radius:12px; padding:12px 14px; text-decoration:none; color:var(--fg); transition:border-color .15s, transform .12s, box-shadow .15s; }
+  .deep-card:hover { border-color:var(--acc); transform:translateY(-2px); box-shadow:0 4px 14px rgba(16,24,40,.08); }
+  .deep-card .deep-top { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--mut); margin-bottom:6px; }
+  .deep-card .deep-id { font-size:11px; opacity:.85; }
+  .deep-card .deep-title { font-size:13.5px; font-weight:650; line-height:1.45; }
+  .deep-ok { margin-left:auto; color:var(--green); font-weight:650; font-size:11.5px; }
+  .deep-todo { margin-left:auto; color:var(--amber); font-weight:650; font-size:11.5px; }
+  .deep-card.todo { opacity:.7; }
+  /* ---------- 地图折叠 ---------- */
+  details.map-fold summary { cursor:pointer; padding:12px 18px; font-size:13px; color:var(--mut); list-style:none; display:flex; align-items:center; gap:8px; }
+  details.map-fold summary::-webkit-details-marker { display:none; }
+  details.map-fold summary::before { content:"▸"; color:var(--acc); transition:transform .15s; font-weight:700; }
+  details.map-fold[open] summary::before { transform:rotate(90deg); }
+  details.map-fold .map-frame { border-radius:0 0 16px 16px; }
+</style>
+<script>try{var _t=localStorage.getItem("rui-theme");if(!_t){_t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <h1>俄乌战争每日快讯 · 2026-08-26</h1>
+    <div class="sub"><a href="../../../index.html">← 返回首页</a> ｜ <a href="../../../briefings.html">全部简报</a> ｜ <a href="../../../map.html">🗺 态势地图</a></div>
+  </div>
+</div>
+<div class="wrap"><div class="sec"><div class="sec-b lb"><h1>俄乌战争每日快讯 · 2026-08-26</h1>
+<blockquote><b>编号</b> D-20260826 ｜ <b>编辑</b> system ｜ <b>数据基线</b> <code>data/master/events.csv</code><br><b>免责声明</b>：非官方、开源、中立汇编；数据可能滞后或有误，仅供参考。</blockquote>
+<h2>战线状况 / Frontline</h2>
+<ul>
+<li><b>DeepState 战线控制快照（2026-08-25）</b> / DeepState front-line control snapshot (2026-08-25)  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中/EN：DeepState 控制区/前线快照（2026-08-25）：1 个要素，几何类型 MultiPolygon。</li>
+</ul>
+<h2>装备状况 / Equipment</h2>
+<ul>
+<li><b>俄方装备损失更新（2026-08-25）</b> / Russian equipment losses update (2026-08-25)  ｜ 可靠B 置信3 来源方:third</li>
+<li style="margin-left:1em">中：俄方装备累计损失（截至2026-08-25）：aircraft=440; helicopter=354; tank=12293; APC=25220; field artillery=48567; MRL=2058; anti-aircraft warfare=1587; ground robotic systems=2378; drone=479882; cruise missiles=5052</li>
+<li style="margin-left:1em">EN：Cumulative Russian equipment losses (as of 2026-08-25): aircraft=440; helicopter=354; tank=12293; APC=25220; field artillery=48567; MRL=2058; anti-aircraft warfare=1587; ground robotic systems=2378; drone=479882; cruise missiles=5052</li>
+</ul>
+<h2>外部势力言行 / External Actors</h2>
+<ul>
+<li><b>ISW 每日战报：Russian Offensive Campaign Assessment, August 23, 2026</b> / ISW daily assessment: Russian Offensive Campaign Assessment, August 23, 2026  ｜ 可靠A 置信3 来源方:third</li>
+<li style="margin-left:1em">中：ISW 发布《俄罗斯攻势战役评估》（2026-08-25）。原文：<a href="https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-23-2026/">https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-23-2026/</a>（自动抽取标题，正文分析建议人工/AI 复核）</li>
+<li style="margin-left:1em">EN：ISW published Russian Offensive Campaign Assessment (2026-08-25). URL: <a href="https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-23-2026/">https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-23-2026/</a> (title auto-extracted; full analysis needs review).</li>
+<li><b>Agricultural output up 17.2% in January–July – statistics service</b> / Agricultural output up 17.2% in January–July – statistics service  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Agricultural output up 17.2% in January–July – statistics service</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Agricultural output up 17.2% in January–July – statistics service</li>
+<li><b>July becomes deadliest month for Ukrainian civilians since Russia’s full-scale war begins – UN Deputy Chief</b> / July becomes deadliest month for Ukrainian civilians since Russia’s full-scale war begins – UN Deputy Chief  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：July becomes deadliest month for Ukrainian civilians since Russia’s full-scale war begins – UN Deputy Chief</li>
+<li style="margin-left:1em">EN：Ukrinform headline: July becomes deadliest month for Ukrainian civilians since Russia’s full-scale war begins – UN Deputy Chief</li>
+<li><b>Zelensky discusses ways to ensure Ukraine’s resilience this fall and winter with Luxembourg PM</b> / Zelensky discusses ways to ensure Ukraine’s resilience this fall and winter with Luxembourg PM  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky discusses ways to ensure Ukraine’s resilience this fall and winter with Luxembourg PM</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky discusses ways to ensure Ukraine’s resilience this fall and winter with Luxembourg PM</li>
+<li><b>Over 50 UN member states call on Russia to agree to full, unconditional ceasefire in Ukraine</b> / Over 50 UN member states call on Russia to agree to full, unconditional ceasefire in Ukraine  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Over 50 UN member states call on Russia to agree to full, unconditional ceasefire in Ukraine</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Over 50 UN member states call on Russia to agree to full, unconditional ceasefire in Ukraine</li>
+<li><b>Zelensky: We will never forget that Britain stood by Ukraine when others hesitated</b> / Zelensky: We will never forget that Britain stood by Ukraine when others hesitated  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky: We will never forget that Britain stood by Ukraine when others hesitated</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky: We will never forget that Britain stood by Ukraine when others hesitated</li>
+<li><b>Ukraine, UK sign landmark AI deal</b> / Ukraine, UK sign landmark AI deal  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukraine, UK sign landmark AI deal</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukraine, UK sign landmark AI deal</li>
+<li><b>EU speeds up EUR 90B loan to support Ukraine’s air defense, energy – Costa</b> / EU speeds up EUR 90B loan to support Ukraine’s air defense, energy – Costa  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：EU speeds up EUR 90B loan to support Ukraine’s air defense, energy – Costa</li>
+<li style="margin-left:1em">EN：Ukrinform headline: EU speeds up EUR 90B loan to support Ukraine’s air defense, energy – Costa</li>
+<li><b>Sixth Summit of First Ladies and Gentlemen held in Kyiv</b> / Sixth Summit of First Ladies and Gentlemen held in Kyiv  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Sixth Summit of First Ladies and Gentlemen held in Kyiv</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Sixth Summit of First Ladies and Gentlemen held in Kyiv</li>
+<li><b>Perm oil refinery halts operations after August 21 drone attack – Reuters</b> / Perm oil refinery halts operations after August 21 drone attack – Reuters  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Perm oil refinery halts operations after August 21 drone attack – Reuters</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Perm oil refinery halts operations after August 21 drone attack – Reuters</li>
+<li><b>Humanitarian supplies worth nearly ₴28 million damaged or destroyed in russian attack on Ukrainian Red Cross warehouse in Kherson</b> / Humanitarian supplies worth nearly ₴28 million damaged or destroyed in russian attack on Ukrainian Red Cross warehouse in Kherson  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Humanitarian supplies worth nearly ₴28 million damaged or destroyed in russian attack on Ukrainian Red Cross warehouse in Kherson</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Humanitarian supplies worth nearly ₴28 million damaged or destroyed in russian attack on Ukrainian Red Cross warehouse in Kherson</li>
+<li><b>5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</b> / 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li><b>В ООН отметили рост числа жертв среди россиян после атак Киева</b> / В ООН отметили рост числа жертв среди россиян после атак Киева  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：В ООН отметили рост числа жертв среди россиян после атак Киева</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: В ООН отметили рост числа жертв среди россиян после атак Киева</li>
+<li><b>Герой России рассказал, как его подразделение помогло семье в Очеретино</b> / Герой России рассказал, как его подразделение помогло семье в Очеретино  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Герой России рассказал, как его подразделение помогло семье в Очеретино</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Герой России рассказал, как его подразделение помогло семье в Очеретино</li>
+<li><b>Коалиция желающих подписывает Украине смертный приговор, заявил политик</b> / Коалиция желающих подписывает Украине смертный приговор, заявил политик  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Коалиция желающих подписывает Украине смертный приговор, заявил политик</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Коалиция желающих подписывает Украине смертный приговор, заявил политик</li>
+<li><b>Британия получит доступ к базе данных украинских дронов</b> / Британия получит доступ к базе данных украинских дронов  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Британия получит доступ к базе данных украинских дронов</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Британия получит доступ к базе данных украинских дронов</li>
+<li><b>Постпред КНР при ООН рассказал о работе по урегулированию на Украине</b> / Постпред КНР при ООН рассказал о работе по урегулированию на Украине  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Постпред КНР при ООН рассказал о работе по урегулированию на Украине</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Постпред КНР при ООН рассказал о работе по урегулированию на Украине</li>
+<li><b>Зампостпреда США при ООН высказался об украинском урегулировании</b> / Зампостпреда США при ООН высказался об украинском урегулировании  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Зампостпреда США при ООН высказался об украинском урегулировании</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Зампостпреда США при ООН высказался об украинском урегулировании</li>
+<li><b>Постпред Китая при ООН призвал к конструктивному подходу по Украине</b> / Постпред Китая при ООН призвал к конструктивному подходу по Украине  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Постпред Китая при ООН призвал к конструктивному подходу по Украине</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Постпред Китая при ООН призвал к конструктивному подходу по Украине</li>
+<li><b>Договоренностей в ущерб безопасности России не будет, заявил Небензя</b> / Договоренностей в ущерб безопасности России не будет, заявил Небензя  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Договоренностей в ущерб безопасности России не будет, заявил Небензя</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Договоренностей в ущерб безопасности России не будет, заявил Небензя</li>
+<li><b>Выдвигаемые России переговорные требования выглядят странно, заявил Небензя</b> / Выдвигаемые России переговорные требования выглядят странно, заявил Небензя  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Выдвигаемые России переговорные требования выглядят странно, заявил Небензя</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Выдвигаемые России переговорные требования выглядят странно, заявил Небензя</li>
+<li><b>ISW 每日战报：Russian Offensive Campaign Assessment, August 24, 2026</b> / ISW daily assessment: Russian Offensive Campaign Assessment, August 24, 2026  ｜ 可靠A 置信3 来源方:third</li>
+<li style="margin-left:1em">中：ISW 发布《俄罗斯攻势战役评估》（2026-08-26）。原文：<a href="https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-24-2026/">https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-24-2026/</a>（自动抽取标题，正文分析建议人工/AI 复核）</li>
+<li style="margin-left:1em">EN：ISW published Russian Offensive Campaign Assessment (2026-08-26). URL: <a href="https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-24-2026/">https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-august-24-2026/</a> (title auto-extracted; full analysis needs review).</li>
+<li><b>Russian spotter who planted devices near defense facilities detained in Rivne region</b> / Russian spotter who planted devices near defense facilities detained in Rivne region  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian spotter who planted devices near defense facilities detained in Rivne region</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian spotter who planted devices near defense facilities detained in Rivne region</li>
+<li><b>Russian UAV strikes private home in Chernihiv, children among victims</b> / Russian UAV strikes private home in Chernihiv, children among victims  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian UAV strikes private home in Chernihiv, children among victims</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian UAV strikes private home in Chernihiv, children among victims</li>
+<li><b>Russian drone attacks rescue workers at site of airstrike in Kramatorsk</b> / Russian drone attacks rescue workers at site of airstrike in Kramatorsk  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian drone attacks rescue workers at site of airstrike in Kramatorsk</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian drone attacks rescue workers at site of airstrike in Kramatorsk</li>
+<li><b>West and Ukraine must change strategic dynamics with Russia — former NATO deputy assistant secretary general</b> / West and Ukraine must change strategic dynamics with Russia — former NATO deputy assistant secretary general  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：West and Ukraine must change strategic dynamics with Russia — former NATO deputy assistant secretary general</li>
+<li style="margin-left:1em">EN：Ukrinform headline: West and Ukraine must change strategic dynamics with Russia — former NATO deputy assistant secretary general</li>
+<li><b>Zelensky discusses steps to strengthen international support for Ukraine with UWC delegation</b> / Zelensky discusses steps to strengthen international support for Ukraine with UWC delegation  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Zelensky discusses steps to strengthen international support for Ukraine with UWC delegation</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Zelensky discusses steps to strengthen international support for Ukraine with UWC delegation</li>
+<li><b>Russian UAV strikes private home in Chernihiv, injuring several people including child</b> / Russian UAV strikes private home in Chernihiv, injuring several people including child  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian UAV strikes private home in Chernihiv, injuring several people including child</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian UAV strikes private home in Chernihiv, injuring several people including child</li>
+<li><b>Russian army attacks factory in Zaporizhzhia, causing fire</b> / Russian army attacks factory in Zaporizhzhia, causing fire  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian army attacks factory in Zaporizhzhia, causing fire</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian army attacks factory in Zaporizhzhia, causing fire</li>
+<li><b>Ukrainian military officers take part in Toronto parade</b> / Ukrainian military officers take part in Toronto parade  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Ukrainian military officers take part in Toronto parade</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Ukrainian military officers take part in Toronto parade</li>
+<li><b>Russian jet drone strikes Kharkiv, leaving two injured</b> / Russian jet drone strikes Kharkiv, leaving two injured  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：Russian jet drone strikes Kharkiv, leaving two injured</li>
+<li style="margin-left:1em">EN：Ukrinform headline: Russian jet drone strikes Kharkiv, leaving two injured</li>
+<li><b>U.S. asks Ukraine to suspend strikes on Russia during CIA Director’s Moscow visit – Axios</b> / U.S. asks Ukraine to suspend strikes on Russia during CIA Director’s Moscow visit – Axios  ｜ 可靠C 置信3 来源方:ua</li>
+<li style="margin-left:1em">中：Ukrinform 头条：U.S. asks Ukraine to suspend strikes on Russia during CIA Director’s Moscow visit – Axios</li>
+<li style="margin-left:1em">EN：Ukrinform headline: U.S. asks Ukraine to suspend strikes on Russia during CIA Director’s Moscow visit – Axios</li>
+<li><b>5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</b> / 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: 5 января: какой сегодня праздник, что отмечают в России и мире? 5 января 2025, 06:00</li>
+<li><b>Киев истошно ищет новые категории граждан для мобилизации, заявил Мирошник</b> / Киев истошно ищет новые категории граждан для мобилизации, заявил Мирошник  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Киев истошно ищет новые категории граждан для мобилизации, заявил Мирошник</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Киев истошно ищет новые категории граждан для мобилизации, заявил Мирошник</li>
+<li><b>Мирошник рассказал, сколько Украина продержится без помощи Запада</b> / Мирошник рассказал, сколько Украина продержится без помощи Запада  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Мирошник рассказал, сколько Украина продержится без помощи Запада</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Мирошник рассказал, сколько Украина продержится без помощи Запада</li>
+<li><b>Словацкий депутат высказался об идее отказа от российских энергоресурсов</b> / Словацкий депутат высказался об идее отказа от российских энергоресурсов  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Словацкий депутат высказался об идее отказа от российских энергоресурсов</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Словацкий депутат высказался об идее отказа от российских энергоресурсов</li>
+<li><b>"Пусть признает". Новое требование Зеленского всполошило пользователей Сети</b> / "Пусть признает". Новое требование Зеленского всполошило пользователей Сети  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条："Пусть признает". Новое требование Зеленского всполошило пользователей Сети</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: "Пусть признает". Новое требование Зеленского всполошило пользователей Сети</li>
+<li><b>Посольство в Канаде осудило перезахоронение главаря ОУН<i> в Киеве</b> / Посольство в Канаде осудило перезахоронение главаря ОУН</i> в Киеве  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Посольство в Канаде осудило перезахоронение главаря ОУН* в Киеве</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Посольство в Канаде осудило перезахоронение главаря ОУН* в Киеве</li>
+<li><b>Дмитриев назвал отказ от российского газа энергетическим самоубийством ЕС</b> / Дмитриев назвал отказ от российского газа энергетическим самоубийством ЕС  ｜ 可靠C 置信3 来源方:ru</li>
+<li style="margin-left:1em">中：RIA Novosti 头条：Дмитриев назвал отказ от российского газа энергетическим самоубийством ЕС</li>
+<li style="margin-left:1em">EN：RIA Novosti headline: Дмитриев назвал отказ от российского газа энергетическим самоубийством ЕС</li>
+</ul>
+<h2>信源对照 / Source Cross-check</h2>
+<table><tr><th>维度</th><th>乌方 UA</th><th>俄方 RU</th><th>第三方 THIRD</th><th>分歧点</th></tr><tr><td>Agricultural output up 17.2% in January–July – sta</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>July becomes deadliest month for Ukrainian civilia</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Zelensky discusses ways to ensure Ukraine’s resili</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Over 50 UN member states call on Russia to agree t</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Zelensky: We will never forget that Britain stood</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Ukraine, UK sign landmark AI deal</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>EU speeds up EUR 90B loan to support Ukraine’s air</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Sixth Summit of First Ladies and Gentlemen held in</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Perm oil refinery halts operations after August 21</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Humanitarian supplies worth nearly ₴28 million dam</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian spotter who planted devices near defense f</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr><tr><td>Russian UAV strikes private home in Chernihiv, chi</td><td>Ukrinform</td><td></td><td></td><td>（乌方叙事，待交叉核验）</td></tr></table>
+<hr>
+<p><i>本简报由自动化流水线生成骨架，叙述由维护者定稿。原始数据见 <code>data/master/events.csv</code>。</i></p></div></div>
+<footer class="wrap" style="padding:16px 0 0;border-top:1px solid var(--bd)">
+  非官方、开源、中立汇编，仅供参考。<a href="../../../index.html">返回首页</a>
+</footer>
+</div>
+<script>function toggleTheme(){var d=document.documentElement;var n=d.getAttribute("data-theme")==="dark"?"light":"dark";d.setAttribute("data-theme",n);try{localStorage.setItem("rui-theme",n);}catch(e){}var b=document.getElementById("themeBtn");if(b)b.textContent=n==="dark"?"☀️":"🌙";}if(window.__themeReload){try{window.__themeReload();}catch(e){}}(function(){var b=document.getElementById("themeBtn");if(b)b.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙";})();</script>
+</body>
+</html>
